@@ -2,7 +2,7 @@
 
 echo "** [1 / 3] COMPILING ENGINE... **"
 
-make clean && make > build.log 2>&1
+make clean && make
 
 # CHECK FOR SUCCESS
 
