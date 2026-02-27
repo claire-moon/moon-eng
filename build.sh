@@ -2,7 +2,7 @@
 
 echo "** [1 / 3] COMPILING ENGINE... **"
 
-make clean && make
+make clean && make > build.log 2>&1
 
 # CHECK FOR SUCCESS
 
@@ -27,6 +27,7 @@ if [ $? -eq 0 ]; then
 else
 
 	echo "** [ERROR] COMPILATION FAILED...! **"
+
 	echo "** [ERROR] ABORTING... **"
 
 	exit 1

@@ -61,6 +61,8 @@ int activeDropdown = 0;
 
 Window windows[MAX_WINDOWS];
 
+void drawDropdown();
+
 /* MOUSE DRIVER */
 
 void updateMouse() {
@@ -336,58 +338,79 @@ void updateGUI() {
 
   if (click) {
 
-	  if (mouseY <= 11) {
+	  /* DROPDOWN CLICK HANDLER */
 
-		  if (mouseX >= 4 && mouseX <= 30) {
+	  if (activeDropdown > 0) {
 
-			  /* FILE CLICKED */
+		  if (activeDropdown == 0) {
 
-			  createWindow(10, 15, 120, 80, "FILE MENU");
+			  /* BOUNDARY CHECK */
+
+			  if (mouseX >= 4 &&  mouseX <= 94 &&
+				  mouseY >= 11 && mouseY <= 41) {
+
+				  /* CLICK EVENTS */
+
+				  if (mouseY > 23) {
+
+					  /* TODO: IMPORT PAL */
+
                   }
 
-		  else if (mouseX >= 36 && mouseX <= 62) {
+			  } else {
 
-			  createWindow(42, 50, 100, 60, "EDIT MENU");
-                  }
-		  return;
-    }
+				  /* CLICKED 'EXIT' */
 
-    for (i = windowCount - 1; i >= 0; i--) {
+				  appRunning = 0;
 
-      Window *w = &windows[i];
+              }
+		  }
+	  }
 
-      if (!w->visible)
-        continue;
+	  activeDropdown = 0;
+	  return;
+   }
 
-      if (mouseX >= w->x && mouseX < w->x +
-	  w->w && mouseY >= w->y &&
-          mouseY < w->y + w->h) {
+   /* CHECK MENU */
 
-        if (mouseX > w->x + w->w - 12 &&
-            mouseY < w->y + 12) {
+  if (mouseY <= 11) {
 
-	  /* CLOSE WINDOW */
+    if (mouseX >= 4  && mouseX <= 30)
+		activeDropdown = 1;
 
-          w->visible = 0;
+    if (mouseX >= 36 && mouseX <= 62)
+		activeDropdown = 2;
 
-        }
+    if (mouseX >= 72 && mouseX <= 98)
+		activeDropdown = 3;
 
-        else if (mouseY < w->y + 12) {
-
-	  w->dragging = 1;
-	  
-	}
-
-	return;
-	
-      }
-      
-    }
-    
+    return;
   }
-  
-}
 
+  /* WINDOW CHECKER */
+
+  for (i = windowCount - 1; i >= 0; i--) {
+
+	  Window *w = &windows[i];
+
+          if (!w->visible)
+			  continue;
+
+          if (mouseX > w->x + w->w - 12 &&
+		      mouseY < w->y + 12) {
+
+			  w->visible = 0;
+          }
+
+			  else if (mouseY < w->y + 12) {
+
+				  w->dragging = 1;
+
+              }
+
+			  return;
+    }
+}
 void drawMenuBar() {
 
 	/* BACKGROUND BAR */
@@ -443,6 +466,27 @@ void renderGUI() {
   
 }
 
+void drawDropdown() {
+
+  if (activeDropdown == 0)
+	  return;
+
+  if (activeDropdown == 1) {
+
+	  /* FILE MENU */
+
+	  drawRect(4,11,90,30,7);
+	  drawRect(4,11,90,1,15);
+	  drawRect(4,11,1, 30,15);
+	  drawRect(4,40,90,1,0);
+	  drawRect(93, 11, 1, 30, 0);
+
+	  drawString(10, 16, "IMPORT PAL", 0);
+	  drawString(10, 26, "EXIT", 0);
+
+  }
+
+}
 
 int main() {
 
@@ -467,10 +511,7 @@ int main() {
 
     /* RIGHT CLICK EXIT (change this later) */
 
-    if (mouseB & 2)
-      appRunning = 0;
-
-    updateGUI();
+    if (mouseB & 2) appRunning = 0; updateGUI();
     renderGUI();
     
   }
@@ -483,7 +524,3 @@ int main() {
   return 0;
   
 }
-
-
-
-
