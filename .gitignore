@@ -1,0 +1,13 @@
+#IGNORE OBJECT FILES
+
+*.o
+
+#IGNORE LOG FILES
+
+build.log
+build_log.txt
+
+#IGNORE TEMP FILES
+
+stdout.txt
+stderr.txt

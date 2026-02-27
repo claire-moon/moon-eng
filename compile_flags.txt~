@@ -1,0 +1,5 @@
+-I/usr/local/djgpp/lib/gcc/i586-pc-msdosdjgpp/12.2.0/include
+-I/usr/local/djgpp/lib/gcc/i586-pc-msdosdjgpp/12.2.0/include-fixed
+-I/usr/local/djgpp/i586-pc-msdosdjgpp/sys-include
+-I/usr/local/djgpp/i586-pc-msdosdjgpp/include
+--target=i386-pc-dos-coff

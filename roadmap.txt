@@ -1,0 +1,50 @@
+1 . MDP EDITOR
+
+a.  GUI
+
+  x WINDOW SYSTEM
+  - MENU SYSTEM
+  - TOOLTIPS
+  - I/O (click, double click, text input, saving, loading, etc.)
+  - FILETREE BROWSER (able to browse MDP as a filetree partitioned
+                      out to the different segments of the MDP)
+  - HEX VIEWER
+  - ASSET VIEWER
+  - DIALOGUE/POPUP SYS
+
+b.  FUNCTIONALITY
+
+  - PALETTE IMPORT
+  - SPRITE IMPORT
+  - MAP EDITOR
+  - AUDIO IMPORT
+  - MIDI IMPORT
+  - TEXTURE COMPOSITOR (combining raw sprites into a texture lump)
+  - ARCHIVE MANAGER
+  - ENTITY PLACER
+
+2 . MOON ENG
+
+a.  CORE SYSTEMS
+
+b.  RENDERING PIPELINE (R_ )
+
+c.  PLAY ENVIRON (P_ )
+
+d.  AUDIO SYS (S_ )
+
+3.  ZEUS DEV
+
+a.  skybox
+
+  - SPRITE RENDERING
+  - JUPITER IN SKYBOX 2
+  - EPISODE 3 SKYBOX
+  - EPISODE 4 SKYBOX
+
+b.  ASSET CREATION
+
+c.  GAMEPLAY LOGIC
+
+
+

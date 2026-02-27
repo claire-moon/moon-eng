@@ -1,0 +1,30 @@
+- LOCK-ON SYSTEM FOR AUTO AIM:
+
+  	  + Graphic indicator around target
+
+	  + Cycle between targets with arrow keys
+
+	  + Space to fire
+
+- RPG-LITE
+
+	  + Simple XP/Level up system
+
+	  + 5 'tiers' to upgrade each level
+
+	  + Each tier represents aspects of the player:
+	    	 -Speed
+		 -Reload
+		 -Damage
+		 -Health
+		 -Tech
+
+
+- ZEUS PROGRESSION:
+
+	  + 4 map episodes (tied to planets/stations) with a bonus space level in-between
+	  + one secret level per episode
+
+	  + E1M1 -> E1M2 -> E1M3 -> (secret E1S1) -> E1M4 -> E1B1 -> next ep
+
+	  + E1 = Space Station > E2 Ganymede > E3 Jupiter > E4 The Veil

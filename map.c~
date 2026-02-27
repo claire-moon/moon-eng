@@ -1,0 +1,154 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "defs.h"
+
+
+/* GLOBAL VARS */
+
+int *currentMap = NULL;
+int *currentLight = NULL;
+int mapWidth = 0;
+int mapHeight = 0;
+int activeSkybox = 1;
+
+/* BOOTSTRAPPER */
+
+void initMapSystem() {
+
+	FILE *check = fopen("game.mdp", "rb");
+
+	if (check) {
+
+		fclose(check);
+
+		return;
+
+	}
+
+	/* IF FILE MISSING ... */
+
+	int tempMap[100] = {
+
+	  2,2,2,2,2,2,2,2,2,2,
+	  2,0,0,0,0,0,0,0,0,2,
+	  2,0,0,0,0,1,0,0,0,2,
+	  2,0,0,0,0,0,0,0,0,2,
+	  2,0,3,0,0,0,0,0,0,2,
+	  2,0,1,0,0,0,0,0,0,2,
+	  2,0,0,0,0,0,0,0,0,2,
+	  2,0,0,0,0,0,0,0,0,2,
+	  2,0,0,0,0,0,0,0,0,2,
+	  2,2,2,2,2,2,2,2,2,2,
+	  
+	};
+
+	int tempLight[100];
+	int i;
+	
+	for(i = 0; i<100; i++) tempLight[i] = 30;
+
+	/* 10x10 MAP -- SKYBOX #1 */
+	
+	LevelHeader lvlHead = {10, 10, 1};
+	
+	FILE *f         = fopen("game.mdp", "wb");
+	MoonHeader head = {'M', 'O', 'O', 'N', 2, 0};
+	MoonEntry         dir[2];
+
+	int archHeadSize   = sizeof(MoonHeader);
+	int lvlHeadSize    = sizeof(LevelHeader);
+	int dataSize       = sizeof(tempMap);
+
+	head.dirOffset = archHeadSize + (lvlHeadSize + dataSize) + dataSize;
+
+	dir[0].offset = archHeadSize;
+	dir[0].size   = lvlHeadSize + dataSize;
+	strcpy(dir[0].name, "MAP01");
+
+	dir[1].offset = archHeadSize + lvlHeadSize + dataSize;
+	dir[1].size   = dataSize;
+	strcpy(dir[1].name, "MAP01LIT");
+
+	fwrite(&head, sizeof(MoonHeader), 1, f);
+	fwrite(&lvlHead, sizeof(LevelHeader), 1, f);
+	fwrite(tempMap, dataSize, 1, f);
+	fwrite(tempLight, dataSize, 1, f);
+	fwrite(dir, sizeof(MoonEntry), 2, f);
+
+	fclose(f);
+
+}
+
+/* ARCHIVE PARSER */
+
+void loadMap(int mapNum) {
+
+	char mapName[16];
+	char litName[16];
+	FILE *f;
+	MoonHeader head;
+	MoonEntry entry;
+	LevelHeader lvlHead;
+	long returnPos;
+	int i;
+
+	sprintf(mapName, "MAP%02d", mapNum);
+	sprintf(litName, "MAP%02dLIT", mapNum);
+
+	f = fopen("game.mdp", "rb");
+	if (!f) return;
+
+	fread(&head, sizeof(MoonHeader), 1, f);
+	fseek(f, head.dirOffset, SEEK_SET);
+
+	for (i = 0; i < head.numLumps; i++) {
+
+	  fread(&entry, sizeof(MoonEntry), 1, f);
+	  
+	  returnPos = ftell(f);
+
+	  if (strcmp(entry.name, mapName) == 0) {
+
+	    fseek(f, entry.offset, SEEK_SET);
+	    
+	    /* READ LEVEL HEADER */
+	    
+	    fread(&lvlHead, sizeof(LevelHeader), 1, f);
+	    
+	    mapWidth      = lvlHead.width;
+	    mapHeight     = lvlHead.height;
+	    activeSkybox  = lvlHead.skyboxID;
+
+	    /* ALLOCATE MEM NEEDED */
+
+	    if (currentMap) free(currentMap);
+
+	    currentMap = malloc(mapWidth * mapHeight * sizeof(int));
+
+	    fread(currentMap, mapWidth * mapHeight * sizeof(int), 1, f);
+	    
+	  }
+
+	  else if (strcmp(entry.name, litName) == 0) {
+
+	    fseek(f, entry.offset, SEEK_SET);
+
+	    if (currentLight) free(currentLight);
+
+	    currentLight = malloc(mapWidth * mapHeight * sizeof(int));
+
+	    fread(currentLight, entry.size, 1, f);
+	    
+	  }
+
+	  fseek(f, returnPos, SEEK_SET);
+
+	}
+
+	fclose(f);
+
+}
+
+

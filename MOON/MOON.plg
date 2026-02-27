@@ -1,0 +1,20 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: MOON - Win32 Release--------------------
+</h3>
+
+make: Entering directory 'c:/zeus'
+C:\djgpp\bin\gcc.exe -c render.c -o render.o
+C:\djgpp\bin\gcc.exe -o zeus.exe main.o map.o input.o render.o console.o player.o physics.o hud.o -lm
+make: Leaving directory 'c:/zeus'
+
+
+
+<h3>Results</h3>
+zeus.exe - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>

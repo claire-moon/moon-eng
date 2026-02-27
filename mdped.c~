@@ -1,0 +1,198 @@
+/*
+ *    M D P * E D I T
+ *     M O O N  E N G
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <dos.h>
+#include <conio.h>
+#include <sys/nearptr.h>
+
+#define SCR_W 320
+#define SCR_H 200
+
+/* SHARED MDP STRUCTS */
+
+typedef struct {
+
+  char magic[4];
+  int numLumps;
+  int dirOffset;
+
+} MoonHeader;
+
+typedef struct {
+
+  int offset;
+  int size;
+  char name[16];
+
+} MoonEntry;
+
+/* GUI GLOBALS */
+
+unsigned char *VGA     = (unsigned char *)0xA0000;
+unsigned char *VIR_SCR = NULL;
+
+int mouseX = 160, mouseY = 100, mouseB = 0;
+int appRunning = 1;
+char currentMdp[32] = "zeus.mdp";
+
+/* MOUSE DRIVER */
+
+void updateMouse() {
+
+  union REGS r;
+  r.x.ax = 3;
+  int86(0x33, &r, &r);
+
+  mouseX = r.x.cx / 2;
+  mouseY = r.x.dx;
+  mouseB = r.x.bx;
+
+  if (mouseX < 0)
+    mouseX = 0;
+  
+  if (mouseX > 319)
+    mouseX = 319;
+
+  if (mouseY < 0)
+    mouseY = 0;
+
+  if (mouseY > 199)
+    mouseY = 199;
+  
+}
+
+/* GFX PRIMATIVES */
+
+void drawRect(int x, int y, int w,
+              int h, int color) {
+
+  int i, j;
+
+  for (j = 0; j < h; j++) {
+
+    for (i = 0; i < w; i++) {
+
+      VIR_SCR[(y + j) * SCR_W + (x + i)] = color;
+      
+    }
+    
+  }
+  
+}
+
+void drawWindow(int x, int y,
+                int w, int h, char *title) {
+
+  /* MAIN BODY */
+
+  drawRect(x, y, w, h, 7);
+  
+  /* TITLE BAR */
+
+  drawRect(x, y, w, 10, 1);
+
+  /* SHADOW */
+
+  drawRect(x + 2, y + h, w, 2, 0);
+  drawRect(x + w, y + 2, 2, h, 0);
+  
+}
+
+void drawCursor() {
+
+  int x = mouseX;
+  int y = mouseY;
+  int i;
+
+  for (i = -3; i <= 3; i++) {
+
+    if (x + i >= 0 && x + i < SCR_W)
+      VIR_SCR[y * SCR_W + (x + i)] = 15;
+
+    if (y + i >= 0 && y + i < SCR_H)
+      VIR_SCR[(y + i) * SCR_W + x] = 15;
+    
+  }
+  
+}
+
+/* SYSTEM VARS */
+
+void initMDPED() {
+
+  if (__djgpp_nearptr_enable() == 0)
+    exit(1);
+
+  VIR_SCR = (unsigned char *)malloc(64000);
+
+  /* SET MODE 13H */
+
+  union REGS r;
+  r.h.ah = 0x00;
+  r.h.al = 0x13;
+  int86(0x10, &r, &r);
+
+  /* INIT MOUSE */
+
+  r.x.ax = 0;
+  int86(0x33, &r, &r);
+  
+}
+
+void renderGUI() {
+
+  /* CLEAR BG */
+
+  memset(VIR_SCR, 3, 64000);
+
+  /* DRAW MENU BAR */
+
+  drawRect(0, 0, 320, 10, 15);
+
+  /* TEST WINDOW */
+
+  drawWindow(40, 40, 200, 120, "MDP EDIT");
+
+  /* FLIP BUFFER */
+
+  memcpy((void *)(__djgpp_conventional_base + 0xA0000),
+         VIR_SCR, 64000);
+  
+}
+
+int main() {
+
+  initMDPED();
+
+  while (appRunning) {
+
+    updateMouse();
+
+    /* GUI LOGIC */
+
+    if (mouseB & 2)
+      appRunning = 0;
+
+    renderGUI();
+    
+  }
+
+  /* RESTORE TXT MODE */
+
+  union REGS r;
+  r.h.ah = 0x00;
+  r.h.al = 0x03;
+  int86(0x10, &r, &r);
+
+  return 0;
+  
+}
+
+
+
+

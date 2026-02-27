@@ -1,0 +1,64 @@
+#include <math.h>
+
+#include "defs.h"
+
+void initPlayer(Player *p) {
+
+  /* DEFAULT SPAWN LOCATION */
+
+  p->x   = 300;
+  p->y   = 300;
+  p->a   = 0;
+
+  /* BASELINE VELOCITY */
+  
+  p->vx  = 0;
+  p->vy  = 0;
+  p->va  = 0;
+
+  /* PLAYER DEFAULT CONFIG */
+
+  p->speed       = 1.00;
+  p->friction    = 0.50;
+  p->turnSpeed   = 0.03;
+  p->dashTimer   = 0;
+  
+}
+
+void updatePlayer(Player *p) {
+
+  /* DASH COOLDOWN */
+
+  if (p->dashTimer > 0) {
+
+    p->dashTimer -= 1;
+    
+  }
+
+  /* KEY RESPONSES */
+  
+  if (keys[KEY_W]) { p->vx += cos(p->a) * p->speed;
+                     p->vy += sin(p->a) * p->speed; }
+  
+  if (keys[KEY_S]) { p->vx -= cos(p->a) * p->speed;
+                     p->vy -= sin(p->a) * p->speed; }
+  
+  if (keys[KEY_A]) { p->va -= p->turnSpeed; }
+  
+  if (keys[KEY_D]) { p->va += p->turnSpeed; }
+
+  /* DASH LOGIC */
+
+  if (keys[KEY_LSHIFT] &&  p->dashTimer <= 0) {
+
+    p->vx += cos(p->a) * 12.0;
+    p->vy += sin(p->a) * 12.0;
+
+    p->dashTimer = 35;
+    
+  }
+
+  applyPhysics(p);
+  
+}  
+

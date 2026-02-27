@@ -1,0 +1,67 @@
+#include <time.h>
+
+#include "defs.h"
+
+int showFPS = 0;
+int showPos = 0;
+int showTics = 0;
+
+int currentFPS = 0;
+unsigned long frameCount = 0;
+unsigned long ticCount = 0;
+
+char mdpFilename[32] = "game.mdp";
+
+int main(int argc, char *argv[]) {
+
+  if (argc > 1) {
+
+    strcpy(mdpFilename, argv[1]);
+    
+  }
+  
+  Player player;
+
+  /* TIME VARS */
+
+  uclock_t lastTime, startTime, currentTime;
+  int frames = 0;
+
+  initMapSystem();
+  loadMap(1);
+
+  initPlayer(&player);
+  initVideo();
+  initKeyboard();
+
+  while(1) {
+
+	/* TIME/FPS/TICS CALC */
+
+	currentTime = uclock();
+
+	if (currentTime - lastTime >= UCLOCKS_PER_SEC) {
+
+		currentFPS = frames;
+		frames = 0;
+		lastTime = currentTime;
+
+	}
+
+	frames++;
+	frameCount++;
+
+	ticCount = ((currentTime - startTime) * 35) /
+	  UCLOCKS_PER_SEC;
+
+	/* ENG PIPELINE */
+
+    processInput(&player);
+    updatePlayer(&player);
+    renderScene(&player);
+    
+  }
+
+  return 0;
+  
+}
