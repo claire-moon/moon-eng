@@ -448,6 +448,8 @@ void renderGUI() {
 
   drawMenuBar();
 
+  drawDropdown();
+
   /* DRAW MOUSE ! */
 
   for (i = -3; i <= 3; i++) {
