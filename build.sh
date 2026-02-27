@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo " [1 / 3] COMPILING ENGINE..."
+echo "** [1 / 3] COMPILING ENGINE... **"
 
 make clean && make
 
@@ -8,8 +8,8 @@ make clean && make
 
 if [ $? -eq 0 ]; then
 
-	echo " IT COMPILED...!"
-	echo "[2 / 3] STAGING FILES..."
+	echo "** IT COMPILED...! **"
+	echo "** [2 / 3] STAGING FILES... **"
 
 	git add .
 
@@ -17,21 +17,17 @@ if [ $? -eq 0 ]; then
 
 	TIMESTAMP=$(date +"%Y-%m-%d %H:%M:%S")
 
+	echo "** [3 / 3] SAVING BUILD SNAPSHOT: $TIMESTAMP **"
+
 	git commit -m "BUILD SNAPSHOT: $TIMESTAMP"
 
-	#PUSH IT
-
-	echo "[3 / 3] PUSHING TO GITHUB..."
-
-	git push origin main
-
-	echo "BUILD SUCCEEDED...!"
-	echo "**have a nice day...**"
+	echo "** [COMPLETE] BUILD SUCCEEDED...! **"
+	echo "** [COMPLETE] HAVE A NICE DAY ...! **"
 
 else
 
-	echo "COMPILATION FAILED...!"
-	echo "ABORTING..."
+	echo "** [ERROR] COMPILATION FAILED...! **"
+	echo "** [ERROR] ABORTING... **"
 
 	exit 1
 
