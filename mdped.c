@@ -331,8 +331,6 @@ void updateGUI() {
       return;
       
     }
-    
-  }
 
   /* CLICK HANDLER */
 
@@ -340,7 +338,7 @@ void updateGUI() {
 
 	  /* DROPDOWN CLICK HANDLER */
 
-	  if (activeDropdown > 0) {
+	  if (activeDropdown > 1) {
 
 		  if (activeDropdown == 0) {
 
@@ -393,8 +391,13 @@ void updateGUI() {
 
 	  Window *w = &windows[i];
 
+	  if (mouseX >= w->x &&
+          mouseX < w->x + w->w &&
+		  mouseY >= w->y + w->h) {
+
           if (!w->visible)
 			  continue;
+	  }
 
           if (mouseX > w->x + w->w - 12 &&
 		      mouseY < w->y + 12) {
@@ -410,6 +413,7 @@ void updateGUI() {
 
 			  return;
     }
+  }
 }
 void drawMenuBar() {
 
