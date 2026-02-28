@@ -297,7 +297,10 @@ void initMDPED() {
 
 void updateGUI() {
 
-    int i;
+    int i, j;
+
+    Window *w;
+    Window temp;
 
     int click = (mouseB & 1) && !(prevMouseB & 1);
     int hold = (mouseB & 1);
@@ -322,22 +325,22 @@ void updateGUI() {
             return;
         }
     }
-    /* CLICK HANDLER */
+
+    /* DROPDOWNS */
 
     if (click) {
 
-        if (activeDropdown > 0) {
+        if (activeDropdown) {
 
             if (activeDropdown == 1) {
 
-                if (mouseX >= 4 && mouseX <= 11 && mouseY <= 41) {
+                if (mouseX >= 4 && mouseX <= 94 && mouseY >= 11 &&
+                    mouseY <= 41) {
 
                     if (mouseY > 23) {
 
-                        /* TODO: IMPORT PAL */
-
+                        /* TODO: IMPORTING PAL */
                     } else {
-
                         appRunning = 0;
                     }
                 }
@@ -350,63 +353,66 @@ void updateGUI() {
 
         if (mouseY <= 11) {
 
+            /* MENU BAR */
+
             if (mouseX >= 4 && mouseX <= 30)
                 activeDropdown = 1;
             if (mouseX >= 36 && mouseX <= 62)
                 activeDropdown = 2;
             if (mouseX >= 72 && mouseX <= 98)
                 activeDropdown = 3;
-
-            return;
-        }
-    }
-
-    /* WINDOW CHECKER */
-
-    for (i = windowCount - 1; i >= 0; i--) {
-
-        Window *w = &windows[i];
-
-        if (!w->visible)
-            continue;
-
-        /* FIXED BOUNDING BOX */
-
-        if (mouseX >= w->x && mouseX < w->x + w->w && mouseY >= w->y &&
-            mouseY < w->y + w->h) {
-
-            /* Z-ORDER */
-
-            if (i != windowCount - 1) {
-
-                Window temp = windows[i];
-
-                int j;
-
-                for (j = i; j < windowCount; j++) {
-
-                    windows[j] = windows[j + 1];
-                }
-
-                windows[windowCount - 1] = temp;
-            }
-
-            /* CLOSE BUTTON CHECK */
-
-            if (mouseX > w->x + w->w - 12 && mouseY < w->y + 12) {
-
-                w->visible = 0;
-            }
-
-            /* CHECK TITLE BAR */
-
-            w->dragging = 1;
         }
 
         return;
+
+        /* WINDOW CHECKER */
+
+        for (i = windowCount - 1; i >= 0; i--) {
+
+            w = &windows[i];
+
+            if (!w->visible)
+                continue;
+
+            /* FIXED BOUNADRIES */
+
+            if (mouseX >= w->x && mouseX <= w->x + w->w && mouseY >= w->y &&
+                mouseY < w->y + w->h) {
+
+                /* Z - ORDER */
+
+                if (i != windowCount - 1) {
+
+                    temp = windows[i];
+
+                    for (j = i; j < windowCount - 1; j++) {
+
+                        windows[j] = windows[j + 1];
+                    }
+
+                    windows[windowCount - 1] = temp;
+                    w = &windows[windowCount - 1];
+                }
+
+                /* CLOSE BUTTON CLICKED */
+
+                if (mouseX > w->x + w->w - 12 && mouseY < w->y + 12) {
+
+                    w->visible = 0;
+                }
+
+                /* TITLE BAR CLICKED */
+
+                else if (mouseY < w->y + 12) {
+
+                    w->dragging = 1;
+                }
+
+                return;
+            }
+        }
     }
 }
-
 void drawMenuBar() {
 
     /* BACKGROUND BAR */
