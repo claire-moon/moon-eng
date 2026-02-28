@@ -25,8 +25,8 @@ all: zeus.exe mdped.exe
 zeus.exe: $(OBJS)
 	$(CC) -o zeus.exe $(OBJS) -lm
 
-mdped.exe: mdped.c
-	$(CC) -o mdped.exe mdped.c
+mdped.exe: mdped/mdped.c
+	$(CC) -o mdped.exe cgui/cgui.c mdped/mdped.c
 
 %.o: %.c
 	$(CC) -c $< -o $@

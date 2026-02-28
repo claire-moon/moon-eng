@@ -1,50 +1,51 @@
-1 . MDP EDITOR
-
-a.  GUI
-
-  x WINDOW SYSTEM
-  x MENU SYSTEM
-  - I/O (click, double click, text input, saving, loading, etc.)
-  - FILETREE BROWSER (able to browse MDP as a filetree partitioned
-                      out to the different segments of the MDP)
-  - HEX VIEWER
-  - ASSET VIEWER
-  - TOOLTIPS
+1. CGUI
+  x CORE SYSTEMS
+      x WINDOW MANAGER
+      x MENU SYSTEM
+      x I/O (click, double click, non-blocking text input)
+  - WIDGETS
+      - BUTTONS
+      - TEXT INPUT FIELDS
+      - SCROLLBARS
   - DIALOGUE/POPUP SYS
+  - TOOLTIPS
 
-b.  FUNCTIONALITY
+2. MDP EDITOR
 
-  - PALETTE IMPORT
-  - SPRITE IMPORT
-  - MAP EDITOR
-  - AUDIO IMPORT
-  - MIDI IMPORT
-  - TEXTURE COMPOSITOR (combining raw sprites into a texture lump)
-  - ARCHIVE MANAGER
-  - ENTITY PLACER
+  - I/O & DISK
+      - PALETTE IMPORTER (read jupiter.bmp, write to VGA ports)
+      - MDP HEADER PARSER (read 12-byte MoonHeader struct)
+      - DIRECTORY LOADER (load MoonEntry array into memory)
+  - FILETREE BROWSER 
+      - ROOT UI SHELL (spawn static explorer window)
+      - TREE RENDERER (draw lump names sequentially)
+      - INTERACTION LOGIC (map double-click Y-coords to file selection)
+  - MODULES
+      - HEX VIEWER
+      - ASSET VIEWER
+      - PALETTE VIEWER
+  - FUNCTIONALITY
+      - SPRITE IMPORT
+      - MAP EDITOR
+      - AUDIO IMPORT
+      - MIDI IMPORT
+      - TEXTURE COMPOSITOR (combining raw sprites into a texture lump)
+      - ARCHIVE MANAGER
+      - ENTITY PLACER
 
-2 . MOON ENG
+3. MOON ENG
 
-a.  CORE SYSTEMS
+  - CORE SYSTEMS
+  - RENDERING PIPELINE (R_ )
+  - PLAY ENVIRON (P_ )
+  - AUDIO SYS (S_ )
 
-b.  RENDERING PIPELINE (R_ )
+4. ZEUS DEV
 
-c.  PLAY ENVIRON (P_ )
-
-d.  AUDIO SYS (S_ )
-
-3.  ZEUS DEV
-
-a.  skybox
-
-  - SPRITE RENDERING
-  - JUPITER IN SKYBOX 2
-  - EPISODE 3 SKYBOX
-  - EPISODE 4 SKYBOX
-
-b.  ASSET CREATION
-
-c.  GAMEPLAY LOGIC
-
-
-
+  - skybox
+      - SPRITE RENDERING
+      - JUPITER IN SKYBOX 2
+      - EPISODE 3 SKYBOX
+      - EPISODE 4 SKYBOX
+  - ASSET CREATION
+  - GAMEPLAY LOGIC
