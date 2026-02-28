@@ -58,11 +58,14 @@ int topWindowIdx = -1;
 
 int activeDropdown = 0;
 
+int isTyping = 1;
+
 unsigned long frameCount = 0;
 unsigned long lastClickFrame = 0;
 
-Window windows[MAX_WINDOWS];
+char inputBuffer[32];
 
+Window windows[MAX_WINDOWS];
 void drawDropdown();
 
 /* MOUSE DRIVER */
@@ -91,6 +94,42 @@ void updateMouse() {
 
     if (mouseY > 199)
         mouseY = 199;
+}
+
+void updateKeyboard() {
+
+    if (!isTyping)
+        return;
+
+    /* KEYBOARD LOGIC */
+
+    if (kbhit()) {
+
+        char c = getch();
+
+        int len = strlen(inputBuffer);
+
+        /* BACKSPACE */
+
+        if (c == 8 && len > 0) {
+
+            inputBuffer[len - 1] = '\0';
+        }
+
+        /* ENTER */
+
+        else if (c == 13) {
+
+        }
+
+        /* GENERAL TYPE */
+
+        else if (c >= 31 && c <= 126 && len < 31) {
+
+            inputBuffer[len] = c;
+            inputBuffer[len + 1] = '\0';
+        }
+    }
 }
 
 /* GFX PRIMATIVES */
@@ -475,6 +514,13 @@ void renderGUI() {
 
     drawDropdown();
 
+    /* DRAW STATUS BAR & TXT ! */
+
+    drawRect(0, 189, SCR_W, 11, 7);
+    drawRect(0, 189, SCR_W, 1, 15);
+    drawString(4, 192, "YOU TYPED:", 0);
+    drawString(32, 192, inputBuffer, 1);
+
     /* DRAW MOUSE ! */
 
     for (i = -3; i <= 3; i++) {
@@ -531,6 +577,7 @@ int main() {
     while (appRunning) {
 
         updateMouse();
+        updateKeyboard();
 
         /* RIGHT CLICK EXIT (change this later) */
 
