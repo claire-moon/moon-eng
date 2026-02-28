@@ -58,6 +58,9 @@ int topWindowIdx = -1;
 
 int activeDropdown = 0;
 
+unsigned long frameCount = 0;
+unsigned long lastClickFrame = 0;
+
 Window windows[MAX_WINDOWS];
 
 void drawDropdown();
@@ -305,6 +308,25 @@ void updateGUI() {
     int click = (mouseB & 1) && !(prevMouseB & 1);
     int hold = (mouseB & 1);
     int release = !(mouseB & 1) && (prevMouseB & 1);
+    int doubleClick = 0;
+
+    /* DOUBLE CLICK TRACKER */
+
+    frameCount++;
+
+    if (click) {
+
+        if (frameCount - lastClickFrame < 15) {
+
+            doubleClick = 1;
+
+            lastClickFrame = 0;
+
+        } else {
+
+            lastClickFrame = frameCount;
+        }
+    }
 
     /* DRAG HANDLER */
 
@@ -321,8 +343,6 @@ void updateGUI() {
                 windows[i].x = mouseX - (windows[i].w / 2);
                 windows[i].y = mouseY - 5;
             }
-
-            return;
         }
     }
 
@@ -361,9 +381,9 @@ void updateGUI() {
                 activeDropdown = 2;
             if (mouseX >= 72 && mouseX <= 98)
                 activeDropdown = 3;
-        }
 
-        return;
+            return;
+        }
 
         /* WINDOW CHECKER */
 
@@ -404,6 +424,11 @@ void updateGUI() {
                 /* TITLE BAR CLICKED */
 
                 else if (mouseY < w->y + 12) {
+
+                    if (doubleClick) {
+
+                        strcpy(w->title, "THAT TICKLES..!");
+                    }
 
                     w->dragging = 1;
                 }

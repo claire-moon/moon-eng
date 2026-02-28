@@ -3,13 +3,13 @@
 a.  GUI
 
   x WINDOW SYSTEM
-  - MENU SYSTEM
-  - TOOLTIPS
+  x MENU SYSTEM
   - I/O (click, double click, text input, saving, loading, etc.)
   - FILETREE BROWSER (able to browse MDP as a filetree partitioned
                       out to the different segments of the MDP)
   - HEX VIEWER
   - ASSET VIEWER
+  - TOOLTIPS
   - DIALOGUE/POPUP SYS
 
 b.  FUNCTIONALITY
