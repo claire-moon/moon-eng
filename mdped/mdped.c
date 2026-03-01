@@ -16,6 +16,8 @@
  * See LICENSE.txt for full license texts
  */
 
+#include <stdio.h>
+
 #include "../cgui/cgui.h"
 
 /* STRUCTS */
@@ -37,6 +39,41 @@ typedef struct {
 } MoonEntry;
 
 char currentMdp[32] = "zeus.mdp";
+
+void loadPalette(const char *filename) {
+
+    FILE *f;
+    unsigned char header[54];
+    unsigned char bmpPal[1024];
+
+    int i;
+
+    f = fopen(filename, "rb");
+
+    if (!f) {
+
+        return;
+    }
+
+    fread(header, 1, 54, f);
+
+    fread(bmpPal, 1, 1024, f);
+
+    fclose(f);
+
+    outportb(0x3CD, 0);
+
+    for (i = 0; i < 256; i++) {
+
+        /* bitshifting (>> 2)
+           to convert 8-bit
+           color 6-bit color*/
+
+        outportb(0x3C9, bmpPal[(i * 4) + 2] >> 2);
+        outportb(0x3C9, bmpPal[(i * 4) + 1] >> 2);
+        outportb(0x3C9, bmpPal[(i * 4) + 0] >> 2);
+    }
+}
 
 /* SYSTEM VARS */
 
@@ -169,6 +206,7 @@ int main() {
     union REGS r;
 
     initMDPED();
+    loadPalette("palette.bmp");
     initWindowManager();
 
     /* TEST WINDOWS !!! */
