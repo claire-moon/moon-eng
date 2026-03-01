@@ -68,7 +68,7 @@ void loadPalette(const char *filename) {
 
     fclose(f);
 
-    outportb(0x3CB, 0);
+    outportb(0x3C8, 0);
 
     for (i = 0; i < 256; i++) {
 
