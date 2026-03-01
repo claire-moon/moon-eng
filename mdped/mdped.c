@@ -127,7 +127,7 @@ void drawMenuBar() {
 
     /* BACKGROUND BAR */
 
-    drawRect(0, 0, SCR_W, 11, 7);
+    drawRect(0, 0, SCR_W, 11, 154);
 
     /* SHADOW */
 
@@ -147,7 +147,7 @@ void renderGUI() {
     waitVsync();
     waitVsync();
 
-    memset(VIR_SCR, 3, 64000);
+    memset(VIR_SCR, 80, 64000);
 
     /* DRAW WINDOWS ! */
 
@@ -163,7 +163,7 @@ void renderGUI() {
     /* DRAW STATUS BAR & TXT ! */
 
     drawRect(0, 189, SCR_W, 11, 7);
-    drawRect(0, 189, SCR_W, 1, 15);
+    drawRect(0, 189, SCR_W, 1, 248);
     drawString(4, 192, "YOU TYPED:", 0);
     drawString(32, 192, inputBuffer, 1);
 
@@ -172,10 +172,10 @@ void renderGUI() {
     for (i = -3; i <= 3; i++) {
 
         if (mouseX + i >= 0 && mouseX + i < SCR_W)
-            VIR_SCR[mouseY * SCR_W + (mouseX + i)] = 15;
+            VIR_SCR[mouseY * SCR_W + (mouseX + i)] = 248;
 
         if (mouseY + i >= 0 && mouseY + i < SCR_H)
-            VIR_SCR[(mouseY + i) * SCR_W + mouseX] = 15;
+            VIR_SCR[(mouseY + i) * SCR_W + mouseX] = 248;
     }
 
     /* FLIP BUFFER */
@@ -192,9 +192,9 @@ void drawDropdown() {
 
         /* FILE MENU */
 
-        drawRect(4, 11, 90, 30, 7);
-        drawRect(4, 11, 90, 1, 15);
-        drawRect(4, 11, 1, 30, 15);
+        drawRect(4, 11, 90, 30, 154);
+        drawRect(4, 11, 90, 1, 248);
+        drawRect(4, 11, 1, 30, 248);
         drawRect(4, 40, 90, 1, 0);
         drawRect(93, 11, 1, 30, 0);
 
