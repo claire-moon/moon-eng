@@ -206,12 +206,12 @@ void drawWindow(Window *w) {
 
     /* MAIN BODY */
 
-    drawRect(w->x, w->y, w->w, w->h, 7);
+    drawRect(w->x, w->y, w->w, w->h, 154);
 
     /* BORDER */
 
-    drawRect(w->x, w->y, w->w, 1, 15);
-    drawRect(w->x, w->y, 1, w->h, 15);
+    drawRect(w->x, w->y, w->w, 1, 248);
+    drawRect(w->x, w->y, 1, w->h, 248);
     drawRect(w->x, w->y + w->h - 1, w->w, 1, 0);
     drawRect(w->x + w->w - 1, w->y, 1, w->h, 0);
 
@@ -225,7 +225,7 @@ void drawWindow(Window *w) {
 
     /* TITLE TEXT */
 
-    drawString(w->x + 4, w->y + 4, w->title, 15);
+    drawString(w->x + 4, w->y + 4, w->title, 248);
 }
 
 void drawCursor() {
@@ -237,10 +237,10 @@ void drawCursor() {
     for (i = -3; i <= 3; i++) {
 
         if (x + i >= 0 && x + i < SCR_W)
-            VIR_SCR[y * SCR_W + (x + i)] = 15;
+            VIR_SCR[y * SCR_W + (x + i)] = 248;
 
         if (y + i >= 0 && y + i < SCR_H)
-            VIR_SCR[(y + i) * SCR_W + x] = 15;
+            VIR_SCR[(y + i) * SCR_W + x] = 248;
     }
 }
 

@@ -162,7 +162,7 @@ void renderGUI() {
 
     /* DRAW STATUS BAR & TXT ! */
 
-    drawRect(0, 189, SCR_W, 11, 7);
+    drawRect(0, 189, SCR_W, 11, 154);
     drawRect(0, 189, SCR_W, 1, 248);
     drawString(4, 192, "YOU TYPED:", 0);
     drawString(32, 192, inputBuffer, 1);
