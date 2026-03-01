@@ -46,6 +46,8 @@ void loadPalette(const char *filename) {
     unsigned char header[54];
     unsigned char bmpPal[1024];
 
+    unsigned int dibSize;
+
     int i;
 
     f = fopen(filename, "rb");
@@ -55,7 +57,12 @@ void loadPalette(const char *filename) {
         return;
     }
 
-    fread(header, 1, 54, f);
+    fread(header, 1, 18, f);
+
+    dibSize = header[14] | (header[15] << 8) | (header[16] << 16) |
+              (header[17] << 24);
+
+    fseek(f, 14 + dibSize, SEEK_SET);
 
     fread(bmpPal, 1, 1024, f);
 
