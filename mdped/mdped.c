@@ -205,39 +205,50 @@ void drawDropdown() {
 
 int main() {
 
-    if (__djgpp_nearptr_enable() == 0)
-        return 1;
+  int win1, win2;
+  union REGS r;
 
-    VIR_SCR = (unsigned char *)malloc(64000);
+  if (__djgpp_nearptr_enable())
+    return 1;
 
-    union REGS r;
+  VIR_SCR = (unsigned char *)malloc(64000);
 
-    initMDPED();
-    loadPalette("palette.bmp");
-    initWindowManager();
+  /* SYS INIT */
 
-    /* TEST WINDOWS !!! */
+  initMDPED();
+  initCGUIPalette();
+  initWindowManager();
 
-    createWindow(20, 20, 150, 100, "FILE BROWSER");
-    createWindow(100, 80, 120, 80, "PALETTE");
+  /* UI GEN */
 
-    while (appRunning) {
+  win1 = createWindow(20, 20, 160, 120, "FILE BROWSER");
+  addWidget(win1, WIDGET_LABEL, 10, 20, 0, 0, "SELECT ARCHIVE:");
+  addWidget(win1, WIDGET_BUTTON, 10, 40, 60, 15, "OPEN MDP");
 
-        updateMouse();
-        updateKeyboard();
+  win2 = createWindow(100, 80, 120, 80, "PALedit");
+  addWidget(win2, WIDGET_BUTTON, 10, 25, 100, 15, "IMPORT PAL");
+  addWidget(win2, WIDGET_BUTTON, 10, 45, 100, 15, "EXPORT CHUNK");
 
-        /* RIGHT CLICK EXIT (change this later) */
+  /* ENGINE LOOP */
 
-        if (mouseB & 2)
-            appRunning = 0;
-        updateGUI();
-        renderGUI();
-    }
+  while (appRunning) {
 
-    r.h.ah = 0x00;
-    r.h.al = 0x03;
+    updateMouse();
+    updateKeyboard();
 
-    int86(0x10, &r, &r);
+    if (mouseB & 2)
+      appRunning = 0;
 
-    return 0;
+    updateGUI();
+    renderGUI();
+  }
+
+  /* CLEANUP */
+
+  r.h.ah = 0x00;
+  r.h.al = 0x03;
+  int86(0x0, &r, &r);
+
+  return 0;
+  
 }

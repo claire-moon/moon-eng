@@ -1,51 +1,56 @@
-1. CGUI
-  x CORE SYSTEMS
-      x WINDOW MANAGER
-      x MENU SYSTEM
-      x I/O (click, double click, non-blocking text input)
-  - WIDGETS
-      - BUTTONS
-      - TEXT INPUT FIELDS
-      - SCROLLBARS
-  - DIALOGUE/POPUP SYS
-  - TOOLTIPS
+1. CGUI (GUI FRAMEWORK)
 
-2. MDP EDITOR
+  x CORE SYSTEMS (VGA init, basic mouse/keyboard state)
+  - HARDWARE I/O
+      - UI PALETTE (Convert Win95 palette into a hardcoded static C array)
+  - ARCHITECTURE & EVENTS
+      - DATA-DRIVEN MENUS (Array-based dropdown generation)
+      - WIDGET SYSTEM (Generic UI element struct parenting to Windows)
+      - FOCUS SYSTEM (Tracking active window & active widget for I/O routing)
+  - WIDGET LIBRARY
+      - BUTTONS (Standard, Toggle, Checkboxes)
+      - TEXT INPUT FIELDS (Active focus, caret blinking)
+      - LISTBOXES (Scrollable data-driven string arrays)
+      - CANVASES (Render external image buffers/pixels inside a window)
+      - SCROLLBARS (Vertical/horizontal, reporting 0.0-1.0 float values)
+  - DIALOGUES
+      - MODAL POPUPS (OK/Cancel, Yes/No blocking messages)
+      - UNIVERSAL FILE PICKER (Read standard DOS filesystem via dirent.h)
+  - TOOLTIPS (Hover-state delay rendering)
 
-  - I/O & DISK
-      - PALETTE IMPORTER (read jupiter.bmp, write to VGA ports)
-      - MDP HEADER PARSER (read 12-byte MoonHeader struct)
-      - DIRECTORY LOADER (load MoonEntry array into memory)
-  - FILETREE BROWSER 
-      - ROOT UI SHELL (spawn static explorer window)
-      - TREE RENDERER (draw lump names sequentially)
-      - INTERACTION LOGIC (map double-click Y-coords to file selection)
-  - MODULES
-      - HEX VIEWER
-      - ASSET VIEWER
-      - PALETTE VIEWER
-  - FUNCTIONALITY
-      - SPRITE IMPORT
-      - MAP EDITOR
-      - AUDIO IMPORT
-      - MIDI IMPORT
-      - TEXTURE COMPOSITOR (combining raw sprites into a texture lump)
-      - ARCHIVE MANAGER
-      - ENTITY PLACER
+2. MDP EDITOR (THE ASSET SUITE)
 
-3. MOON ENG
+  - MODULE: PALedit
+      - Import 8-bit BMP palettes
+      - Canvas viewer (Display the 256 color grid)
+      - Export palette chunk for MDP compiler
+  - MODULE: TEXedit
+      - Import raw sprites / textures
+      - Canvas viewer (Display asset with applied PALedit palette)
+      - Texture Compositor (Combine raw patches into full textures)
+  - MODULE: MAPedit
+      - Top-down 2D grid canvas
+      - Entity / Sector placer
+  - MODULE: AUDIOedit
+      - Import WAV/VOC/MIDI files
+  - CORE: MDPedit COMPILER
+      - I/O (Filetree Browser widget reading MDP headers/directories)
+      - Archive Compiler (Pack all module outputs into a single .mdp binary)
+
+3. MOON ENG (CORE ENGINE)
 
   - CORE SYSTEMS
+      - DYNAMIC PALETTE LOADER (Reads color block from loaded .mdp)
+      - ASSET MANAGER (Load lumps requested by game logic)
   - RENDERING PIPELINE (R_ )
   - PLAY ENVIRON (P_ )
   - AUDIO SYS (S_ )
 
-4. ZEUS DEV
+4. ZEUS DEV (THE GAME)
 
-  - skybox
-      - SPRITE RENDERING
+  - ASSET CREATION
+  - SKYBOX RENDERING
       - JUPITER IN SKYBOX 2
       - EPISODE 3 SKYBOX
       - EPISODE 4 SKYBOX
-  - ASSET CREATION
   - GAMEPLAY LOGIC

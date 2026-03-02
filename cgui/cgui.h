@@ -8,6 +8,8 @@
 #include <string.h>
 #include <sys/nearptr.h>
 
+#include "cgui-widgets.h"
+
 #define SCR_W 320
 #define SCR_H 200
 #define MAX_WINDOWS 10
@@ -15,12 +17,17 @@
 /* STRUCTS */
 
 typedef struct {
+  
     int id;
     int x, y;
     int w, h;
     char title[32];
     int visible;
     int dragging;
+
+    Widget widgets[WIDGETS_MAX];
+    int widgetCount;
+  
 } Window;
 
 /* GLOBALS */
@@ -36,6 +43,7 @@ extern Window windows[MAX_WINDOWS];
 
 /* CORE API */
 
+void initCGUIPalette();
 void initWindowManager();
 int createWindow(int x, int y, int w, int h, char *title);
 void drawWindow(Window *w);

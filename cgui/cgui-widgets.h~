@@ -1,0 +1,8 @@
+#ifndef CGUI_WIDGETS_H
+#define CGUI_WIDGETS_H
+
+#define WIDGETS_MAX 32
+
+
+
+#endif
