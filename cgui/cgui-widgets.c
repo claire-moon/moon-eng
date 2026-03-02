@@ -52,19 +52,18 @@ void drawWidget(Widget *w, int winX, int winY) {
 
   else if (w->type == WIDGET_BUTTON) {
 
-    /* BUTTON BACKGROUND */
+    /* BTN BG */
 
     drawRect(absX, absY, w->w, w->h, w->isHovered ? 248 : 154);
-    
-    /* BUTTON BORDER */
 
-    drawRect(absX, absY + w->w, w->h, 1, 0);
-    drawRect(absX + w->w, absY, 1, w->h, 0);
+    /* 3D BORDERS */
+
     
+
+    /* HIGHLIGHTS */
+
     /* DRAW LABEL */
 
-    drawString(absX + 4, absY + 4, w->text, 0);
-    
   }
-  
+
 }
