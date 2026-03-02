@@ -58,12 +58,18 @@ void drawWidget(Widget *w, int winX, int winY) {
 
     /* 3D BORDERS */
 
-    
+    drawRect(absX, absY + w->h - 1, w->w, 1, 0);
+    drawRect(absX + w->w - 1, absY, 1, w->h, 0);
 
     /* HIGHLIGHTS */
 
+    drawRect(absX, absY, w->w, 1, 248);
+    drawRect(absX, absY, 1, w->h, 248);
+    
     /* DRAW LABEL */
 
+    drawString(absX + 6, absY + 4, w->text, 0);
+    
   }
 
 }
