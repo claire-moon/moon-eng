@@ -237,8 +237,16 @@ void drawWindow(Window *w) {
 
     drawRect(w->x + w->w - 12, w->y + 3, 8, 8, 4);
 
-    /* TITLE TEXT */
+    /* DRAW ALL AVAILABLE WIDGETS */
 
+    for (int i = 0; i < w->widgetCount; i++) {
+
+      drawWidget(&w->widgets[i], w->x, w->y);
+      
+    }
+    
+    /* TITLE TEXT */
+    
     drawString(w->x + 4, w->y + 4, w->title, 248);
 }
 

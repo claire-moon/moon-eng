@@ -208,7 +208,7 @@ int main() {
   int win1, win2;
   union REGS r;
 
-  if (__djgpp_nearptr_enable())
+  if (__djgpp_nearptr_enable() == 0)
     return 1;
 
   VIR_SCR = (unsigned char *)malloc(64000);
@@ -247,7 +247,7 @@ int main() {
 
   r.h.ah = 0x00;
   r.h.al = 0x03;
-  int86(0x0, &r, &r);
+  int86(0x10, &r, &r);
 
   return 0;
   
