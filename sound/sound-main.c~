@@ -1,0 +1,157 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <conio.h>
+
+#include "sound-dsp.h"
+#include "sound-mix.h"
+#include "sound-notes.h"
+
+int main() {
+
+  char input;
+
+  int port        = 0x220;
+  int irq         = 5;
+  int dma         = 1;
+  int isPlaying   = 0;
+  int currentWave = WAVE_SAW;
+  int i;
+
+  char *blaster = getenv("BLASTER");
+
+  int ports[] = {0x220, 0x240, 0x260, 0x280};
+  int detectedPort = 0;
+  int p;
+  
+  clrscr();
+
+  cprintf("\r\nMOON ENG\r\n");
+  cprintf("SB16 DSP\r\n");
+  cprintf("\r\n");
+
+  /*  AUTO-DETECT SB SETTINGS  */
+  
+  if (blaster) {
+
+    char *p = blaster;
+
+    while (*p) {
+
+      if (*p == 'A' || *p == 'a') port = strtol(p + 1, NULL, 16);
+      if (*p == 'I' || *p == 'i') irq = strtol(p + 1, NULL, 10);
+      if (*p == 'D' || *p == 'd') dma = strtol(p + 1, NULL, 10);
+
+      p++;
+      
+    }
+    
+  }
+  
+  /* we're gonna try probing all of the ports
+     polling them to see which one has the
+     sound card parked */
+
+  cprintf("POLLING HARDWARE...\r\n");
+
+  for (p = 0; p < 4; p++) {
+
+    cprintf(" CHECKING PORT %X...\r");
+
+    if (dspInit(ports[p], irq, dma)) {
+
+      detectedPort = ports[p];
+
+      break; /* found it // break out of the loop */
+      
+    }
+    
+  }
+
+  if (!detectedPort) {
+
+    cprintf("[ERROR] SOUND BLASTER NOT FOUND ON ANY PORT...!\r\n");
+    cprintf("CHECK WINDOWS 98 DEVICE MANAGER...!");
+    return 1;
+  }
+  
+  mixInit();
+
+  cprintf("[STATUS] SB16 DMA AUTO-INIT ACTIVE (22050Hz)\r\n");
+  cprintf("[SYNTH]  8-VOICE POLYPHONY READY\r\n\r\n");
+  cprintf("[SPACE]  TOGGLE C-MAJ 9 CHORD\r\n");
+  cprintf("[1-5]    CHANGE WAVEFORM\r\n");
+  cprintf("[ESC]    EXIT to DOS\r\n\r\n");
+
+  while (1) {
+
+    mixUpdate();
+
+    if (kbhit()) {
+
+      input = getch();
+      if (input == 27) break;
+
+      if (input >= '1' && input <= '5') {
+
+	currentWave = input - '1';
+	cprintf(" WAVE SELECTED: %d \r", currentWave);
+
+	if (isPlaying) {
+
+	  mixPlayTone(0, currentWave, NOTE_C3, 0.8);
+	  mixPlayTone(1, currentWave, NOTE_G3, 0.6);
+	  mixPlayTone(2, currentWave, NOTE_C4, 0.5);
+	  mixPlayTone(3, currentWave, NOTE_E4, 0.5);
+	  mixPlayTone(4, currentWave, NOTE_G4, 0.4);
+	  mixPlayTone(5, currentWave, NOTE_B4, 0.4);
+	  mixPlayTone(6, currentWave, NOTE_D5, 0.3);
+	  mixPlayTone(7, WAVE_NOISE,  0.0, 0.1);
+	  
+	}
+
+      }
+
+      if (input == ' ') {
+
+	isPlaying = !isPlaying;
+
+	if (isPlaying) {
+
+	  mixPlayTone(0, currentWave, NOTE_C3, 0.8);
+	  mixPlayTone(1, currentWave, NOTE_G3, 0.6);
+	  mixPlayTone(2, currentWave, NOTE_C4, 0.5);
+	  mixPlayTone(3, currentWave, NOTE_E4, 0.5);
+	  mixPlayTone(4, currentWave, NOTE_G4, 0.4);
+	  mixPlayTone(5, currentWave, NOTE_B4, 0.4);
+	  mixPlayTone(6, currentWave, NOTE_D5, 0.3);
+	  mixPlayTone(7, WAVE_NOISE,  0.0, 0.1);
+	  cprintf(" CHORD: ON...! \r");
+	
+	} else {
+	
+	  for (i = 0; i < MIX_CHANNELS; i++) {
+
+	    mixPlayTone(i, currentWave, 0.0, 0.0);
+	    
+	  }
+
+	  cprintf(" CHORD: OFF...! \r"); 
+	  
+	}		  
+	  
+      }
+	
+    }
+      
+  }
+
+  cprintf("\r\n\r\n SHUTTING DOWN DMA AND HARDWARE...\r\n");
+  dspCleanup();
+
+  textbackground(0);
+  textcolor(7);
+  clrscr();
+
+  return 0;
+  
+}

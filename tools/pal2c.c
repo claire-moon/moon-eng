@@ -37,8 +37,6 @@ int main(int argc, char **argv) {
   fread(bmpPal, 1, 1024, f);
   fclose(f);
 
-  /* GENERATE C ARRAY FROM BMP) */
-
   printf("/* PALETTE ARRAY (generated with Pal2c) */\n");
   printf("const unsigned char cgui_palette[768] = {\n      ");
 

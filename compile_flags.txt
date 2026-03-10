@@ -4,4 +4,4 @@
 -I/usr/local/djgpp/i586-pc-msdosdjgpp/include
 --target=i386-pc-dos-coff
 -D__DJGPP__
--D__GO32__
+-D__G03Z__

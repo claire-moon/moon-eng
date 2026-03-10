@@ -1,1 +1,0 @@
-(progn (setenv "HOME" "/home/instar") (setenv "EMACSDIR" "/home/instar/.config/emacs/") (setenv "DOOMDIR" "/home/instar/.config/doom/") (setenv "DOOMPROFILE" nil) (setq early-init-file "/home/instar/.config/emacs/early-init.el") (load early-init-file nil (not nil) 'nosuffix))

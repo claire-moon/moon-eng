@@ -4,9 +4,9 @@
      M O O N  E N G
 
 
-        elastic
-        softworks
-             2026
+        C.  G.
+         M O O N
+           2 0 2 6
 
  */
 
@@ -17,8 +17,13 @@
  */
 
 #include <stdio.h>
+#include <dir.h>
+#include <time.h>
 
 #include "../cgui/cgui.h"
+
+#define TICKS_PER_SECOND 60
+#define TICK_INTERVAL (UCLOCKS_PER_SEC / TICKS_PER_SECOND)
 
 /* STRUCTS */
 
@@ -142,18 +147,42 @@ void drawMenuBar() {
 
 void renderGUI() {
 
-    int i;
-
-    waitVsync();
-    waitVsync();
+    int i;    
 
     memset(VIR_SCR, 80, 64000);
 
     /* DRAW WINDOWS ! */
 
-    for (i = 0; i < windowCount; i++) {
+    for (i = windowCount - 1; i >= 0; i--) {
 
-        drawWindow(&windows[i]);
+      drawWindow(&windows[zOrder[i]]);
+      
+    }
+
+    /* DEBUG OVERLAY */
+
+    if (cguiDebugMode) {
+
+      char debugStr[64];
+
+      drawRect(0, 12, 140, 70, 0);
+      drawRect(0, 12, 140, 1, 248);
+      drawRect(139, 12, 1, 70, 248);
+      drawRect(0, 81, 140, 1, 0);
+
+      sprintf(debugStr, "SYS WINDOWS: %d", windowCount);
+
+      drawString(4, 16, debugStr, 14);
+      drawString(4, 26, "Z:  ID:  TITLE:", 154);
+
+      for (i = 0; i < windowCount; i++) {
+
+	sprintf(debugStr, "%d  %d   %s", i, zOrder[i], windows[zOrder[i]].title);
+
+	drawString(4, 38 + (i * 10), debugStr, 15);
+	
+      }
+      
     }
 
     drawMenuBar();
@@ -205,7 +234,7 @@ void drawDropdown() {
 
 int main() {
 
-  int win1, win2;
+  int win1, win2, win3, done;
   union REGS r;
 
   if (__djgpp_nearptr_enable() == 0)
@@ -219,29 +248,87 @@ int main() {
   initCGUIPalette();
   initWindowManager();
 
-  /* UI GEN */
+  /* WINDOWS / WIDGETS */
+
+  /* put all your windows and widgets here, this is the
+     top layer */
 
   win1 = createWindow(20, 20, 160, 120, "FILE BROWSER");
   addWidget(win1, WIDGET_LABEL, 10, 20, 0, 0, "SELECT ARCHIVE:");
   addWidget(win1, WIDGET_BUTTON, 10, 40, 60, 15, "OPEN MDP");
+  addWidget(win1, WIDGET_CHECKBOX, 10, 60, 10, 10, "READ ONLY");
+  addWidget(win1, WIDGET_TOGGLE, 10, 80, 80, 15, "GRID SNAP");
+  addWidget(win1, WIDGET_INPUT, 10, 100, 100, 15, "");
 
-  win2 = createWindow(100, 80, 120, 80, "PALedit");
+  addWidget(win1, WIDGET_LISTBOX, 100, 40, 50, 54, "");
+
+  /* TODO: move this shit elsewhere */
+
+  win3 = createWindow(130, 30, 150, 140, "STRESS TEST");
+
+  addWidget(win3, WIDGET_LISTBOX, 10, 20, 130, 104, "");
+
+  
+  /* DIR SCAN (MDP FILES) */
+
+  {
+
+    struct ffblk ffblk;
+
+    done;
+
+    Widget *listWid = &windows[win3].widgets[0];
+
+    listWid->listCount = 0;
+    listWid->listScroll = 0;
+    listWid->listSelected = -1;
+
+    done = findfirst("*.*", &ffblk, 0);
+
+    while (!done && listWid->listCount < 32) {
+
+      strncpy(listWid->listItems[listWid->listCount], ffblk.ff_name, 63);
+      listWid->listItems[listWid->listCount][63] = '\0';
+      listWid->listCount++;
+      done = findnext(&ffblk);
+      
+    }
+    
+  }
+  
+  win2 = createWindow(100, 80, 120, 80, "PALEDIT");
   addWidget(win2, WIDGET_BUTTON, 10, 25, 100, 15, "IMPORT PAL");
   addWidget(win2, WIDGET_BUTTON, 10, 45, 100, 15, "EXPORT CHUNK");
-
+  
   /* ENGINE LOOP */
+
+  
+  uclock_t nextTick = uclock();
+  int catchUpLoops;
 
   while (appRunning) {
 
-    updateMouse();
-    updateKeyboard();
+    catchUpLoops = 0;
 
-    if (mouseB & 2)
-      appRunning = 0;
+    while (uclock() >= nextTick && catchUpLoops < 10) {
 
-    updateGUI();
+      updateMouse();
+      updateKeyboard();
+
+      if (mouseB & 2)
+	appRunning = 0;
+
+      updateGUI();
+
+      nextTick += TICK_INTERVAL;
+      catchUpLoops++;
+      
+    }
+
     renderGUI();
+    
   }
+  
 
   /* CLEANUP */
 

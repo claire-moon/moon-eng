@@ -1,0 +1,29 @@
+#ifndef SOUND_MIX_H
+#define SOUND_MIX_H
+
+#define MIX_CHANNELS 8
+
+#define WAVE_SINE      0
+#define WAVE_SQUARE    1
+#define WAVE_SAW       2
+#define WAVE_TRIANGLE  3
+#define WAVE_NOISE     4
+
+typedef struct {
+
+  int waveType;
+  float frequency;
+  float volume;
+  int active;
+  unsigned int phaseAcc;
+  unsigned int phaseStep;
+  
+} Voice;
+
+extern Voice channels[MIX_CHANNELS];
+
+void mixInit();
+void mixUpdate();
+void mixPlayTone(int channel, int waveType, float freq, float vol);
+
+#endif

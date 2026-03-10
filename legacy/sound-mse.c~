@@ -1,0 +1,45 @@
+#include "sound.h"
+
+#include <math.h>
+
+#ifndef PI
+#define PI 3.1415926535
+#endif
+
+Oscillator synth = {0.0, 0.0, 0.0, 0};
+
+unsigned char masterBuffer[MSE_BUFFER_SIZE];
+
+void msePlayTone(float freq, float vol) {
+
+  synth.frequency = freq;
+  synth.volume    = vol;
+  synth.active    = (vol > 0.0) ? 1 : 0;  
+  
+}
+
+void mseUpdate() {
+
+  int i;
+  
+  float sample;
+
+  for (i = 0; i < MSE_BUFFER_SIZE; i++) {
+
+    if (!synth.active) {
+
+      masterBuffer[i] = 127;
+      continue;
+      
+    }
+
+    sample = sin(synth.phase) * synth.volume;
+    masterBuffer[i] = (unsigned char)((sample + 1.0) * 127.5);
+
+    synth.phase += (2.0 * PI * synth.frequency) / MSE_SAMPLE_RATE;
+
+    if (synth.phase > 2.0 * PI) synth.phase -= 2.0 * PI;
+    
+  }
+  
+}

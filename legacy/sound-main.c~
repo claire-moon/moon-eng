@@ -1,0 +1,14 @@
+#include <stdio.h>
+#include <conio.h>
+
+#include "sound.h"
+
+int main() {
+
+  char input;
+
+  int isPlaying = 1;
+
+  
+  
+}

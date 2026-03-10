@@ -1,18 +1,95 @@
-1 . MDP EDITOR
+1. CGUI
 
-  - GUI 
-  - PALETTE IMPORT
-  - SPRITE IMPORT
-  - MAP EDITOR
-  - AUDIO IMPORT
-  - MIDI IMPORT
+  x CORE SYSTEMS
+  x HARDWARE I/O
+      x UI PALETTE
+  - ARCHITECTURE & EVENTS
+      - DATA-DRIVEN MENUS 
+      - WIDGET SYSTEM
+      - FOCUS SYSTEM
+  - WIDGET LIBRARY
+      X BUTTONS
+      X TEXT INPUT FIELDS
+      X LISTBOXES
+      - CANVASES 
+      - SCROLLBARS
+      - CLIPPING REGIONS
+      - RADIO BUTTONS
+      - SLIDERS / TRACKBARS
+      - PROGRESS BARS
+  - DIALOGUES
+      - MODAL POPUPS
+      - UNIVERSAL FILE PICKER 
+  - TOOLTIPS 
 
-2 . MOON ENG
+2. MDP EDITOR 
 
-a.  skybox
+  - MODULE: PALedit
+      - Import 8-bit BMP palettes
+      - Canvas viewer (Display the 256 color grid)
+      - Export palette chunk for MDP compiler
+  - MODULE: TEXedit
+      - Import raw sprites / textures
+      - Canvas viewer (Display asset with applied PALedit palette)
+      - Texture Compositor (Combine raw patches into full textures)
+  - MODULE: MAPedit
+      - Top-down 2D grid canvas
+      - Entity / Sector placer
+  - MODULE: AUDIOedit
+      - Import WAV/VOC/MIDI files
+  - CORE: MDPedit COMPILER
+      - I/O (Filetree Browser widget reading MDP headers/directories)
+      - Archive Compiler (Pack all module outputs into a single .mdp binary)
 
-  - SPRITE RENDERING
-  - JUPITER IN SKYBOX 2
-  - EPISODE 3 SKYBOX
-  - EPISODE 4 SKYBOX
-  
+3. TMUSE
+
+   [SPRINT 1]
+
+   X HARDWARE I/O
+   X SAFE DMA ALLOC
+   X SOFTWARE MIXER
+   X WAVEFORM GENERATORS
+   - ASDR ENVELOPES
+   - LFO SYSTEM
+
+   [SPRINT 2]
+
+   - RIFF PARSER
+   - PCM MEM MANAGER
+   - PITCH-SHIFT PLAYBACK
+   - LOOP POINTS
+
+   [SPRINT 3 (MUSEEDIT)
+
+   - CGUI INTEGRATION
+   - PATTERN MATRIX
+   - INPUT HANDLING
+   - INSTRUMENT BANK
+   - SEQUENCER CLOCK
+   - SONG MODE
+   - BINARY EXPORTER
+
+   [SPRINT 4 (SSGE)]
+
+   - PHONEME LIB
+   - TEXT-TO-PHONEME
+   - PROSODY & INOTATION MATH
+   - MIXER INTEGRATION
+
+4. MOON ENG
+
+  - CORE SYSTEMS
+      - DYNAMIC PALETTE LOADER (Reads color block from loaded .mdp)
+      - ASSET MANAGER (Load lumps requested by game logic)
+  - RENDERING PIPELINE (R_ )
+  - PLAY ENVIRON (P_ )
+  - AUDIO SYS (S_ )
+
+4. ZEUS DEV
+
+  - ASSET CREATION
+  - SKYBOX RENDERING
+      - JUPITER IN SKYBOX 2
+      - EPISODE 3 SKYBOX
+      - EPISODE 4 SKYBOX
+  - GAMEPLAY LOGIC

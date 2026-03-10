@@ -1,0 +1,35 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: moon - Win32 Debug--------------------
+</h3>
+
+[2J** [1 / 2] COMPILING ENGINE... **
+del *.o
+del zeus.exe
+del mdped.exe
+C:\djgpp\bin\gcc.exe -c main.c -o main.o
+C:\djgpp\bin\gcc.exe -c map.c -o map.o
+C:\djgpp\bin\gcc.exe -c input.c -o input.o
+C:\djgpp\bin\gcc.exe -c render.c -o render.o
+C:\djgpp\bin\gcc.exe -c console.c -o console.o
+C:\djgpp\bin\gcc.exe -c player.c -o player.o
+C:\djgpp\bin\gcc.exe -c physics.c -o physics.o
+C:\djgpp\bin\gcc.exe -c hud.c -o hud.o
+C:\djgpp\bin\gcc.exe -c skybox.c -o skybox.o
+C:\djgpp\bin\gcc.exe -c sprite.c -o sprite.o
+C:\djgpp\bin\gcc.exe -o zeus.exe main.o map.o input.o render.o console.o player.o physics.o hud.o skybox.o sprite.o -lm
+C:\djgpp\bin\gcc.exe  -o mdped.exe cgui/cgui-main.c cgui/cgui-widgets.c mdped/mdped.c
+** IT COMPILED...! **
+** [2 / 2] BUILD SUCCEEDED...! **
+** HAVE A NICE DAY...! **
+
+
+
+<h3>Results</h3>
+moon.bat - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>

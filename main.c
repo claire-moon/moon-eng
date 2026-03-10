@@ -3,6 +3,9 @@
 
 #include "defs.h"
 
+#define TICKS_PER_SECOND 35
+#define TICK_INTERVAL (UCLOCKS_PER_SEC / TICKS_PER_SECOND)
+
 int showFPS = 0;
 int showPos = 0;
 int showTics = 0;
@@ -25,8 +28,9 @@ int main(int argc, char *argv[]) {
 
   /* TIME VARS */
 
-  uclock_t lastTime, startTime, currentTime;
+  uclock_t lastTime, startTime, currentTime, nextTick;
   int frames = 0;
+  int catchUpLoops = 0;
 
   initMapSystem();
   loadMap(1);
@@ -35,6 +39,10 @@ int main(int argc, char *argv[]) {
   initVideo();
   initKeyboard();
 
+  startTime = uclock();
+  lastTime = startTime;
+  nextTick = startTime;
+  
   while(1) {
 
 	/* TIME/FPS/TICS CALC */
@@ -52,17 +60,24 @@ int main(int argc, char *argv[]) {
 	frames++;
 	frameCount++;
 
-	ticCount = ((currentTime - startTime) * 35) /
-	  UCLOCKS_PER_SEC;
+	catchUpLoops = 0;
+
+	while (uclock() >= nextTick && catchUpLoops < 10) {
+
+	  processInput(&player);
+	  updatePlayer(&player);
+
+	  ticCount++;
+	  nextTick += TICK_INTERVAL;
+	  catchUpLoops++;
+	  
+	}
 
 	/* ENG PIPELINE */
-
-    processInput(&player);
-    updatePlayer(&player);
+    
     renderScene(&player);
     
   }
 
-  return 0;
-  
+  return 0;  
 }

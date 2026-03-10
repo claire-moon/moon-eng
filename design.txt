@@ -22,9 +22,50 @@
 
 - ZEUS PROGRESSION:
 
-	  + 4 map episodes (tied to planets/stations) with a bonus space level in-between
-	  + one secret level per episode
+//  [MACH 1 - DEPRECATED]
+//
+//	  + 4 map episodes (tied to planets/stations) with a bonus space level in-between
+//	  + one secret level per episode
+//
+//	  + E1M1 -> E1M2 -> E1M3 -> (secret E1S1) -> E1M4 -> E1B1 -> next ep
+//
+//	  + E1 = Space Station > E2 Ganymede > E3 Jupiter > E4 The Veil
 
-	  + E1M1 -> E1M2 -> E1M3 -> (secret E1S1) -> E1M4 -> E1B1 -> next ep
+  [MACH 2 - ACTIVE]
 
-	  + E1 = Space Station > E2 Ganymede > E3 Jupiter > E4 The Veil
+  REFERENCE TABLE
+
+  	 STAR FOX         [PROGRESSION, MULTIPLE ROUTES, SECRET ROUTES]
+	      	          [RAIL SHOOTER INTERMISSIONS] [MAP SCREEN]
+			  
+	 FTL	          [PROGRESSION, ALTERED EP/LVL STATES, BEING CHASED]
+	                  [MAP SCREEN]
+			  
+	 BOI              [PROGRESSION, ALTERED EP/LVL STATES, ITEM VAR]
+	 
+	 LITHIUM          [RPG SYSTEMS, UI SYSTEMS, INV SYSTEMS]
+	 
+	 SPACE HARRIER    [RAIL SHOOTER INTERMISSIONS]
+	 
+	 DESCENT          [EXIT STATES*] [EXIT SEQUENCES]
+	 
+	 DOOM             [INTER EPISODE TEXT/STORY] [MAP SCREEN]
+
+	 DARK SOULS	  [DASH] [I-STATES] [DEATH CONSEQUENCES**]
+
+	 *  the gameplay loop of find reactor, destroy it, find exit
+	    (may have already found exit before found reactor)
+
+	 ** could we have a constant gameplay loop? where if you die,
+	    similar to in PREY (2006) you have to play a mini-game to
+	    respawn. want to give the constant feeling of a building
+	    momentum, tension, and apprehension. give the player the
+	    sense that they are an unstoppable force despite great
+	    odds, and that it feels earned.
+
+  PROPOSED SYSTEMS
+
+  	   + VOXEL RENDERING FOR SPRITE-TYPE OBJECTS
+	   + POLYGONAL RENDERING (STARFOX, STARWARS, ETC) FOR 3D OBJECTS
+	   + 
+		

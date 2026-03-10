@@ -1,24 +1,28 @@
-1. CGUI (GUI FRAMEWORK)
+1. CGUI
 
-  x CORE SYSTEMS (VGA init, basic mouse/keyboard state)
-  - HARDWARE I/O
-      - UI PALETTE (Convert Win95 palette into a hardcoded static C array)
+  x CORE SYSTEMS
+  x HARDWARE I/O
+      x UI PALETTE
   - ARCHITECTURE & EVENTS
-      - DATA-DRIVEN MENUS (Array-based dropdown generation)
-      - WIDGET SYSTEM (Generic UI element struct parenting to Windows)
-      - FOCUS SYSTEM (Tracking active window & active widget for I/O routing)
+      - DATA-DRIVEN MENUS 
+      - WIDGET SYSTEM
+      - FOCUS SYSTEM
   - WIDGET LIBRARY
-      - BUTTONS (Standard, Toggle, Checkboxes)
-      - TEXT INPUT FIELDS (Active focus, caret blinking)
-      - LISTBOXES (Scrollable data-driven string arrays)
-      - CANVASES (Render external image buffers/pixels inside a window)
-      - SCROLLBARS (Vertical/horizontal, reporting 0.0-1.0 float values)
+      X BUTTONS
+      X TEXT INPUT FIELDS
+      X LISTBOXES
+      - CANVASES 
+      - SCROLLBARS
+      - CLIPPING REGIONS
+      - RADIO BUTTONS
+      - SLIDERS / TRACKBARS
+      - PROGRESS BARS
   - DIALOGUES
-      - MODAL POPUPS (OK/Cancel, Yes/No blocking messages)
-      - UNIVERSAL FILE PICKER (Read standard DOS filesystem via dirent.h)
-  - TOOLTIPS (Hover-state delay rendering)
+      - MODAL POPUPS
+      - UNIVERSAL FILE PICKER 
+  - TOOLTIPS 
 
-2. MDP EDITOR (THE ASSET SUITE)
+2. MDP EDITOR 
 
   - MODULE: PALedit
       - Import 8-bit BMP palettes
@@ -37,7 +41,42 @@
       - I/O (Filetree Browser widget reading MDP headers/directories)
       - Archive Compiler (Pack all module outputs into a single .mdp binary)
 
-3. MOON ENG (CORE ENGINE)
+3. TMUSE
+
+   [SPRINT 1]
+
+   X HARDWARE I/O
+   X SAFE DMA ALLOC
+   X SOFTWARE MIXER
+   X WAVEFORM GENERATORS
+   X ASDR ENVELOPES
+   - LFO SYSTEM
+
+   [SPRINT 2]
+
+   - RIFF PARSER
+   - PCM MEM MANAGER
+   - PITCH-SHIFT PLAYBACK
+   - LOOP POINTS
+
+   [SPRINT 3 (MUSEEDIT)
+
+   - CGUI INTEGRATION
+   - PATTERN MATRIX
+   - INPUT HANDLING
+   - INSTRUMENT BANK
+   - SEQUENCER CLOCK
+   - SONG MODE
+   - BINARY EXPORTER
+
+   [SPRINT 4 (SSGE)]
+
+   - PHONEME LIB
+   - TEXT-TO-PHONEME
+   - PROSODY & INOTATION MATH
+   - MIXER INTEGRATION
+
+4. MOON ENG
 
   - CORE SYSTEMS
       - DYNAMIC PALETTE LOADER (Reads color block from loaded .mdp)
@@ -46,7 +85,7 @@
   - PLAY ENVIRON (P_ )
   - AUDIO SYS (S_ )
 
-4. ZEUS DEV (THE GAME)
+4. ZEUS DEV
 
   - ASSET CREATION
   - SKYBOX RENDERING

@@ -16,22 +16,38 @@ RM = rm -f
 
 endif
 
+# ------------------
+
+CFLAGS = -O2 -Wall
+LIBS   = -lm
+
 # --------------------
 
-OBJS = main.o map.o input.o render.o console.o player.o physics.o hud.o skybox.o sprite.o
+ZEUS_OUT  = zeus.exe
+ZEUS_OBJS = main.o map.o input.o render.o console.o player.o physics.o hud.o skybox.o sprite.o
 
-all: zeus.exe mdped.exe
+MDPED_OUT = mdped.exe
+MDPED_SRC = mdped/mdped.c cgui/cgui-main.c cgui/cgui-widgets.c
 
-zeus.exe: $(OBJS)
-	$(CC) -o zeus.exe $(OBJS) -lm
+TMUSE_OUT = tmuse.exe
+TMUSE_SRC = tmuse/tmuse-main.c tmuse/tmuse-disp.c tmuse/tmuse-dsp.c tmuse/tmuse-mix.c tmuse/tmuse-io.c tmuse/tmuse-music.c cgui/cgui-input.c input.c
 
-mdped.exe: mdped/mdped.c cgui/cgui-main.c cgui/cgui-widgets.c
-	$(CC) $(CFLAGS) -o mdped.exe cgui/cgui-main.c cgui/cgui-widgets.c mdped/mdped.c
+all: $(ZEUS_OUT) $(MDPED_OUT) $(TMUSE_OUT)
+
+$(ZEUS_OUT): $(ZEUS_OBJS)
+	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
+
+$(MDPED_OUT): $(MDPED_SRC)
+	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
+
+$(TMUSE_OUT): $(TMUSE_SRC)
+	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 
 %.o: %.c
-	$(CC) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
 	$(RM) *.o
-	$(RM) zeus.exe
-	$(RM) mdped.exe
+	$(RM) $(ZEUS_OUT)
+	$(RM) $(MDPED_OUT)
+	$(RM) $(TMUSE_OUT)
