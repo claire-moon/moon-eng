@@ -1,5 +1,5 @@
-#ifndef SOUND_DSP_H
-#define SOUND_DSP_H
+#ifndef TMUSE_DSP_H
+#define TMUSE_DSP_H
 
 #define DSP_SAMPLE_RATE      22050
 #define DSP_BUFFER_SIZE      4096

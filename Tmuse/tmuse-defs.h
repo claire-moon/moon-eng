@@ -1,5 +1,5 @@
-#ifndef SOUND_NOTES_H
-#define SOUND_NOTES_H
+#ifndef TMUSE_NOTES_H
+#define TMUSE_NOTES_H
 
 /* FREQUENCY TABLE */
 

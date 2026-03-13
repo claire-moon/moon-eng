@@ -1,5 +1,5 @@
-#ifndef SOUND_MIX_H
-#define SOUND_MIX_H
+#ifndef TMUSE_MIX_H
+#define TMUSE_MIX_H
 
 /*
  *  CHANNELS

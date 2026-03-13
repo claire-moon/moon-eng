@@ -1,10 +1,10 @@
 /*
 
-    M D P * E D I T
+      M D P e d i t
      M O O N  E N G
 
 
-        C.  G.
+        C  G
          M O O N
            2 0 2 6
 
@@ -87,8 +87,6 @@ void loadPalette(const char *filename) {
     }
 }
 
-/* SYSTEM VARS */
-
 void initMDPED() {
 
     /* MODE 13 INNIT */
@@ -126,23 +124,7 @@ void initMDPED() {
     r.x.dx = 100;
 
     int86(0x33, &r, &r);
-}
 
-void drawMenuBar() {
-
-    /* BACKGROUND BAR */
-
-    drawRect(0, 0, SCR_W, 11, 154);
-
-    /* SHADOW */
-
-    drawRect(0, 11, SCR_W, 1, 0);
-
-    /* MENU ITEMS */
-
-    drawString(8, 4, "FILE", 0);
-    drawString(40, 4, "EDIT", 0);
-    drawString(72, 4, "VIEW", 0);
 }
 
 void renderGUI() {
@@ -155,86 +137,27 @@ void renderGUI() {
 
     for (i = windowCount - 1; i >= 0; i--) {
 
-      drawWindow(&windows[zOrder[i]]);
-      
+        drawWindow(&windows[zOrder[i]]);
+
     }
 
-    /* DEBUG OVERLAY */
-
-    if (cguiDebugMode) {
-
-      char debugStr[64];
-
-      drawRect(0, 12, 140, 70, 0);
-      drawRect(0, 12, 140, 1, 248);
-      drawRect(139, 12, 1, 70, 248);
-      drawRect(0, 81, 140, 1, 0);
-
-      sprintf(debugStr, "SYS WINDOWS: %d", windowCount);
-
-      drawString(4, 16, debugStr, 14);
-      drawString(4, 26, "Z:  ID:  TITLE:", 154);
-
-      for (i = 0; i < windowCount; i++) {
-
-	sprintf(debugStr, "%d  %d   %s", i, zOrder[i], windows[zOrder[i]].title);
-
-	drawString(4, 38 + (i * 10), debugStr, 15);
-	
-      }
-      
-    }
-
+    drawDebugOverlay();
     drawMenuBar();
-
     drawDropdown();
-
-    /* DRAW STATUS BAR & TXT ! */
-
-    drawRect(0, 189, SCR_W, 11, 154);
-    drawRect(0, 189, SCR_W, 1, 248);
-    drawString(4, 192, "YOU TYPED:", 0);
-    drawString(32, 192, inputBuffer, 1);
-
-    /* DRAW MOUSE ! */
-
-    for (i = -3; i <= 3; i++) {
-
-        if (mouseX + i >= 0 && mouseX + i < SCR_W)
-            VIR_SCR[mouseY * SCR_W + (mouseX + i)] = 248;
-
-        if (mouseY + i >= 0 && mouseY + i < SCR_H)
-            VIR_SCR[(mouseY + i) * SCR_W + mouseX] = 248;
-    }
+    drawStatusBar();
+    drawCursor();
 
     /* FLIP BUFFER */
 
     memcpy((void *)(__djgpp_conventional_base + 0xA0000), VIR_SCR, 64000);
 }
 
-void drawDropdown() {
-
-    if (activeDropdown == 0)
-        return;
-
-    if (activeDropdown == 1) {
-
-        /* FILE MENU */
-
-        drawRect(4, 11, 90, 30, 154);
-        drawRect(4, 11, 90, 1, 248);
-        drawRect(4, 11, 1, 30, 248);
-        drawRect(4, 40, 90, 1, 0);
-        drawRect(93, 11, 1, 30, 0);
-
-        drawString(10, 16, "IMPORT PAL", 0);
-        drawString(10, 26, "EXIT", 0);
-    }
-}
-
 int main() {
 
   int win1, win2, win3, done;
+  int fileMenu, editMenu, viewMenu;
+  int debugMenu;
+
   union REGS r;
 
   if (__djgpp_nearptr_enable() == 0)
@@ -247,6 +170,30 @@ int main() {
   initMDPED();
   initCGUIPalette();
   initWindowManager();
+
+  cguiDebugMode = 0;
+
+  setStatusLeft(STATUS_STRING, "MDP EDIT v0.1", NULL, 0, NULL);
+  setStatusRight(STATUS_CLOCK, "", NULL, 0, NULL);
+
+  /* MENU BAR */
+
+  fileMenu  = addMenuCategory("FILE");
+  editMenu  = addMenuCategory("EDIT");
+  viewMenu  = addMenuCategory("VIEW");
+  debugMenu = addMenuCategory("DEBUG");
+
+  addMenuItem(fileMenu, "DUMMY", NULL);
+  addMenuItem(fileMenu, "EXIT", cguiExit);
+  addMenuItem(editMenu, "DUMMY", NULL);
+  addMenuItem(viewMenu, "DUMMY", NULL);
+
+  addMenuItemToggle(debugMenu, "Z-ORDER", cguiToggleDebug);
+
+  /* TODO: edit stuff goes here */
+
+  /* TODO: view stuff goes here */
+
 
   /* WINDOWS / WIDGETS */
 
@@ -274,8 +221,6 @@ int main() {
   {
 
     struct ffblk ffblk;
-
-    done;
 
     Widget *listWid = &windows[win3].widgets[0];
 

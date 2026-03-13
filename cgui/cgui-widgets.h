@@ -20,7 +20,8 @@ typedef enum {
   WIDGET_INPUT,
   WIDGET_LISTBOX,
   WIDGET_SLIDER,
-  WIDGET_CANVAS
+  WIDGET_CANVAS,
+  WIDGET_CONSOLE
 
 } WidgetType;
 
@@ -37,6 +38,9 @@ typedef struct Widget {
   int max;
 
   void *data;
+
+  char consoleLines[25][80];
+  int consoleCursorY;
 
   /* STATES */
   

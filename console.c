@@ -87,7 +87,7 @@ void runConsole(Player *p) {
 
     else if (strcmp(input, "play_stats") == 0) {
 
-      cprintf("CONFIG -> SPD:%.2f TURN:%.2f FRIC:%.2f FOG:%.2f\r\n", p->speed, p->turnSpeed, p->friction);
+      cprintf("CONFIG -> SPD:%.2f TURN:%.2f FRIC:%.2f\r\n", p->speed, p->turnSpeed, p->friction);
       
     }
 

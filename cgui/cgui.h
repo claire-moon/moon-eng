@@ -13,8 +13,47 @@
 #define SCR_W 320
 #define SCR_H 200
 #define MAX_WINDOWS 10
+#define MAX_MENU_CATEGORIES 8
+#define MAX_MENU_ITEMS 10
 
-/* STRUCTS */
+typedef enum {
+
+  STATUS_EMPTY,
+  STATUS_STRING,
+  STATUS_CLOCK,
+  STATUS_DATE,
+  STATUS_DYNAMIC
+
+} StatusType;
+
+typedef struct {
+
+    StatusType type;
+    char text[64];
+    char *dynPtr;
+    int isClickable;
+    void (*onClick)(void);
+    int x, w;
+
+} StatusItem;
+
+typedef struct {
+
+    char name[32];
+    void (*onClick)(void);
+    int isTogglable;
+    int isChecked;
+
+} MenuItem;
+
+typedef struct {
+
+    char name[32];
+    MenuItem items[MAX_MENU_ITEMS];
+    int itemCount, x, w;
+    int dropW;
+
+} MenuCategory;
 
 typedef struct {
   
@@ -44,6 +83,9 @@ extern char inputBuffer[32];
 extern Window windows[MAX_WINDOWS];
 extern int zOrder[MAX_WINDOWS];
 extern int cguiDebugMode;
+extern MenuCategory sysMenu[MAX_MENU_CATEGORIES];
+extern int sysMenuCount;
+extern int sysDebugZ;
 
 /* CORE API */
 
@@ -68,5 +110,14 @@ void updateKeyboard();
 void updateGUI();
 void renderGUI();
 void waitVsync();
+int addMenuCategory(char *name);
+void addMenuItem(int catIdx, char *name, void (*onClick)(void));
+void addMenuItemToggle(int catIdx, char *name, void (*onClick)(void));
+void drawDebugOverlay();
+void drawStatusBar(void);
+void setStatusLeft(StatusType type, char *text, char *dynPtr, int isClickable, void(*onClick)(void));
+void setStatusRight(StatusType type, char *text, char *dynPtr, int isClickable, void(*onClick)(void));
+void cguiToggleDebug();
+void cguiExit(void);
 
 #endif

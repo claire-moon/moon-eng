@@ -1,11 +1,15 @@
 #include <stdio.h>
 #include <conio.h>
+#include <stdlib.h>
+#include <dos.h>
+#include <sys/movedata.h>
 
 #include "tmuse-dsp.h"
 #include "tmuse-mix.h"
 #include "tmuse-defs.h"
 
 #include "../defs.h"
+#include "../cgui/cgui.h"
 
 /* KEYBOARD STATE PULL (see ../input.c) */
 
@@ -13,9 +17,6 @@ extern volatile char keys[128];
 char oldKeys[128] = {0};
 extern void initKeyboard();
 extern void cleanupKeyboard();
-
-void cleanupVideo() { }
-void runConsole(Player *p) { }
 
 /* INIT TMUSE API */
 
@@ -33,19 +34,40 @@ extern char chordName[64];
 extern int envA, envD, envS, envR;
 extern void mixSetEnv(int a, int d, int s, int r);
 
+void initVideo() {
+
+    union REGS r;
+    r.x.ax = 0x0013;
+    int86(0x10, &r, &r);
+    VIR_SCR = (unsigned char *)malloc(64000);
+
+}
+
+void cleanupVideo() {
+
+    union REGS r;
+    r.x.ax = 0x0003;
+    int86(0x10, &r, &r);
+    if (VIR_SCR) free(VIR_SCR);
+
+}
+
 int main() {
 
   extern int isPlaying;
   extern int currentWave;
-  
+
   int needsRedraw = 1;
+
+  int winIdx, i;
+  Widget *console;
 
   extern void cguiInputUpdate();
   extern int tmuseProcessControls();
 
   clrscr();
 
-  cprintf("\r\n    M U S E e d i t\r\n");
+  cprintf("\r\n    T M U S E e d i t\r\n");
   cprintf("                  v.0.1\r\n");
 
   if (!tmuseInit()) {
@@ -60,7 +82,15 @@ int main() {
 
   mBuildChord();
 
-  while (!keys[KEY_ESC]) {
+  initVideo();
+  initCGUIPalette();
+  initWindowManager();
+
+  winIdx = createWindow(10, 10, 300, 100, "TMUSE GUI");
+  addWidget(winIdx, WIDGET_CONSOLE, 5, 15, 290, 160, NULL);
+  console = &windows[winIdx].widgets[0];
+
+  while (appRunning && !keys[KEY_ESC]) {
 
     mixUpdate();
 

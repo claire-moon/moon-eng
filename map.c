@@ -54,7 +54,7 @@ void initMapSystem() {
 	LevelHeader lvlHead = {10, 10, 1};
 	
 	FILE *f         = fopen(mdpFilename, "wb");
-	MoonHeader head = {'M', 'O', 'O', 'N', 2, 0};
+	MoonHeader head = {{'M', 'O', 'O', 'N'}, 2, 0};
 	MoonEntry         dir[2];
 
 	int archHeadSize   = sizeof(MoonHeader);

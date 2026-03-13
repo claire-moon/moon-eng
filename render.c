@@ -17,20 +17,20 @@ int useSkybox = 1;
 
 void waitVsync() {
 
-  while (inportb(0X3DA) & 8);
-  while (!(inportb(0x3DA) & 8));
+    while (inportb(0X3DA) & 8);
+    while (!(inportb(0x3DA) & 8));
   
 }
 
 void loadMdpPalette() {
 
-  FILE *f;
-  MoonHeader head;
-  MoonEntry entry;
-  int i, found = 0;
-  unsigned char palette[768];
-  int c, s, r, g, b;
-  int base[8][3] = {
+    FILE *f;
+    MoonHeader head;
+    MoonEntry entry;
+    int i, found = 0;
+    unsigned char palette[768];
+    int c, s, r, g, b;
+    int base[8][3] = {
 
     {63, 63, 63},
     {63, 5, 5},
@@ -41,335 +41,335 @@ void loadMdpPalette() {
     {63, 5, 63},
     {62, 32, 5} 
     
-  };
+};
   
-  f = fopen(mdpFilename, "rb");
+    f = fopen(mdpFilename, "rb");
 
-  if (!f) return;
+    if (!f) return;
 
-  fread(&head, sizeof(MoonHeader), 1, f);
-  fseek(f, head.dirOffset, SEEK_SET);
+    fread(&head, sizeof(MoonHeader), 1, f);
+    fseek(f, head.dirOffset, SEEK_SET);
 
-  for (i = 0; i < head.numLumps; i++) {
+    for (i = 0; i < head.numLumps; i++) {
 
-    fread(&entry, sizeof(MoonEntry), 1, f);
+        fread(&entry, sizeof(MoonEntry), 1, f);
 
-    if (strcmp(entry.name, "PALETTE") == 0) {
+        if (strcmp(entry.name, "PALETTE") == 0) {
 
-      found = 1;
+            found = 1;
 
-      break;
+            break;
       
-    }
+        }
     
-  }
-
-  if (found) {
-
-    fseek(f, entry.offset, SEEK_SET);
-    fread(palette, 768, 1, f);
-
-    /* PASS TO VGA DAC */
-
-    outportb(0x3C8, 0);
-
-    for (i = 0; i < 768; i++) {
-
-      outportb(0x3C9, palette[i]);
     }
 
-  } else {
+    if (found) {
 
-      /* FALLBACK PAL GEN */
+        fseek(f, entry.offset, SEEK_SET);
+        fread(palette, 768, 1, f);
 
-      outportb(0x3C8, 0);
+        /* PASS TO VGA DAC */
 
-      for (c = 0; c < 8; c++) {
+        outportb(0x3C8, 0);
 
-        for (s = 0; s < 32; s++) {
+        for (i = 0; i < 768; i++) {
 
-          r = (base[c][0] * (31 - s)) / 31;
-          g = (base[c][1] * (31 - s)) / 31;
-          b = (base[c][2] * (31 - s)) / 31;
+            outportb(0x3C9, palette[i]);
+        }
 
-          outportb(0x3C9, r);
-          outportb(0x3C9, g);
-	  outportb(0x3C9, b);
-	  
-	}
-	
-      }
+    } else {
+
+        /* FALLBACK PAL GEN */
+
+        outportb(0x3C8, 0);
+
+        for (c = 0; c < 8; c++) {
+
+            for (s = 0; s < 32; s++) {
+
+                r = (base[c][0] * (31 - s)) / 31;
+                g = (base[c][1] * (31 - s)) / 31;
+                b = (base[c][2] * (31 - s)) / 31;
+
+                outportb(0x3C9, r);
+                outportb(0x3C9, g);
+                outportb(0x3C9, b);
+
+            }
+
+        }
       
     }
 
-  if (f) fclose(f);
+    if (f) fclose(f);
   
 }
 
 
 void initVideo() {
 
-  if (__djgpp_nearptr_enable() == 0) exit(1);
+    if (__djgpp_nearptr_enable() == 0) exit(1);
   
-  VGA     = (unsigned char *)(__djgpp_conventional_base + VGA_ADDR);
-  VIR_SCR = (unsigned char *)malloc(SCR_SIZE);
+    VGA     = (unsigned char *)(__djgpp_conventional_base + VGA_ADDR);
+    VIR_SCR = (unsigned char *)malloc(SCR_SIZE);
 
-  union REGS regs;
-  regs.h.ah = 0x00;
-  regs.h.al = 0x13;
-  int86(0x10, &regs, &regs);
+    union REGS regs;
+    regs.h.ah = 0x00;
+    regs.h.al = 0x13;
+    int86(0x10, &regs, &regs);
 
-  loadMdpPalette();
+    loadMdpPalette();
   
 }
 
 void cleanupVideo() {	
 
-  union REGS regs;
-  regs.h.ah = 0x00;
-  regs.h.al = 0x03;
-  int86(0x10, &regs, &regs);
-  free(VIR_SCR);
-  __djgpp_nearptr_disable();
+    union REGS regs;
+    regs.h.ah = 0x00;
+    regs.h.al = 0x03;
+    int86(0x10, &regs, &regs);
+    free(VIR_SCR);
+    __djgpp_nearptr_disable();
   
 }
 
 void renderScene(Player *p) {
 
-  int    r, i, lineH, lineO;
-  float  ra, rx, ry, dx, dy, dist, ca;
-  int    mapX, mapY, stepX, stepY, side;
-  float  rayX, rayY, sideDistX, sideDistY, deltaDistX, deltaDistY;
-  int    sectorLight, finalShade, shade;
-  int    baseH, wallBottom, drawStart, drawEnd, wallColor;
-  int    currentLowestTop, visibleEnd;
-  int    cameraShift;
+    int    r, i, lineH, lineO;
+    float  ra, dx, dy, dist;
+    int    mapX, mapY, stepX, stepY, side;
+    float  rayX, rayY, sideDistX, sideDistY, deltaDistX, deltaDistY;
+    int    sectorLight, finalShade, shade;
+    int    baseH, wallBottom, drawStart, drawEnd, wallColor;
+    int    currentLowestTop, visibleEnd;
+    int    cameraShift;
 
-  float	 fovRad, halfFovRad, angleStep, projDist;
-  float  idlePitch, idleYaw, yawAmp;
+    float	 fovRad, halfFovRad, angleStep, projDist;
+    float  idlePitch, idleYaw, yawAmp;
 
-  int	 horizonOffset, centerRow;
+    int	 horizonOffset, centerRow;
 
-  int    y, p_row, color;
-  float  rowDist;
+    int    y, p_row, color;
+    float  rowDist;
   
-  /* HEADBOB LOGIC */
+    /* HEADBOB LOGIC */
 
-  yawAmp    = 0.015;
+    yawAmp    = 0.015;
 
-  if (fabs(p->vx) > 0.1 || fabs(p->vy) > 0.1) {
+    if (fabs(p->vx) > 0.1 || fabs(p->vy) > 0.1) {
 
-	yawAmp = 0.030;
+        yawAmp = 0.030;
 
-  }
+    }
 
-  idleYaw	= sin(p->idleTimer) * p->bobAmp;
-  idlePitch	= sin(p->idleTimer * 2.0) * 2.0;
+    idleYaw	= sin(p->idleTimer) * p->bobAmp;
+    idlePitch	= sin(p->idleTimer * 2.0) * 2.0;
 
-  horizonOffset = (int)(p->pitch + idlePitch);
+    horizonOffset = (int)(p->pitch + idlePitch);
 
-  centerRow = (SCR_H / 2) + horizonOffset;
+    centerRow = (SCR_H / 2) + horizonOffset;
 
-  if (centerRow < 0) centerRow = 0;
-  if (centerRow > SCR_H) centerRow = SCR_H;
+    if (centerRow < 0) centerRow = 0;
+    if (centerRow > SCR_H) centerRow = SCR_H;
 
-  /* FOV LOGIC */
+    /* FOV LOGIC */
 
-  fovRad		= p->fov * (PI / 180.0);
-  halfFovRad	        = fovRad / 2.0;
-  angleStep		= fovRad / SCR_W;
-  projDist		= (SCR_W / 2.0) / tan(halfFovRad);
+    fovRad		= p->fov * (PI / 180.0);
+    halfFovRad	        = fovRad / 2.0;
+    angleStep		= fovRad / SCR_W;
+    projDist		= (SCR_W / 2.0) / tan(halfFovRad);
 
-  /* CEILING/FLOOR LOGIC */
+    /* CEILING/FLOOR LOGIC */
 
-  for (y = 0; y < SCR_H; y++) {
+    for (y = 0; y < SCR_H; y++) {
 
-    p_row = y - centerRow;
+        p_row = y - centerRow;
 
-  if (p_row < 0) {
+        if (p_row < 0) {
 
-	  if (useSkybox) {
+            if (useSkybox) {
 
-	    drawSkyboxRow(p, y, p_row, idleYaw, activeSkybox);
-	   
+                drawSkyboxRow(p, y, p_row, idleYaw, activeSkybox);
 
-	  } else {
 
-	    rowDist = ((TIL_SIZE / 2.0) - p->zOffset) * projDist / abs(p_row);
-	    shade   = (int)(rowDist * engineFog);
+            } else {
 
-	    if (shade < 0) shade = 0;
-	    if (shade > 31) shade = 31;
+                rowDist = ((TIL_SIZE / 2.0) - p->zOffset) * projDist / abs(p_row);
+                shade   = (int)(rowDist * engineFog);
 
-	    memset(VIR_SCR + (y * SCR_W), shade, SCR_W);
+                if (shade < 0) shade = 0;
+                if (shade > 31) shade = 31;
 
-	}
+                memset(VIR_SCR + (y * SCR_W), shade, SCR_W);
 
-  }
+            }
 
-  else if (p_row > 0) {
+        }
 
-	rowDist = ((TIL_SIZE / 2.0) - p->zOffset) * projDist / p_row;
-	shade   = (int)(rowDist * engineFog);
+        else if (p_row > 0) {
 
-	if (shade < 0) shade = 0;
-	if (shade > 31) shade = 31;
+            rowDist = ((TIL_SIZE / 2.0) - p->zOffset) * projDist / p_row;
+            shade   = (int)(rowDist * engineFog);
 
-	memset(VIR_SCR + (y * SCR_W), shade, SCR_W);
+            if (shade < 0) shade = 0;
+            if (shade > 31) shade = 31;
 
-  }
+            memset(VIR_SCR + (y * SCR_W), shade, SCR_W);
 
-  else {
+        }
 
-	memset(VIR_SCR + (y * SCR_W), 0, SCR_W);
+        else {
 
-  }
+            memset(VIR_SCR + (y * SCR_W), 0, SCR_W);
 
-  }
+        }
 
-  /* RAYCASTING LOGIC */
+    }
 
-  for (r = 0; r < SCR_W; r++) {
+    /* RAYCASTING LOGIC */
 
-    currentLowestTop = SCR_H;
+    for (r = 0; r < SCR_W; r++) {
 
-    ra   = (p->a + idleYaw) - halfFovRad + ((float)r * angleStep); 
-    dx   = cos(ra);
-    dy   = sin(ra);
+        currentLowestTop = SCR_H;
 
-    rayX = p->x / TIL_SIZE;
-    rayY = p->y / TIL_SIZE;
+        ra   = (p->a + idleYaw) - halfFovRad + ((float)r * angleStep);
+        dx   = cos(ra);
+        dy   = sin(ra);
+
+        rayX = p->x / TIL_SIZE;
+        rayY = p->y / TIL_SIZE;
     
-    mapX = (int)rayX;
-    mapY = (int)rayY;
+        mapX = (int)rayX;
+        mapY = (int)rayY;
 
-    deltaDistX = (dx == 0) ? 1e30 : fabs(1.0 / dx);
-    deltaDistY = (dy == 0) ? 1e30 : fabs(1.0 / dy);
+        deltaDistX = (dx == 0) ? 1e30 : fabs(1.0 / dx);
+        deltaDistY = (dy == 0) ? 1e30 : fabs(1.0 / dy);
 
-    if (dx < 0) {
+        if (dx < 0) {
 
-      stepX      = -1;
-      sideDistX  = (rayX - mapX) * deltaDistX;
+            stepX      = -1;
+            sideDistX  = (rayX - mapX) * deltaDistX;
       
-    } else {
+        } else {
 
-      stepX      = 1;
-      sideDistX  = (mapX + 1.0 - rayX) * deltaDistX;
+            stepX      = 1;
+            sideDistX  = (mapX + 1.0 - rayX) * deltaDistX;
       
-    }
+        }
 
-    if (dy < 0) {
+        if (dy < 0) {
 
-      stepY       = -1;
-      sideDistY   = (rayY - mapY) * deltaDistY;
+            stepY       = -1;
+            sideDistY   = (rayY - mapY) * deltaDistY;
       
-    } else {
+        } else {
 
-      stepY     = 1;
-      sideDistY = (mapY + 1.0 - rayY) * deltaDistY;
+            stepY     = 1;
+            sideDistY = (mapY + 1.0 - rayY) * deltaDistY;
       
-    }
+        }
    
-    while (1) {
+        while (1) {
 
-      if (sideDistX < sideDistY) {
+            if (sideDistX < sideDistY) {
 
-	sideDistX += deltaDistX;
-	mapX      += stepX;
-	side       = 0;
-	
-      } else {
+                sideDistX += deltaDistX;
+                mapX      += stepX;
+                side       = 0;
 
-	sideDistY += deltaDistY;
-	mapY      += stepY;
-	side       = 1;
-	
-      }
+            } else {
+
+                sideDistY += deltaDistY;
+                mapY      += stepY;
+                side       = 1;
+
+            }
       
-      if (mapX < 0 || mapX >= mapWidth || mapY < 0 || mapY >= mapHeight) {
+            if (mapX < 0 || mapX >= mapWidth || mapY < 0 || mapY >= mapHeight) {
 
-	break;
-	
-      }
+                break;
 
-      int mapTile = currentMap[(mapY * mapWidth) + mapX];
+            }
 
-      if (mapTile != 0) {
+            int mapTile = currentMap[(mapY * mapWidth) + mapX];
 
-	if (side == 0) dist = (mapX - rayX + (1 - stepX) / 2) / dx;
-	else           dist = (mapY - rayY + (1 - stepY) / 2) / dy;
+            if (mapTile != 0) {
 
-	dist *= TIL_SIZE;
+                if (side == 0) dist = (mapX - rayX + (1 - stepX) / 2.0f) / dx;
+                else           dist = (mapY - rayY + (1 - stepY) / 2.0f) / dy;
 
-	/* FISHEYE FIX */
-	
-	dist = dist * cos((p->a + idleYaw) - ra);
-	
-	if (dist < 1) dist = 1;
+                dist *= TIL_SIZE;
 
-	baseH = (TIL_SIZE * projDist) / dist;
+                /* FISHEYE FIX */
 
-	lineH = baseH * mapTile;
+                dist = dist * cos((p->a + idleYaw) - ra);
 
-	cameraShift = (int)((p->zOffset * projDist) / dist);
+                if (dist < 1) dist = 1;
 
-	wallBottom = (SCR_H / 2) + (baseH / 2) - cameraShift + horizonOffset;
+                baseH = (TIL_SIZE * projDist) / dist;
 
-	lineO = wallBottom - lineH;
+                lineH = baseH * mapTile;
 
-	drawStart = lineO;
-	drawEnd   = wallBottom;
+                cameraShift = (int)((p->zOffset * projDist) / dist);
 
-	if (drawStart < 0) drawStart = 0;
-	if (drawStart > SCR_H) drawStart = SCR_H;
+                wallBottom = (SCR_H / 2) + (baseH / 2) - cameraShift + horizonOffset;
 
-	if (drawEnd < 0) drawEnd = 0;
-	if (drawEnd > SCR_H) drawEnd = SCR_H; 
-	
-	wallColor = 0;
-	
-	if (mapTile == 1) wallColor = 224;
-	if (mapTile == 2) wallColor = 96;
-	if (mapTile == 3) wallColor = 32;
+                lineO = wallBottom - lineH;
 
-	if (drawStart < currentLowestTop) {
+                drawStart = lineO;
+                drawEnd   = wallBottom;
 
-	  visibleEnd = drawEnd;
-	  
-	  if (visibleEnd > currentLowestTop) visibleEnd = currentLowestTop;
-	
-	  for (i = drawStart; i < visibleEnd; i++) {
-	  
-	    shade = (int)(dist * engineFog);
-	    
-	    /* DITHERING ALGO */
-	    
-	    if (side == 1) shade -= 4;
-	    if ((r+i) & 1) shade -= 2;
+                if (drawStart < 0) drawStart = 0;
+                if (drawStart > SCR_H) drawStart = SCR_H;
 
-	    if (shade < 0) shade = 0;
-	    if (shade > 31) shade = 31;
+                if (drawEnd < 0) drawEnd = 0;
+                if (drawEnd > SCR_H) drawEnd = SCR_H;
 
-	  VIR_SCR[(i * SCR_W) + r] = wallColor + shade;
-	  
-		}
-	  
-		currentLowestTop = drawStart;
+                wallColor = 0;
 
-		if (currentLowestTop <= 0) break;
-	
-		}
+                if (mapTile == 1) wallColor = 224;
+                if (mapTile == 2) wallColor = 96;
+                if (mapTile == 3) wallColor = 32;
 
-      }
+                if (drawStart < currentLowestTop) {
+
+                    visibleEnd = drawEnd;
+
+                    if (visibleEnd > currentLowestTop) visibleEnd = currentLowestTop;
+
+                    for (i = drawStart; i < visibleEnd; i++) {
+
+                        shade = (int)(dist * engineFog);
+
+                        /* DITHERING ALGO */
+
+                        if (side == 1) shade -= 4;
+                        if ((r+i) & 1) shade -= 2;
+
+                        if (shade < 0) shade = 0;
+                        if (shade > 31) shade = 31;
+
+                        VIR_SCR[(i * SCR_W) + r] = wallColor + shade;
+
+                    }
+
+                    currentLowestTop = drawStart;
+
+                    if (currentLowestTop <= 0) break;
+
+                }
+
+            }
       
-    }
+        }
     
-  }
+    }
 
-  drawHUD(p);
+    drawHUD(p);
 
-  waitVsync();
+    waitVsync();
 
-  memcpy((void *)VGA, VIR_SCR, SCR_SIZE);
+    memcpy((void *)VGA, VIR_SCR, SCR_SIZE);
   
 }
