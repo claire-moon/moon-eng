@@ -35,9 +35,82 @@ int zOrder[MAX_WINDOWS];
 int cguiDebugMode = 1;
 MenuCategory sysMenu[MAX_MENU_CATEGORIES];
 int sysMenuCount = 0;
+int sysBgMode = 0;
+int sysBgColor = 80;
+unsigned char sysBgGradient[200];
 
 StatusItem statusLeft = { STATUS_EMPTY, "", NULL, 0, NULL, 0, 0 };
 StatusItem statusRight = { STATUS_EMPTY, "", NULL, 0, NULL, 0, 0 };
+
+void setBackgroundSolid(int color) {
+
+    sysBgMode = 0;
+    sysBgColor = color;
+
+}
+
+void setBackgroundGradient(int c1, int c2) {
+
+    int y, i;
+    int r1 = cgui_palette[c1 * 3], g1 = cgui_palette[c1 * 3 + 1],
+        b1 = cgui_palette[c1 * 3 + 2];
+    int r2 = cgui_palette[c2 * 3], g2 = cgui_palette[c2 * 3 + 1],
+        b2 = cgui_palette[c2 * 3 + 2];
+
+    sysBgMode = 1;
+
+    for (y = 0; y < 200; y++) {
+
+        float pct = (float)y / 199.0f;
+        int tr = r1 + (int)((r2 - r1) * pct);
+        int tg = g1 + (int)((g2 - g1) * pct);
+        int tb = b1 + (int)((b2 - b1) * pct);
+
+        int bestDist = 999999;
+        int bestIdx = 0;
+
+        for (i = 0; i < 256; i++) {
+
+            int pr = cgui_palette[i * 3];
+            int pg = cgui_palette[i * 3 + 1];
+            int pb = cgui_palette[i * 3 + 2];
+            int dist = (pr - tr) * (pr - tr) + (pg - tg) * (pg - tg) +
+                (pb - tb) * (pb - tb);
+
+            if (dist < bestDist) {
+
+                bestDist = dist;
+                bestIdx = 1;
+
+            }
+
+        }
+
+        sysBgGradient[y] = bestIdx;
+
+    }
+
+}
+
+void drawDesktop() {
+
+    if (sysBgMode == 0) {
+
+        memset(VIR_SCR, sysBgColor, 64000);
+
+    } else {
+
+        int y;
+
+        for (y = 0; y < 200; y++) {
+
+        memset(VIR_SCR + (y * 320), sysBgGradient[y], 320);
+
+        }
+
+    }
+
+}
 
 void initCGUIPalette() {
 
@@ -339,6 +412,7 @@ int createWindow(int x, int y, int w, int h, char *title) {
     windows[idx].visible = 1;
     windows[idx].inUse = 1;
     windows[idx].dragging = 0;
+    windows[idx].titleColor = 1;
     windows[idx].widgetCount = 0;
 
     for (i = windowCount; i > 0; i--) {
@@ -426,7 +500,7 @@ void drawWindow(Window *w) {
 
     /* TITLE BAR */
 
-    drawRect(w->x + 2, w->y + 2, w->w - 4, 10, 1);
+    drawRect(w->x + 2, w->y + 2, w->w - 4, 10, w->titleColor);
 
     /* CLOSE BUTTON */
 

@@ -88,10 +88,13 @@ int main() {
     initCGUIPalette();
     initWindowManager();
 
+    setBackgroundGradient(4, 0);
+
     setStatusLeft(STATUS_EMPTY, "", NULL, 0, NULL);
     setStatusRight(STATUS_DYNAMIC, "", tmuseModeStr, 0, NULL);
 
     winIdx = createWindow(10, 10, 300, 180, "TMUSE GUI");
+    windows[winIdx].titleColor = 4;
     addWidget(winIdx, WIDGET_CONSOLE, 5, 15, 290, 160, NULL);
     console = &windows[winIdx].widgets[0];
 

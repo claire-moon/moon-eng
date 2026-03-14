@@ -67,6 +67,7 @@ typedef struct {
 
     Widget widgets[WIDGETS_MAX];
     int widgetCount;
+    int titleColor;
   
 } Window;
 
@@ -86,6 +87,9 @@ extern int cguiDebugMode;
 extern MenuCategory sysMenu[MAX_MENU_CATEGORIES];
 extern int sysMenuCount;
 extern int sysDebugZ;
+extern int sysBgMode;
+extern int sysBgColor;
+extern unsigned char sysBgGradient[200];
 
 /* CORE API */
 
@@ -110,7 +114,7 @@ void updateKeyboard();
 void updateGUI();
 void renderGUI();
 void waitVsync();
-int addMenuCategory(char *name);
+int  addMenuCategory(char *name);
 void addMenuItem(int catIdx, char *name, void (*onClick)(void));
 void addMenuItemToggle(int catIdx, char *name, void (*onClick)(void));
 void drawDebugOverlay();
@@ -119,5 +123,8 @@ void setStatusLeft(StatusType type, char *text, char *dynPtr, int isClickable, v
 void setStatusRight(StatusType type, char *text, char *dynPtr, int isClickable, void(*onClick)(void));
 void cguiToggleDebug();
 void cguiExit(void);
+void setBackgroundColor(int color);
+void setBackgroundGradient(int c1, int c2);
+void drawDesktop(void);
 
 #endif

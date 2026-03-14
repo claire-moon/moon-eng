@@ -131,7 +131,7 @@ void renderGUI() {
 
     int i;    
 
-    memset(VIR_SCR, 80, 64000);
+    drawDesktop();
 
     /* DRAW WINDOWS ! */
 
@@ -172,6 +172,8 @@ int main() {
   initWindowManager();
 
   cguiDebugMode = 0;
+
+  setBackgroundGradient(1, 0);
 
   setStatusLeft(STATUS_STRING, "MDP EDIT v0.1", NULL, 0, NULL);
   setStatusRight(STATUS_CLOCK, "", NULL, 0, NULL);
