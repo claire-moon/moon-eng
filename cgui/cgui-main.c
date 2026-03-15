@@ -30,13 +30,14 @@ unsigned long lastClickFrame = 0;
 char inputBuffer[32];
 
 Window windows[MAX_WINDOWS];
+MenuCategory sysMenu[MAX_MENU_CATEGORIES];
 
 int zOrder[MAX_WINDOWS];
 int cguiDebugMode = 1;
-MenuCategory sysMenu[MAX_MENU_CATEGORIES];
 int sysMenuCount = 0;
 int sysBgMode = 0;
 int sysBgColor = 80;
+
 unsigned char sysBgGradient[200];
 
 StatusItem statusLeft = { STATUS_EMPTY, "", NULL, 0, NULL, 0, 0 };
@@ -52,41 +53,35 @@ void setBackgroundSolid(int color) {
 void setBackgroundGradient(int c1, int c2) {
 
     int y, i;
+
     int r1 = cgui_palette[c1 * 3], g1 = cgui_palette[c1 * 3 + 1],
         b1 = cgui_palette[c1 * 3 + 2];
+
     int r2 = cgui_palette[c2 * 3], g2 = cgui_palette[c2 * 3 + 1],
         b2 = cgui_palette[c2 * 3 + 2];
 
     sysBgMode = 1;
 
-    for (y = 0; y < 200; y++) {
+    for (i = 0; i < 64; i++) {
 
-        float pct = (float)y / 199.0f;
+        float pct = (float)i / 63.0f;
+
         int tr = r1 + (int)((r2 - r1) * pct);
         int tg = g1 + (int)((g2 - g1) * pct);
         int tb = b1 + (int)((b2 - b1) * pct);
 
-        int bestDist = 999999;
-        int bestIdx = 0;
+        outportb(0x3C8, 180 + i);
+        outportb(0x3C9, tr);
+        outportb(0x3C9, tg);
+        outportb(0x3C9, tb);
 
-        for (i = 0; i < 256; i++) {
+    }
 
-            int pr = cgui_palette[i * 3];
-            int pg = cgui_palette[i * 3 + 1];
-            int pb = cgui_palette[i * 3 + 2];
-            int dist = (pr - tr) * (pr - tr) + (pg - tg) * (pg - tg) +
-                (pb - tb) * (pb - tb);
+    for (y = 0; y < 200; y++) {
 
-            if (dist < bestDist) {
+        int colorStep = (y * 63) / 199;
 
-                bestDist = dist;
-                bestIdx = i;
-
-            }
-
-        }
-
-        sysBgGradient[y] = bestIdx;
+        sysBgGradient[y] = 180 + colorStep;
 
     }
 
