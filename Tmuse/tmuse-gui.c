@@ -134,7 +134,7 @@ int main() {
 
             updateGUI();
 
-            memset(VIR_SCR, 2, 64000);
+            drawDesktop();
 
             for (i = windowCount - 1; i >= 0; i--) {
 

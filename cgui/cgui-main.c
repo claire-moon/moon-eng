@@ -80,7 +80,7 @@ void setBackgroundGradient(int c1, int c2) {
             if (dist < bestDist) {
 
                 bestDist = dist;
-                bestIdx = 1;
+                bestIdx = i;
 
             }
 
