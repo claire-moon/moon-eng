@@ -45,20 +45,20 @@ int main(int argc, char *argv[]) {
   
   while(1) {
 
-	/* TIME/FPS/TICS CALC */
+      /* TIME/FPS/TICS CALC */
 
-	currentTime = uclock();
+      currentTime = uclock();
 
-	if (currentTime - lastTime >= UCLOCKS_PER_SEC) {
+      if (currentTime - lastTime >= UCLOCKS_PER_SEC) {
 
-		currentFPS = frames;
-		frames = 0;
-		lastTime = currentTime;
+          currentFPS = frames;
+          frames = 0;
+          lastTime = currentTime;
+      }
 
-	}
+      frames++;
 
-	frames++;
-	frameCount++;
+      frameCount++;
 
     if (uclock() > nextTick + UCLOCKS_PER_SEC) {
 
@@ -66,24 +66,25 @@ int main(int argc, char *argv[]) {
 
         }
 
-	catchUpLoops = 0;
+    catchUpLoops = 0;
 
-	while (uclock() >= nextTick && catchUpLoops < 10) {
+    while (uclock() >= nextTick && catchUpLoops < 10) {
 
-	  processInput(&player);
-	  updatePlayer(&player);
+        processInput(&player);
+        updatePlayer(&player);
 
-	  ticCount++;
-	  nextTick += TICK_INTERVAL;
-	  catchUpLoops++;
+        ticCount++;
+        nextTick += TICK_INTERVAL;
+        catchUpLoops++;
 	  
-	}
+    }
 
-	/* ENG PIPELINE */
+    /* ENG PIPELINE */
     
     renderScene(&player);
     
   }
 
-  return 0;  
+  return 0;
+
 }
