@@ -368,7 +368,7 @@ void renderScene(Player *p) {
 
     drawHUD(p);
 
-    waitVsync();
+    /* waitVsync() disabled for now */
 
     memcpy((void *)VGA, VIR_SCR, SCR_SIZE);
   

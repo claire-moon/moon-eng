@@ -60,6 +60,12 @@ int main(int argc, char *argv[]) {
 	frames++;
 	frameCount++;
 
+    if (uclock() > nextTick + UCLOCKS_PER_SEC) {
+
+        nextTick = uclock();
+
+        }
+
 	catchUpLoops = 0;
 
 	while (uclock() >= nextTick && catchUpLoops < 10) {
