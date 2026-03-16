@@ -58,15 +58,11 @@ int main(int argc, char *argv[]) {
 
       }
 
-      frames++;
-
-      frameCount++;
-
     if (uclock() > nextTick + UCLOCKS_PER_SEC) {
 
         nextTick = uclock();
 
-        }
+    }
 
     needsRender = 0;
 
