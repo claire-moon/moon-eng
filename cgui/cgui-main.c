@@ -287,6 +287,15 @@ void drawLine(int x0, int y0, int x1, int y1, int color) {
   
 }
 
+void drawBorder(int x, int y, int w, int h, int cHi, int cLo) {
+
+    drawRect(x, y, w, 1, cHi);
+    drawRect(x, y, 1, h, cHi);
+    drawRect(x, y + h - 1, w, 1, cLo);
+    drawRect(x + w - 1, y, 1, h, cLo);
+
+}
+
 void drawRect(int x, int y, int w, int h, int color) {
 
     int i, j;
@@ -488,10 +497,7 @@ void drawWindow(Window *w) {
 
     /* BORDER */
 
-    drawRect(w->x, w->y, w->w, 1, 248);
-    drawRect(w->x, w->y, 1, w->h, 248);
-    drawRect(w->x, w->y + w->h - 1, w->w, 1, 0);
-    drawRect(w->x + w->w - 1, w->y, 1, w->h, 0);
+    drawBorder(w->x, w->y, w->w, w->h, 248, 0);
 
     /* TITLE BAR */
 
@@ -764,11 +770,7 @@ void drawDropdown() {
 
     }
 
-    drawRect(dropX, dropY, dropW, dropH, 154);
-    drawRect(dropX, dropY, dropW, 1, 248);
-    drawRect(dropX, dropY, 1, dropH, 248);
-    drawRect(dropX, dropY + dropH - 1, dropW, 1, 0);
-    drawRect(dropX + dropW - 1, dropY, 1, dropH, 0);
+    drawBorder(dropX, dropY, dropW, dropH, 248, 0);
 
     if (sysMenu[catIdx].itemCount == 0) {
 
@@ -1053,11 +1055,11 @@ void updateGUI() {
                                 if (wid->listCount > visible) {
 
                                     wid->listScroll = (int)(pct * (wid->listCount - visible));
-		  
+
                                 }
-		
+
                             }
-	      
+
                         } else if (click) {
 
                             clickedRow = (mouseY - absY - 2) / 10;
@@ -1069,17 +1071,17 @@ void updateGUI() {
                                 if (wid->listSelected == targetIdx) wid->listSelected = -1;
                                 else wid->listSelected = targetIdx;
                                 if (wid->onClick != NULL) wid->onClick(wid);
-		
+
                             } else {
 
                                 wid->listSelected = -1;
-		
+
                             }
-	      
+
                         }
-	    
+
                     }
-	  
+
                     if (hold) {
 
                         /* BUTTON PUSH */
@@ -1114,7 +1116,7 @@ void updateGUI() {
                             if (wid->type == WIDGET_BUTTON) {
 
                                 if (wid->onClick != NULL) wid->onClick(wid);
-		
+
                             }
 
                             else if (wid->type == WIDGET_TOGGLE ||
@@ -1123,30 +1125,30 @@ void updateGUI() {
                                 wid->isChecked = !wid->isChecked;
 
                                 if (wid->onClick != NULL) wid->onClick(wid);
-		
+
                             }
-		      
+
                         }
-		      
+
                         wid->isPressed = 0;   /* pop it back out */
 
                     }
-	    
+
                 } else {
 
                     /* mouse dragged off the button */
 
                     wid->isHovered = 0;
                     wid->isPressed = 0;
-		  
+
                 }
 
             }
-				
+
             /* END WIDGET LOOP */
-		
+
             if (click) {
-	      
+
                 /* Z - ORDER */
 
                 bringToFront(w->id);
@@ -1157,7 +1159,7 @@ void updateGUI() {
 
                     destroyWindow(w->id);
                     return;
-	  
+
                 }
 
                 /* TITLE BAR CLICKED */
@@ -1167,11 +1169,11 @@ void updateGUI() {
                     if (doubleClick) {
 
                         strcpy(w->title, "THAT TICKLES..!");
-	    
+
                     }
 
                     w->dragging = 1;
-		    
+
                 }
             }
 
@@ -1180,9 +1182,60 @@ void updateGUI() {
     }
 }
 
-  
+void packWindow(int winIdx) {
+
+    int i, right, bottom;
+    int maxW = 0, maxH = 0;
+
+    Window *w = &windows[winIdx];
+
+    if (!w->inUse)
+        return;
+
+    for (i = 0; i < w->widgetCount; i++) {
+
+        right = w->widgets[i].x + w->widgets[i].w;
+        bottom = w->widgets[i].y + w->widgets[i].h;
+
+        if (right > maxW)
+            maxW = right;
+
+        if (bottom > maxH)
+            maxH = bottom;
 
 
+    }
 
+    w->w = maxW + 10;
+    w->h = maxH + 10;
 
+    if (w->w < (strlen(w->title) * 4) + 24) {
 
+        w->w = (strlen(w->title) * 4) + 24;
+
+    }
+
+}
+
+void _cguiCloseBtnHook(Widget *w) {
+
+    destroyWindow(windows[w->id].id);
+
+}
+
+int cguiMsgBox(char *title, char *msg) {
+
+    int win, lbl, btn;
+
+    win = createWindow(120, 80, 10, 10, title);
+
+    lbl = addWidget(win, WIDGET_LABEL, 10, 20, 0, 0, msg);
+    btn = addWidget(win, WIDGET_BUTTON, 10, 40, 40, 15, "OK");
+
+    windows[win].widgets[btn].onClick = _cguiCloseBtnHook;
+
+    packWindow(win);
+    bringToFront(win);
+    return win;
+
+}

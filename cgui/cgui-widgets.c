@@ -108,10 +108,7 @@ void drawWidget(Widget *w, int winX, int winY) {
 
         if (w->isPressed) {
 
-            drawRect(absX, absY + w->h - 1, w->w, 1, 248);
-            drawRect(absX + w->w - 1, absY, 1, w->h, 248);
-            drawRect(absX, absY, w->w, 1, 0);
-            drawRect(absX, absY, 1, w->h, 0);
+            drawBorder(absX, absY, w->w, w->h, 0, 248);
 
             drawString(absX + 7, absY + 5, w->text, 0);
       
@@ -119,10 +116,7 @@ void drawWidget(Widget *w, int winX, int winY) {
 
         else {
 
-            drawRect(absX, absY + w->h - 1, w->w, 1, 0);
-            drawRect(absX + w->w - 1, absY, 1, w->h, 0);
-            drawRect(absX, absY, w->w, 1, 248);
-            drawRect(absX, absY, 1, w->h, 248);
+            drawBorder(absX, absY, w->w, w->h, 248, 0);
       
             drawString(absX + 6, absY + 4, w->text, 0);
 
@@ -140,10 +134,7 @@ void drawWidget(Widget *w, int winX, int winY) {
 
         if (w->isChecked || w->isPressed) {
 
-            drawRect(absX, absY + w->h - 1, w->w, 1, 248);
-            drawRect(absX + w->w - 1, absY, 1, w->h, 248);
-            drawRect(absX, absY, w->w, 1, 0);
-            drawRect(absX, absY, 1, w->h, 0);
+            drawBorder(absX, absY, w->w, w->h, 0, 248);
 
             drawString(absX + 7, absY + 5, w->text, 0);
       
@@ -151,10 +142,7 @@ void drawWidget(Widget *w, int winX, int winY) {
 
         else {
 
-            drawRect(absX, absY + w->h - 1, w->w, 1, 0);
-            drawRect(absX + w->w - 1, absY, 1, w->h, 0);
-            drawRect(absX, absY, w->w, 1, 248);
-            drawRect(absX, absY, 1, w->h, 248);
+            drawBorder(absX, absY, w->w, w->h, 240, 0);
       
             drawString(absX + 6, absY + 4, w->text, 0);
 
@@ -172,10 +160,7 @@ void drawWidget(Widget *w, int winX, int winY) {
 
         /* CHECKBOX BORDERS */
 
-        drawRect(absX, absY, boxSize, 1, 0);
-        drawRect(absX, absY, 1, boxSize, 0);
-        drawRect(absX, absY + boxSize - 1, boxSize, 1, 154);
-        drawRect(absX + boxSize - 1, absY, 1, boxSize, 154);
+        drawBorder(absX, absY, boxSize, boxSize, 0, 154);
 
         if (w->isChecked) {
 
@@ -200,10 +185,7 @@ void drawWidget(Widget *w, int winX, int winY) {
 
         /* BORDERS */
 
-        drawRect(absX, absY + w->h - 1, w->w, 1, 154);
-        drawRect(absX + w->w - 1, absY, 1, w->h, 154);
-        drawRect(absX, absY, w->w, 1, 0);
-        drawRect(absX, absY, 1, w->h, 0);
+        drawBorder(absX, absY, w->w, w->h, 0, 154);
 
         /* DRAW TEXT I/O */
     
@@ -223,9 +205,9 @@ void drawWidget(Widget *w, int winX, int winY) {
             if (cursorX < absX + w->w - 4) {
 
                 drawLine(cursorX, absY + 3, cursorX, absY + 11, 0);
-	  
+
             }
-	
+
         }
 
     }
@@ -234,11 +216,7 @@ void drawWidget(Widget *w, int winX, int winY) {
     
         visibleItems = (w->h - 4) / 10;
 
-        drawRect(absX, absY, w->w, w->h, 248);
-        drawRect(absX, absY + w->h - 1, w->w, 1, 154);
-        drawRect(absX + w->w - 1, absY, 1, w->h, 154);
-        drawRect(absX, absY, w->w, 1, 0);
-        drawRect(absX, absY, 1, w->h, 0);
+        drawBorder(absX, absY, w->w, w->h, 0, 154);
 
         if (w->listCount > visibleItems) {
 
@@ -375,10 +353,7 @@ void drawWidget(Widget *w, int winX, int winY) {
         cguiImage *img;
         int px, py;
 
-        drawRect(absX, absY, w->w, 1, 0);
-        drawRect(absX, absY, 1, w->h, 0);
-        drawRect(absX, absY + w->h - 1, w->w, 1, 154);
-        drawRect(absX + w->w - 1, absY, 1, w->h, 154);
+        drawBorder(absX, absY, w->w, w->h, 0, 154);
 
         if (w->data != NULL) {
 
@@ -410,10 +385,7 @@ void drawWidget(Widget *w, int winX, int winY) {
 
         /* BORDER */
 
-        drawRect(absX, absY, w->w, 1, 0);
-        drawRect(absX, absY, 1, w->h, 0);
-        drawRect(absX, absY + w->h - 1, w->w, 1, 154);
-        drawRect(absX + w->w - 1, absY, 1, w->h, 154);
+        drawBorder(absX, absY, w->w, w->h, 0, 154);
 
         /* LOCK DRAWING IN THA BOX */
 
