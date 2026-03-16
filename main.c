@@ -31,6 +31,7 @@ int main(int argc, char *argv[]) {
   uclock_t lastTime, startTime, currentTime, nextTick;
   int frames = 0;
   int catchUpLoops = 0;
+  int needsRender = 0;
 
   initMapSystem();
   loadMap(1);
@@ -54,6 +55,7 @@ int main(int argc, char *argv[]) {
           currentFPS = frames;
           frames = 0;
           lastTime = currentTime;
+
       }
 
       frames++;
@@ -66,6 +68,8 @@ int main(int argc, char *argv[]) {
 
         }
 
+    needsRender = 0;
+
     catchUpLoops = 0;
 
     while (uclock() >= nextTick && catchUpLoops < 10) {
@@ -76,12 +80,17 @@ int main(int argc, char *argv[]) {
         ticCount++;
         nextTick += TICK_INTERVAL;
         catchUpLoops++;
-	  
+        needsRender = 1;
+
     }
 
     /* ENG PIPELINE */
-    
-    renderScene(&player);
+
+    if (needsRender) {
+
+        renderScene(&player);
+
+    }
     
   }
 
