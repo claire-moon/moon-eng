@@ -772,6 +772,8 @@ void drawDropdown() {
 
     drawBorder(dropX, dropY, dropW, dropH, 248, 0);
 
+    drawRect(dropX + 1, dropY + 1, dropW - 2, dropH - 2, 154);
+
     if (sysMenu[catIdx].itemCount == 0) {
 
         drawString(dropX + 6, dropY + 6, "(EMPTY)", 8);
@@ -1225,13 +1227,39 @@ void _cguiCloseBtnHook(Widget *w) {
 
 int cguiMsgBox(char *title, char *msg) {
 
-    int win, lbl, btn;
+    int win, btn, cy = 20;
+    char temp[256], line[64] = "";
+    char *token;
 
     win = createWindow(120, 80, 10, 10, title);
 
-    lbl = addWidget(win, WIDGET_LABEL, 10, 20, 0, 0, msg);
-    btn = addWidget(win, WIDGET_BUTTON, 10, 40, 40, 15, "OK");
+    strcpy(temp, msg);
+    token = strtok(temp, " ");
 
+    while (token != NULL) {
+
+        if (strlen(line) + strlen(token) > 24) {
+
+            addWidget(win, WIDGET_LABEL, 10, cy, strlen(line) * 4, 10, line);
+            cy += 12;
+            strcpy(line, "");
+
+      }
+
+        strcat(line, token);
+        strcat(line, " ");
+        token = strtok(NULL, " ");
+
+    }
+
+    if (strlen(line) > 0) {
+
+        addWidget(win, WIDGET_LABEL, 10, cy, strlen(line) * 4, 10, line);
+        cy += 12;
+
+    }
+
+    btn = addWidget(win, WIDGET_BUTTON, 10, cy + 5, 40, 15, "OK");
     windows[win].widgets[btn].onClick = _cguiCloseBtnHook;
 
     packWindow(win);

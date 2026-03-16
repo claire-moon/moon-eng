@@ -96,7 +96,7 @@ void drawWidget(Widget *w, int winX, int winY) {
   
     if (w->type == WIDGET_LABEL) {
 
-        drawString(absX, absY, w->text, 248);
+        drawString(absX, absY, w->text, 0);
     
     }
 
@@ -219,6 +219,8 @@ void drawWidget(Widget *w, int winX, int winY) {
         visibleItems = (w->h - 4) / 10;
 
         drawBorder(absX, absY, w->w, w->h, 0, 154);
+
+        drawRect(absX + 1, absY + 1, w->w - 2, w->h - 2, 248);
 
         if (w->listCount > visibleItems) {
 
