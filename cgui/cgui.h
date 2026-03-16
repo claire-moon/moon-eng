@@ -126,5 +126,9 @@ void cguiExit(void);
 void setBackgroundColor(int color);
 void setBackgroundGradient(int c1, int c2);
 void drawDesktop(void);
+void drawBorder(int x, int y, int w, int h,
+                int cHi, int cLo);
+void packWindow(int winIdx);
+int cguiMsgBox(char *title, char *msg);
 
 #endif
