@@ -42,6 +42,8 @@ int addWidget(int winIdx, WidgetType type,
     w_new->w     = w;
     w_new->h     = h;
 
+    w_new->parentWin = winIdx;
+
     if (text)
         strcpy(w_new->text, text);
 

@@ -171,6 +171,12 @@ void renderGUI() {
     memcpy((void *)(__djgpp_conventional_base + 0xA0000), VIR_SCR, 64000);
 }
 
+void showAbout() {
+
+    cguiMsgBox("ABOUT", "MDPed v0.1 -- CG MOON 2026");
+
+}
+
 int main() {
 
   int win1, win2, win3, done;
@@ -204,7 +210,7 @@ int main() {
   viewMenu  = addMenuCategory("VIEW");
   debugMenu = addMenuCategory("DEBUG");
 
-  addMenuItem(fileMenu, "DUMMY", NULL);
+  addMenuItem(fileMenu, "ABOUT", showAbout);
   addMenuItem(fileMenu, "EXIT", cguiExit);
   addMenuItem(editMenu, "DUMMY", NULL);
   addMenuItem(viewMenu, "DUMMY", NULL);
@@ -268,6 +274,8 @@ int main() {
 
   cWid = addWidget(win2, WIDGET_CANVAS_IMG, 10, 65, 34, 34, "");
   windows[win2].widgets[cWid].data = &testImg;
+
+  packWindow(win2);
 
   /* ENGINE LOOP */
 
