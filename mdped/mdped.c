@@ -43,7 +43,13 @@ typedef struct {
 
 } MoonEntry;
 
+/* GLOBALS  */
+
 char currentMdp[32] = "zeus.mdp";
+unsigned char testPixels[1024];
+cguiImage testImg = {32, 32, testPixels};
+
+/* FUNCS */
 
 void loadPalette(const char *filename) {
 
@@ -88,6 +94,19 @@ void loadPalette(const char *filename) {
 }
 
 void initMDPED() {
+
+    /* temporary test for image canvas */
+
+    int i, x, y;
+
+    for (i = 0; i < 1024; i++) {
+
+        x = i % 32;
+        y = i / 32;
+
+        testPixels[i] = ((x / 8) + (y / 8)) % 2 ? 5 : 8;
+
+    }
 
     /* MODE 13 INNIT */
 
@@ -156,7 +175,7 @@ int main() {
 
   int win1, win2, win3, done;
   int fileMenu, editMenu, viewMenu;
-  int debugMenu;
+  int debugMenu, cWid;
 
   union REGS r;
 
@@ -246,7 +265,10 @@ int main() {
   win2 = createWindow(100, 80, 120, 80, "PALEDIT");
   addWidget(win2, WIDGET_BUTTON, 10, 25, 100, 15, "IMPORT PAL");
   addWidget(win2, WIDGET_BUTTON, 10, 45, 100, 15, "EXPORT CHUNK");
-  
+
+  cWid = addWidget(win2, WIDGET_CANVAS_IMG, 10, 65, 34, 34, "");
+  windows[win2].widgets[cWid].data = &testImg;
+
   /* ENGINE LOOP */
 
   

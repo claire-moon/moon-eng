@@ -1,5 +1,12 @@
 1. CGUI
 
+  -  make a func for drawing
+     the border, and any other
+     drawrect heavy funcs so
+     u dont have to retype
+     that shit
+
+
   x CORE SYSTEMS
   x HARDWARE I/O
       x UI PALETTE
@@ -10,7 +17,7 @@
   - DEKSTOP-LIKE ENV
       X MENU BAR
       X STATUS BAR
-      - GRADIENT BACKGROUNDS
+      X GRADIENT BACKGROUNDS
   - WIDGET LIBRARY
       X BUTTONS
       X TEXT INPUT FIELDS

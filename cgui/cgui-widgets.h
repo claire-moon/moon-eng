@@ -20,10 +20,19 @@ typedef enum {
   WIDGET_INPUT,
   WIDGET_LISTBOX,
   WIDGET_SLIDER,
-  WIDGET_CANVAS,
+  WIDGET_CANVAS_IMG,
+  WIDGET_CANVAS_GRID,
+  WIDGET_CANVAS_WAVE,
   WIDGET_CONSOLE
 
 } WidgetType;
+
+typedef struct {
+
+    int w, h;
+    unsigned char *pixels;
+
+} cguiImage;
 
 typedef struct Widget {
 
@@ -61,7 +70,7 @@ typedef struct Widget {
   
 } Widget;
 
-void addWidget(int winIdx, WidgetType type, int x, int y, int w, int h, char *text);
-void drawWidget(Widget *w, int winX, int winY);
+int   addWidget(int winIdx, WidgetType type, int x, int y, int w, int h, char *text);
+void  drawWidget(Widget *w, int winX, int winY);
 
 #endif

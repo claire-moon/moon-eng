@@ -11,6 +11,7 @@
    
 */
 
+#include "cgui-widgets.h"
 #include "cgui.h"
 
 #include <string.h>
@@ -19,19 +20,19 @@
 #define NULL ((void *)0)
 #endif
 
-void addWidget(int winIdx, WidgetType type,
+int addWidget(int winIdx, WidgetType type,
                int x, int y, int w, int h, char *text) {
 
     Window *win;
     Widget *w_new;
 
     if (winIdx < 0 || winIdx >= windowCount)
-        return;
+        return -1;
 
     win = &windows[winIdx];
 
     if (win->widgetCount >= WIDGETS_MAX)
-        return;
+        return -1;
 
     w_new        = &win->widgets[win->widgetCount];
     w_new->id    = win->widgetCount;
@@ -48,6 +49,10 @@ void addWidget(int winIdx, WidgetType type,
     w_new->isFocused = 0;
     w_new->onClick   = NULL;
 
+    w_new->val   = 0;
+    w_new->min   = 0;
+    w_new->max   = 100;
+
     if (type == WIDGET_CONSOLE) {
 
         int i;
@@ -61,11 +66,14 @@ void addWidget(int winIdx, WidgetType type,
         w_new->consoleCursorY = 0;
 
     }
+
     w_new->val = 0;
     w_new->min = 0;
     w_new->max = 100;
 
     win->widgetCount++;
+
+    return win->widgetCount - 1;
   
 }
 
@@ -362,6 +370,35 @@ void drawWidget(Widget *w, int winX, int winY) {
         drawRect(thumbX, absY + w->h - 1, thumbW, 1, 0);
         drawRect(thumbX + thumbW - 1, absY, 1, w->h, 0);
 
+    } else if (w->type == WIDGET_CANVAS_IMG) {
+
+        cguiImage *img;
+        int px, py;
+
+        drawRect(absX, absY, w->w, 1, 0);
+        drawRect(absX, absY, 1, w->h, 0);
+        drawRect(absX, absY + w->h - 1, w->w, 1, 154);
+        drawRect(absX + w->w - 1, absY, 1, w->h, 154);
+
+        if (w->data != NULL) {
+
+            img = (cguiImage *)w->data;
+
+            setClip(absX + 1, absY + 1, w->w - 2, w->h - 2);
+
+            for (py = 0; py < img->h; py++) {
+
+                for (px = 0; px < img->w; px++) {
+
+                    drawPixel(absX + 1 + px, absY + 1 + py, img->pixels[py * img->w + px]);
+
+              }
+
+            }
+
+            resetClip();
+
+        }
 
     } else if (w->type == WIDGET_CONSOLE) {
 
