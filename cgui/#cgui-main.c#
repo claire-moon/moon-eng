@@ -5,7 +5,7 @@
 #include "cgui-pal.h"
 #include "cgui-font.h"
 
-/* GLOBALS */
+/* GLOBALS */g
 
 unsigned char *VGA = (unsigned char *)0xA0000;
 unsigned char *VIR_SCR = NULL;
@@ -866,7 +866,8 @@ void updateGUI() {
     int doubleClick = 0;
     int absX, absY, clickedRow, targetIdx;
     int visible, clickedItem;
-
+    int relX, relY;
+    
     float pct;
     
     /* DOUBLE CLICK TRACKER */
@@ -1088,7 +1089,21 @@ void updateGUI() {
 
 		    if (click && wid->type == WIDGET_CANVAS_GRID && wid->data != NULL) {
 
-		      
+		      cguiGrid *grid = (cguiGrid *)wid->data;
+
+		      relX = mouseX - (absX + 1);
+		      relY = mouseY - (absY + 1);
+
+		      if (relX >= 0 && relY >= 0 &&
+			  relX < (grid->cols * grid->tileSize) &&
+			  relY < (grid->rows * grid->tileSize)) {
+
+			grid->selX = relX / grid->tileSize;
+			grid->selY = relY / grid->tileSize;
+
+			if (wid->onClick != NULL) wid->onClick(wid);
+			
+		      }
 		      
 		    }
 		    

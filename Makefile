@@ -35,7 +35,10 @@ TMUSE_SRC = tmuse/tmuse-main.c tmuse/tmuse-tui.c tmuse/tmuse-dsp.c tmuse/tmuse-m
 TMUSE_GUI_OUT = tmusegui.exe
 TMUSE_GUI_SRC = tmuse/tmuse-gui.c tmuse/tmuse-main.c tmuse/tmuse-dsp.c tmuse/tmuse-mix.c tmuse/tmuse-io.c tmuse/tmuse-music.c tmuse/tmuse-dash.c cgui/cgui-main.c cgui/cgui-widgets.c cgui/cgui-input.c cgui/cgui-font.c input.c
 
-all: $(ZEUS_OUT) $(MDPED_OUT) $(TMUSE_OUT) $(TMUSE_GUI_OUT)
+MOON_OUT = moon.exe
+MOON_SRC = moon.c
+
+all: $(ZEUS_OUT) $(MDPED_OUT) $(TMUSE_OUT) $(TMUSE_GUI_OUT) $(MOON_OUT)
 
 $(ZEUS_OUT): $(ZEUS_OBJS)
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
@@ -47,6 +50,9 @@ $(TMUSE_OUT): $(TMUSE_SRC)
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 
 $(TMUSE_GUI_OUT): $(TMUSE_GUI_SRC)
+	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
+
+$(MOON_OUT): $(MOON_SRC)
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 
 %.o: %.c

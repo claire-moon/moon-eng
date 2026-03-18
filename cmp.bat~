@@ -1,0 +1,50 @@
+@ECHO OFF
+C:
+cd \zeus
+set DJGPP=C:\djgpp\djgpp.env
+
+REM --- BATCH SCRIPT INIT --
+
+ECHO ** [ 1 / 3 ] CLEANING BUILD... **
+
+IF EXIST *.o DEL *.o
+IF EXIST zeus.exe DEL zeus.exe
+IF EXIST mdped.exe DEL mdped.exe
+IF EXIST moon. exe DEL moon.exe
+IF EXIST tmuse.exe DEL tmuse.exe
+IF EXIST tmusegui.exe DEL tmusegui.exe
+
+ECHO ** [ 2 / 3 ] ** COMPILING ENGINE... **
+
+C:\djgpp\bin\gcc.exe -O2 -Wall -c main.c -o main.o
+IF ERRORLEVEL 1 GOTO FAIL
+C:\djgpp\bin\gcc.exe -O2 -Wall -c map.c -o map.c
+IF ERRORLEVEL 1 GOTO FAIL
+C:\djgpp\bin\gcc.exe -O2 -Wall -c input.c -o input.c
+IF ERRORLEVEL 1 GOTO FAIL
+C:\djgpp\bin\gcc.exe -O2 -Wall -c render.c -o render.c
+IF ERRORLEVEL 1 GOTO FAIL
+C:\djgpp\bin\gcc.exe -O2 -Wall -c console.c -o console.o
+IF ERRORLEVEL 1 GOTO FAIL
+C:\djgpp\bin\gcc.exe -O2 -Wall -c player.c -o player.o
+IF ERRORLEVEL 1 GOTO FAIL
+C:\djgpp\bin\gcc.exe -O2 -Wall -c physics.c -o physics.o
+IF ERRORLEVEL 1 GOTO FAIL
+C:\djgpp\bin\gcc.exe -O2 -Wall -c hud.c -o hud.o
+IF ERRORLEVEL 1 GOTO FAIL
+C:\djgpp\bin\gcc.exe -O2 -Wall -c skybox.c -o skybox.o
+IF ERRORLEVEL 1 GOTO FAIL
+C:\djgpp\bin\gcc.exe -O2 -Wall -c sprite.c -o sprite.o
+IF ERRORLEVEL 1 GOTO FAIL
+C:\djgpp\bin\gcc.exe -O2 -Wall -c
+IF ERRORLEVEL 1 GOTO FAIL
+
+
+ECHO ** [ 3 / 3 ] LINKING EXE... **
+
+C:\djgpp\bin\gcc.exe -O2 -Wall -o zeus.exe
+C:\djgpp\bin\gcc.exe -O2 -Wall -o mdped.exe
+C:\djgpp\bin\gcc.exe -O2 -Wall -o moon.exe
+C:\djgpp\bin\gcc.exe -O2 -Wall -o tmuse.exe
+C:\djgpp\bin\gcc.exe -O2 -Wall -o tmusegui.exe
+

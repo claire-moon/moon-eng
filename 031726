@@ -1,0 +1,21 @@
+** [1 / 3] COMPILING ENGINE... **
+rm -f *.o
+rm -f zeus.exe
+rm -f mdped.exe
+rm -f tmuse.exe
+i586-pc-msdosdjgpp-gcc -O2 -Wall -c main.c -o main.o
+i586-pc-msdosdjgpp-gcc -O2 -Wall -c map.c -o map.o
+i586-pc-msdosdjgpp-gcc -O2 -Wall -c input.c -o input.o
+i586-pc-msdosdjgpp-gcc -O2 -Wall -c render.c -o render.o
+i586-pc-msdosdjgpp-gcc -O2 -Wall -c console.c -o console.o
+i586-pc-msdosdjgpp-gcc -O2 -Wall -c player.c -o player.o
+i586-pc-msdosdjgpp-gcc -O2 -Wall -c physics.c -o physics.o
+i586-pc-msdosdjgpp-gcc -O2 -Wall -c hud.c -o hud.o
+i586-pc-msdosdjgpp-gcc -O2 -Wall -c skybox.c -o skybox.o
+i586-pc-msdosdjgpp-gcc -O2 -Wall -c sprite.c -o sprite.o
+i586-pc-msdosdjgpp-gcc -O2 -Wall -o zeus.exe main.o map.o input.o render.o console.o player.o physics.o hud.o skybox.o sprite.o -lm
+i586-pc-msdosdjgpp-gcc -O2 -Wall -o mdped.exe mdped/mdped.c cgui/cgui-main.c cgui/cgui-widgets.c cgui/cgui-font.c -lm
+i586-pc-msdosdjgpp-gcc -O2 -Wall -o tmuse.exe tmuse/tmuse-main.c tmuse/tmuse-tui.c tmuse/tmuse-dsp.c tmuse/tmuse-mix.c tmuse/tmuse-io.c tmuse/tmuse-music.c tmuse/tmuse-dash.c cgui/cgui-input.c input.c -lm
+i586-pc-msdosdjgpp-gcc -O2 -Wall -o tmusegui.exe tmuse/tmuse-gui.c tmuse/tmuse-main.c tmuse/tmuse-dsp.c tmuse/tmuse-mix.c tmuse/tmuse-io.c tmuse/tmuse-music.c tmuse/tmuse-dash.c cgui/cgui-main.c cgui/cgui-widgets.c cgui/cgui-input.c cgui/cgui-font.c input.c -lm
+** IT COMPILED...! **
+** [2 / 3] STAGING FILES... **

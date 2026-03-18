@@ -23,7 +23,7 @@
       X TEXT INPUT FIELDS
       X LISTBOXES
       - CANVSES
-          - IMG CANVAS
+          X IMG CANVAS
           - GRID MAP CANVAS
           - WAVEFORM CANVAS
       X SCROLLBARS

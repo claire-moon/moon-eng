@@ -34,6 +34,15 @@ typedef struct {
 
 } cguiImage;
 
+typedef struct {
+
+    int cols, rows;
+    int tileSize, selX, selY;
+
+    unsigned char *cells;
+
+} cguiGrid;
+
 typedef struct Widget {
 
     int id;

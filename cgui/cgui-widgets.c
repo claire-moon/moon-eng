@@ -21,7 +21,7 @@
 #endif
 
 int addWidget(int winIdx, WidgetType type,
-               int x, int y, int w, int h, char *text) {
+              int x, int y, int w, int h, char *text) {
 
     Window *win;
     Widget *w_new;
@@ -63,7 +63,7 @@ int addWidget(int winIdx, WidgetType type,
 
             w_new->consoleLines[i][0] = '\0';
 
-                }
+        }
 
         w_new->consoleCursorY = 0;
 
@@ -87,6 +87,8 @@ void drawWidget(Widget *w, int winX, int winY) {
     int boxSize, i, itemY, itemIdx, visibleItems;
     int trackH, thumbH, thumbY;
     int maxChars, extLen, keepBase, dotCount;
+    int gx, gy, c;
+
 
     char *orig;
     char *ext;
@@ -220,7 +222,7 @@ void drawWidget(Widget *w, int winX, int winY) {
 
         drawBorder(absX, absY, w->w, w->h, 0, 154);
 
-        drawRect(absX + 1, absY + 1, w->w - 2, w->h - 2, 248);
+        drawRect(absX + 1, absY + 1, w->w - 2, w->h - 2, 0);
 
         if (w->listCount > visibleItems) {
 
@@ -264,7 +266,7 @@ void drawWidget(Widget *w, int winX, int winY) {
 
                         keepBase = 1;
                         dotCount = maxChars - extLen - 1;
-	    
+
                     }
 
                     strncpy(shortName, orig, keepBase);
@@ -274,15 +276,15 @@ void drawWidget(Widget *w, int winX, int winY) {
                     while(dotCount-- > 0) strcat(shortName, ".");
 
                     strcat(shortName, ext);
-	  
+
                 } else {
 
                     strncpy(shortName, orig, maxChars);
 
                     shortName[maxChars] = '\0';
-	  
+
                 }
-	
+
             }
       
             /* DRAW SELECTION */
@@ -291,11 +293,11 @@ void drawWidget(Widget *w, int winX, int winY) {
 
                 drawRect(absX + 2, itemY - 1, w->w - 4, 10, 1);
                 drawString(absX + 4, itemY, w->listItems[itemIdx], 248);
-	
+
             } else {
 
                 drawString(absX + 4, itemY, w->listItems[itemIdx], 0);
-	
+
             }
 
         }
@@ -318,13 +320,13 @@ void drawWidget(Widget *w, int winX, int winY) {
             if (thumbH < 8) thumbH = 8;
 
             thumbY = absY + 2 + (int)(scrollPct * (trackH - thumbH));
-	
+
             drawRect(absX + w->w - 12, thumbY, 10, thumbH, 154);
             drawRect(absX + w->w - 12, thumbY + thumbH - 1, 10, 1, 0);
             drawRect(absX + w->w - 3, thumbY, 1, thumbH, 0);
             drawRect(absX + w->w - 12, thumbY, 10, 1, 248);
             drawRect(absX + w->w - 12, thumbY, 1, thumbH, 248);
-	
+
         }
       
     } else if (w->type == WIDGET_SLIDER) {
@@ -371,7 +373,73 @@ void drawWidget(Widget *w, int winX, int winY) {
 
                     drawPixel(absX + 1 + px, absY + 1 + py, img->pixels[py * img->w + px]);
 
-              }
+                }
+
+            }
+
+            resetClip();
+
+        }
+
+    } else if (w->type == WIDGET_CANVAS_GRID) {
+
+
+        int gx, gy, c;
+
+        cguiGrid *grid;
+
+        drawBorder(absX, absY, w->w, w->h, 0, 154);
+
+        if (w->data != NULL) {
+
+            grid = (cguiGrid *)w->data;
+
+            setClip(absX + 1, absY + 1, w->w - 2, w->h - 2);
+
+            drawRect(absX + 1, absY + 1, w->w - 2, w->h - 2, 0);
+
+            if (grid->cells) {
+
+                for (gy = 0; gy < grid->rows; gy++) {
+
+                    for (gx = 0; gx < grid->cols; gx++) {
+
+                        c = grid->cells[gy * grid->cols + gx];
+
+                        if (c != 0) {
+
+                            drawRect(absX + 1 + (gx * grid->tileSize),
+                                     absY + 1 + (gy * grid->tileSize),
+                                     grid->tileSize, grid->tileSize, c);
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+            for (gx = 0; gx <= grid->cols * grid->tileSize;
+                 gx += grid->tileSize) {
+
+                drawRect(absX + 1 + gx, absY + 1, 1, grid->rows * grid->tileSize, 10);
+
+            }
+
+
+            for (gy = 0; gy <= grid->cols * grid->tileSize;
+                 gy += grid->tileSize) {
+
+                drawRect(absX + 1, absY + 1 + gy, grid->cols * grid->tileSize, 1, 10);
+
+            }
+
+            if (grid->selX >= 0 && grid->selY >= 0) {
+
+                drawBorder(absX + 1 + (grid->selX * grid->tileSize),
+                           absY + 1 + (grid->selY * grid->tileSize),
+                           grid->tileSize + 1, grid->tileSize + 1, 248, 248);
 
             }
 

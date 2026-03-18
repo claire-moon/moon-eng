@@ -99,7 +99,7 @@ void drawDesktop() {
 
         for (y = 0; y < 200; y++) {
 
-        memset(VIR_SCR + (y * 320), sysBgGradient[y], 320);
+            memset(VIR_SCR + (y * 320), sysBgGradient[y], 320);
 
         }
 
@@ -473,7 +473,7 @@ void bringToFront(int id) {
             for (j = i; j > 0; j--) {
 
                 zOrder[j] = zOrder[j - 1];
-	
+
             }
 
             zOrder[0] = id;
@@ -534,7 +534,7 @@ int addMenuCategory(char *name) {
     if (sysMenuCount == 0) sysMenu[sysMenuCount].x = 4;
 
     else sysMenu[sysMenuCount].x = sysMenu[sysMenuCount - 1].x +
-            sysMenu[sysMenuCount - 1].w + 16;
+             sysMenu[sysMenuCount - 1].w + 16;
 
     sysMenu[sysMenuCount].w = strlen(name) * 4;
 
@@ -639,7 +639,7 @@ void setStatusLeft(StatusType type, char *text, char *dynPtr, int isClickable,
 }
 
 void setStatusRight(StatusType type, char *text, char *dynPtr, int isClickable,
-                   void (*onClick)(void)) {
+                    void (*onClick)(void)) {
 
     statusRight.type = type;
     if (text)
@@ -696,10 +696,10 @@ void renderStatusItem(StatusItem *item, int isLeft) {
     if (item->isClickable && mouseY >= 189 && mouseX >= item->x &&
         mouseX <= item->x + item->w) {
 
-      bg = 0;
-      color = 248;
+        bg = 0;
+        color = 248;
 
-      drawRect(item->x - 2, 190, item->w + 4, 9, bg);
+        drawRect(item->x - 2, 190, item->w + 4, 9, bg);
 
     }
 
@@ -765,8 +765,8 @@ void drawDropdown() {
 
     } else {
 
-    dropW = sysMenu[catIdx].dropW;
-    dropH = sysMenu[catIdx].itemCount * 10 + 10;
+        dropW = sysMenu[catIdx].dropW;
+        dropH = sysMenu[catIdx].itemCount * 10 + 10;
 
     }
 
@@ -866,7 +866,8 @@ void updateGUI() {
     int doubleClick = 0;
     int absX, absY, clickedRow, targetIdx;
     int visible, clickedItem;
-
+    int relX, relY;
+    
     float pct;
     
     /* DOUBLE CLICK TRACKER */
@@ -951,13 +952,13 @@ void updateGUI() {
                         sysMenu[catIdx].items[clickedItem].isChecked =
                             !sysMenu[catIdx].items[clickedItem].isChecked;
 
-                  }
+                    }
 
                     if (sysMenu[catIdx].items[clickedItem].onClick != NULL) {
 
                         sysMenu[catIdx].items[clickedItem].onClick();
 
-                  }
+                    }
 
                 }
 
@@ -972,15 +973,15 @@ void updateGUI() {
 
             for (i = 0; i < sysMenuCount; i++) {
 
-              if (mouseX >= sysMenu[i].x - 4 &&
-                  mouseX <= sysMenu[i].x + sysMenu[i].w + 4) {
+                if (mouseX >= sysMenu[i].x - 4 &&
+                    mouseX <= sysMenu[i].x + sysMenu[i].w + 4) {
 
-                  activeDropdown = i + 1;
-                  return;
+                    activeDropdown = i + 1;
+                    return;
 
-              }
+                }
 
-          }
+            }
 
         }
 
@@ -990,17 +991,17 @@ void updateGUI() {
 
         if (click) {
 
-          if (statusLeft.isClickable && mouseX >= statusLeft.x &&
-              mouseX <= statusLeft.x + statusLeft.w) {
+            if (statusLeft.isClickable && mouseX >= statusLeft.x &&
+                mouseX <= statusLeft.x + statusLeft.w) {
 
-              if (statusLeft.onClick) statusLeft.onClick();
+                if (statusLeft.onClick) statusLeft.onClick();
 
-          }
+            }
 
-          if (statusRight.isClickable && mouseX >= statusRight.x &&
-              mouseX <= statusRight.x + statusRight.w) {
+            if (statusRight.isClickable && mouseX >= statusRight.x &&
+                mouseX <= statusRight.x + statusRight.w) {
 
-              if (statusRight.onClick) statusRight.onClick();
+                if (statusRight.onClick) statusRight.onClick();
 
             }
 
@@ -1079,6 +1080,29 @@ void updateGUI() {
                                 wid->listSelected = -1;
 
                             }
+
+                        }
+
+                    }
+
+                    /* GRID LOGIC */
+
+                    if (click && wid->type == WIDGET_CANVAS_GRID && wid->data != NULL) {
+
+                        cguiGrid *grid = (cguiGrid *)wid->data;
+
+                        relX = mouseX - (absX + 1);
+                        relY = mouseY - (absY + 1);
+
+                        if (relX >= 0 && relY >= 0 &&
+                            relX < (grid->cols * grid->tileSize) &&
+                            relY < (grid->rows * grid->tileSize)) {
+
+                            grid->selX = relX / grid->tileSize;
+                            grid->selY = relY / grid->tileSize;
+
+                            if (wid->onClick != NULL)
+                                wid->onClick(wid);
 
                         }
 
@@ -1244,7 +1268,7 @@ int cguiMsgBox(char *title, char *msg) {
             cy += 12;
             strcpy(line, "");
 
-      }
+        }
 
         strcat(line, token);
         strcat(line, " ");

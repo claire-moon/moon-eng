@@ -1,25 +1,48 @@
 1. CGUI
 
+  -  make a func for drawing
+     the border, and any other
+     drawrect heavy funcs so
+     u dont have to retype
+     that shit
+
+
   x CORE SYSTEMS
   x HARDWARE I/O
       x UI PALETTE
   - ARCHITECTURE & EVENTS
       - DATA-DRIVEN MENUS 
-      - WIDGET SYSTEM
-      - FOCUS SYSTEM
+      X WIDGET SYSTEM
+      X FOCUS SYSTEM/Z-ORDER
+  - DEKSTOP-LIKE ENV
+      X MENU BAR
+      X STATUS BAR
+      X GRADIENT BACKGROUNDS
   - WIDGET LIBRARY
       X BUTTONS
       X TEXT INPUT FIELDS
       X LISTBOXES
-      - CANVASES 
-      - SCROLLBARS
+      - CANVSES
+          - IMG CANVAS
+          - GRID MAP CANVAS
+          - WAVEFORM CANVAS
+      X SCROLLBARS
       - CLIPPING REGIONS
       - RADIO BUTTONS
       - SLIDERS / TRACKBARS
       - PROGRESS BARS
-  - DIALOGUES
+      X STATIC CONSOLE
+      - I/O CONSOLE
+  - WINDOW MAN / DIALOGUES
       - MODAL POPUPS
-      - UNIVERSAL FILE PICKER 
+      - UNIVERSAL FILE PICKER
+      - ABOUT PAGE
+      - SPLASH SCREENS
+      - HELP VIEWER
+  - MDP INTEGRATION
+      - PALedit
+      - TEXEdit
+      - MAPEdit
   - TOOLTIPS 
 
 2. MDP EDITOR 
@@ -49,7 +72,7 @@
    X SAFE DMA ALLOC
    X SOFTWARE MIXER
    X WAVEFORM GENERATORS
-   - ASDR ENVELOPES
+   X ASDR ENVELOPES
    - LFO SYSTEM
 
    [SPRINT 2]
