@@ -49,6 +49,9 @@ char currentMdp[32] = "zeus.mdp";
 unsigned char testPixels[1024];
 cguiImage testImg = {32, 32, testPixels};
 
+unsigned char mapData[256] = {0};
+cguiGrid mapGrid = {16, 16, 8, -1, -1, mapData};
+
 /* FUNCS */
 
 void loadPalette(const char *filename) {
