@@ -16,27 +16,5 @@ i586-pc-msdosdjgpp-gcc -O2 -Wall -c sprite.c -o sprite.o
 i586-pc-msdosdjgpp-gcc -O2 -Wall -o zeus.exe main.o map.o input.o render.o console.o player.o physics.o hud.o skybox.o sprite.o -lm
 i586-pc-msdosdjgpp-gcc -O2 -Wall -o mdped.exe mdped/mdped.c cgui/cgui-main.c cgui/cgui-widgets.c cgui/cgui-font.c -lm
 i586-pc-msdosdjgpp-gcc -O2 -Wall -o tmuse.exe tmuse/tmuse-main.c tmuse/tmuse-tui.c tmuse/tmuse-dsp.c tmuse/tmuse-mix.c tmuse/tmuse-io.c tmuse/tmuse-music.c tmuse/tmuse-dash.c cgui/cgui-input.c input.c -lm
-i586-pc-msdosdjgpp-gcc -O2 -Wall -o tmusegui.exe tmuse/tmuse-gui.c tmuse/tmuse-main.c tmuse/tmuse-dsp.c tmuse/tmuse-mix.c tmuse/tmuse-io.c tmuse/tmuse-music.c tmuse/tmuse-dash.c cgui/cgui-main.c cgui/cgui-widgets.c cgui/cgui-input.c cgui/cgui-font.c input.c -lm
 ** IT COMPILED...! **
 ** [2 / 3] STAGING FILES... **
-** [3 / 3] SAVING BUILD SNAPSHOT: 2026-03-17 23:36:57 **
-[main 31a44a3] BUILD SNAPSHOT: 2026-03-17 23:36:57
- 31 files changed, 3384 insertions(+), 746 deletions(-)
- create mode 100644 #makefile#
- create mode 100644 031726
- delete mode 100644 CWSDPMI.SWP
- create mode 100644 Tmuse/tmuse-disp.c
- create mode 100644 cgui/#cgui-main.c#
- create mode 100644 cgui/#cgui-widgets.h#
- create mode 100644 cgui/test.txt
- create mode 100644 cmp.bat
- create mode 100644 cmp.bat~
- create mode 100644 compile_flags.txt
- create mode 100644 logs/errorlog.txt
- create mode 100644 moon.c
- create mode 100644 moon.c~
- create mode 100644 moon.exe
- create mode 100644 moon/moon.c
- create mode 100644 test.txt
-** [COMPLETE] BUILD SUCCEEDED...! **
-** [COMPLETE] HAVE A NICE DAY ...! **
