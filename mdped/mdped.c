@@ -174,9 +174,23 @@ void renderGUI() {
     memcpy((void *)(__djgpp_conventional_base + 0xA0000), VIR_SCR, 64000);
 }
 
-void showAbout() {
+void showAbout() { cguiMsgBox("ABOUT", "MDPed v0.1 -- CG MOON 2026"); }
 
-    cguiMsgBox("ABOUT", "MDPed v0.1 -- CG MOON 2026");
+void test_onSliderMove(Widget *w) {
+
+    windows[w->parentWin].widgets[w->id + 1].val = w->val;
+}
+
+void test_showProgress() {
+
+    int win = createWindow(60, 60, 120, 70, "TEST: PROGRESS");
+
+    int s_idx = addWidget(win, WIDGET_SLIDER, 10, 20, 100, 10, "");
+    int p_idx = addWidget(win, WIDGET_PROGRESS, 10, 40, 100, 10, "");
+
+    windows[win].widgets[s_idx].onClick = test_onSliderMove;
+
+    packWindow(win);
 
 }
 
@@ -217,6 +231,8 @@ int main() {
   addMenuItem(fileMenu, "EXIT", cguiExit);
   addMenuItem(editMenu, "DUMMY", NULL);
   addMenuItem(viewMenu, "DUMMY", NULL);
+
+  addMenuItem(viewMenu, "PROGRESS TEST", test_showProgress);
 
   addMenuItemToggle(debugMenu, "Z-ORDER", cguiToggleDebug);
 

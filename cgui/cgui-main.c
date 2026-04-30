@@ -1047,18 +1047,35 @@ void updateGUI() {
 
                         if (mouseX > absX + wid->w - 12) {
 
-                            if (hold) {
+                          if (click && mouseY >= absY + 2 &&
+                              mouseY < absY + 12) {
 
-                                pct = (float)(mouseY - (absY + 2)) / (wid->h - 4);
+                            if (wid->listScroll > 0)
+                                wid->listScroll--;
+
+                            }
+
+                            else if (click && mouseY >= absY + wid->h - 12 &&
+                                     mouseY < absY + wid->h - 2) {
+
+                              if (wid->listCount > visible &&
+                                  wid->listScroll < wid->listCount - visible) {
+
+                                  wid->listScroll++;
+
+                              }
+
+                            }
+
+                            else if (hold && mouseY >= absY + 12 && mouseY < absY + wid->h - 12) {
+
+                                pct = (float)(mouseY - (absY + 12)) / (wid->h - 24);
 
                                 if (pct < 0.0) pct = 0.0;
-
                                 if (pct > 1.0) pct = 1.0;
 
                                 if (wid->listCount > visible) {
-
                                     wid->listScroll = (int)(pct * (wid->listCount - visible));
-
                                 }
 
                             }

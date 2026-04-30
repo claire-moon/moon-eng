@@ -87,8 +87,6 @@ void drawWidget(Widget *w, int winX, int winY) {
     int boxSize, i, itemY, itemIdx, visibleItems;
     int trackH, thumbH, thumbY;
     int maxChars, extLen, keepBase, dotCount;
-    int gx, gy, c;
-
 
     char *orig;
     char *ext;
@@ -222,7 +220,7 @@ void drawWidget(Widget *w, int winX, int winY) {
 
         drawBorder(absX, absY, w->w, w->h, 0, 154);
 
-        drawRect(absX + 1, absY + 1, w->w - 2, w->h - 2, 0);
+        drawRect(absX + 1, absY + 1, w->w - 2, w->h - 2, 248);
 
         if (w->listCount > visibleItems) {
 
@@ -306,26 +304,33 @@ void drawWidget(Widget *w, int winX, int winY) {
 
         /* DRAW SCROLLBAR */
 
-        drawRect(absX + w->w - 12, absY + 2, 10, w->h - 4, 154);
+        drawRect(absX + w->w - 12, absY + 12, 10, w->h - 24, 154);
+        drawBorder(absX + w->w - 12, absY + 2, 10, 10, 248, 0);
+        drawRect(absX + w->w - 11, absY + 3, 8, 8, 154);
+        drawLine(absX + w->w - 7, absY + 4, absX + w->w - 4, absY + 7, 0);
+        drawLine(absX + w->w - 7, absY + 4, absX + w->w - 10, absY + 7, 0);
+        drawLine(absX + w->w - 10, absY + 7, absX + w->w - 4, absY + 7, 0);
+        drawBorder(absX + w->w - 12, absY + w->h - 12, 10, 10, 248, 0);
+        drawRect(absX + w->w - 11, absY + w->h - 11, 8, 8, 154);
+        drawLine(absX + w->w - 10, absY + w->h - 9, absX + w->w - 4, absY + w->h - 9, 0);
+        drawLine(absX + w->w - 4, absY + w->h - 9, absX + w->w - 7, absY + w->h - 6, 0);
+        drawLine(absX + w->w - 10, absY + w->h - 9, absX + w->w - 7, absY + w->h - 6, 0);
 
         /* DRAW THUMBS */
 
         if (w->listCount > visibleItems) {
 
-            trackH = w->h - 4;
+            trackH = w->h - 24;
             scrollPct = (float)w->listScroll / (w->listCount - visibleItems);
 
             thumbH = (visibleItems * trackH) / w->listCount;
 
             if (thumbH < 8) thumbH = 8;
 
-            thumbY = absY + 2 + (int)(scrollPct * (trackH - thumbH));
+            thumbY = absY + 12 + (int)(scrollPct * (trackH - thumbH));
 
-            drawRect(absX + w->w - 12, thumbY, 10, thumbH, 154);
-            drawRect(absX + w->w - 12, thumbY + thumbH - 1, 10, 1, 0);
-            drawRect(absX + w->w - 3, thumbY, 1, thumbH, 0);
-            drawRect(absX + w->w - 12, thumbY, 10, 1, 248);
-            drawRect(absX + w->w - 12, thumbY, 1, thumbH, 248);
+            drawBorder(absX + w->w - 12, thumbY, 10, thumbH, 248, 0);
+            drawRect(absX + w->w - 11, thumbY + 1, 8, thumbH - 2, 154);
 
         }
       
@@ -474,6 +479,31 @@ void drawWidget(Widget *w, int winX, int winY) {
         }
 
         resetClip();
+
+    } else if (w->type == WIDGET_PROGRESS) {
+
+        float pct;
+
+        int fillW, range;
+
+        range = w->max, w->min;
+        pct = (range != 0) ? (float)(w->val - w->min) / (float)range : 0.0f;
+
+        if (pct < 0.0f)
+            pct = 0.0f;
+
+        if (pct > 1.0f)
+            pct = 1.0f;
+
+        drawBorder(absX, absY, w->w, w->h, 0, 154);
+
+        fillW = (int)(pct * (w->w - 2));
+
+        if (fillW > 0) {
+
+            drawRect(absX + 1, absY + 1, fillW, w->h - 2, 1);
+
+        }
 
     }
     
