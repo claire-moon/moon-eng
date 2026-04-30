@@ -1,0 +1,322 @@
+#include <string.h>
+#include <stdio.h>
+#include "tmuse-mix.h"
+#include "tmuse-notes.h"
+#include "../defs.h"
+
+extern int envA, envD, envS, envR;
+extern int cguiGetKeyDown(int key);
+extern int cguiGetKey(int key);
+
+int currentWave = WAVE_SAW;
+int isPlaying = 0;
+
+int chordMode = 0;
+int chordRoot = 0;
+int chordAcc = 0;
+int chord3rd = 4;
+int chordExt[16] = {0};
+int chordVoices = 8;
+char chordName[64] = "C MAJOR [DEFAULT]";
+
+float activeChordFreqs[MIX_CHANNELS] = {
+
+  NOTE_C3,
+  NOTE_E3,
+  NOTE_G3,
+  NOTE_C4,
+  NOTE_E4,
+  NOTE_G4,
+  NOTE_C5,
+  NOTE_E5
+  
+};
+
+float baseFreqs[12] = {
+
+  130.81, 138.59, 146.83, 155.56, 164.81, 174.61,
+  185.00, 196.00, 207.65, 220.00, 233.08, 246.94
+  
+};
+
+void tmuseTriggerChord() {
+
+  int i;
+
+  for (i = 0; i < MIX_CHANNELS; i++) {
+
+    if (i < chordVoices) {
+
+      mixPlayTone(i, currentWave, activeChordFreqs[i], 0.6 - (i * 0.05));
+      
+    } else {
+
+      mixKeyOff(i);
+
+    }
+    
+  }
+  
+}
+
+void tmuseBuildChord() {
+
+  int intervals[16];
+  int numIntervals = 0;
+  int i, semitone, octaveJump, finalSemitone;
+  float calcFreq;
+
+  intervals[numIntervals++] = 0;
+
+  if (chord3rd > 0) intervals[numIntervals++] = chord3rd;
+
+  for (i = 1; i < 16; i++) {
+
+    if (chordExt[i]) intervals[numIntervals++] = i;
+    
+  }
+
+  for (i = 0; i < MIX_CHANNELS; i++) {
+
+    if (i >= chordVoices) {
+
+      activeChordFreqs[i] = 0.0f;
+
+      continue;
+      
+    }
+
+    semitone = intervals[i % numIntervals];
+    octaveJump = i / numIntervals;
+
+    finalSemitone = chordRoot + chordAcc + semitone + (octaveJump * 12);
+
+    while(finalSemitone < 0) finaleSemitone += 12;
+
+    activeChordFreqs[i] = baseFreqs[finalSemitone % 12];
+    activeChordFreqs[i] = (1 << (finalSemitone / 12));
+    
+  }
+  
+}
+
+void tmuseUpdateChordName() {
+
+  char rootStr[4] = "";
+  char accStr[4] = "";
+  char qualStr[8] = "";
+  char extStr[16] = "";
+
+  /* ROOT NOTE */
+
+  switch(chordRoot) {
+
+  case 0:    strcpy(rootStr, "C");  break;
+  case 2:    strcpy(rootStr, "D");  break;
+  case 4:    strcpy(rootStr, "E");  break;
+  case 5:    strcpy(rootStr, "F");  break;
+  case 7:    strcpy(rootStr, "G");  break;
+  case 9:    strcpy(rootStr, "A");  break;
+  case 11:   strcpy(rootStr, "B");  break;
+
+  }
+
+  /* ACCIDENTAL */
+
+  if (chordAcc == 1) strcpy(accStr, "#");
+  if (chordAcc == -1) strcpy(accStr, "b");
+  
+  /* QUALITY */
+  
+  strcpy(qualStr, (chordThird == 3) ? "m" : "M");
+
+  /* EXTENSIONS */
+
+  if (chordExt[14]) strcpy(extStr, "9");
+  else if (chordExt[11] || chordExt[10]) strcpy(extStr, "7");
+  else if (chordExt[9]) strcpy(extStr, "6");
+  else if (chordExt[5]) strcpy(extStr, "sus4");
+  else if (chordExt[2]) strcpy(extStr, "sus2");
+
+  /* STRING ASSEMBLY */
+
+  sprintf(chordName, "%s%s%s%s (%d VOICES)",
+          rootStr, accStr, qualStr, extStr, chordVoices);
+
+}
+
+/* INPUTS ! */
+
+int tmuseProcessControls() {
+
+  int redraw = 0;
+  int oldWave = currentWave;
+  int i;
+  int isShift = cguiGetKeyDown(KEY_LSHIFT) || cguiGetKeyDown(KEY_RSHIFT);
+  int newRoot;
+
+  /* CHORD MODE TRIGGER */
+
+  if (cguiGetKeyDown(KEY_CTRL)) {
+
+    chordMode = 1;
+    redraw = 1;
+    
+  }
+
+  if (cguiGetKeyUp(KEY_CTRL)) {
+
+    if (chordMode > 0) {
+
+      tmuseBuildChord();
+      tmuseTriggerChord();
+      isPlaying = 1;
+      chordMode = 0;
+      redraw = 0;
+
+    }
+
+  }
+
+  /* ================ */
+  /* CHORD BUILD MODE */
+  /* ================ */
+
+  if (chordMode > 0) {
+
+    if (chordMode == 1) {
+
+    /* EDIT ROOT */
+
+      if (isShift) {
+
+	chordMode = 2;
+	redraw = 1;
+
+      } else {
+
+	newRoot = -1;
+
+	if (cguiGetKeyDown(KEY_C)) newRoot = 0;
+	if (cguiGetKeyDown(KEY_D)) newRoot = 2;
+	if (cguiGetKeyDown(KEY_E)) newRoot = 4;
+	if (cguiGetKeyDown(KEY_F)) newRoot = 5;
+	if (cguiGetKeyDown(KEY_G)) newRoot = 7;
+	if (cguiGetKeyDown(KEY_A)) newRoot = 9;
+	if (cguiGetKeyDown(KEY_B)) newRoot = 11;
+
+	if (newRoot != -1) {
+
+	  chordRoot = newRoot;
+	  chordAcc = 0;
+	  chord3rd = 4;
+
+	  for (i = 0; i < 16; i++) chordExt[i] = 0;
+
+	  chordMode = 2; 
+	  redraw = 1;
+
+	}
+
+      }
+
+    }
+
+    /* EDIT CHORD */
+
+    if (chordMode == 2) {
+
+      if (isShift && cguiGetKeyDown(KEY_EQUALS)) { chordAcc =  1; redraw = 1; }
+      if (isShift && cguiGetKeyDown(KEY_MINUS))  { chordAcc = -1; redraw = 1; }
+
+      /* CHORD QUALITY */
+
+      if (cguiGetKeyDown(KEY_M)) {
+
+	chord3rd = isShift ? 4 : 3;
+	redraw = 1;
+
+      }
+
+      if (cguiGetKeyDown(KEY_1)) { if (!isShift) chordVoices = 1; redraw = 1; }
+      if (cguiGetKeyDown(KEY_2)) { if (!isShift) chordVoices = 2; 
+	                         else chordExt[2] = !chordExt[2]; redraw = 1; }
+      if (cguiGetKeyDown(KEY_3)) { if (!isShift) chordVoices = 3; redraw = 1; }
+      if (cguiGetKeyDown(KEY_4)) { if (!isShift) chordVoices = 4; redraw = 1; 
+	                         else chordExt[5] = !chordExt[5]; redraw = 1; }
+      if (cguiGetKeyDown(KEY_5)) { if (!isShift) chordVoices = 5; redraw = 1; 
+                                 else chordExt[7] = !chordExt[7]; redraw = 1; }
+      if (cguiGetKeyDown(KEY_6)) { if (!isShift) chordVoices = 6; redraw = 1;
+                                 else chordExt[9] = !chordExt[9]; redraw = 1; }
+      if (cguiGetKeyDown(KEY_7)) {
+
+	if (!isShift) chordVoices = 7;
+
+	else {
+
+	  chordExt[chordThird == 3 ? 10 : 11] = !chordExt[chordThird == 3 ? 10 : 11];
+
+	}
+
+	redraw = 1;
+
+      }
+      
+      if (cguiGetKeyDown(KEY_8)) { if (!isShift) chordVoices = 8; 
+	else chordExt[12] = !chordExt[12]; redraw = 1; } 
+
+      if (cguiGetKeyDown(KEY_9)) { if (isShift) chordExt[14] = !chordExt[14];
+	redraw = 1; }
+
+    }
+
+    if (redraw) tmuseUpdateChordName();
+
+  }
+
+  else {
+   
+    /* TUNING MODE */
+ 
+    if (cguiGetKeyDown(KEY_Q)) { envA += 2; redraw = 1; }
+    if (cguiGetKeyDown(KEY_A)) { envA -= 2; if (envA < 1) envA = 1; redraw = 1; }
+    if (cguiGetKeyDown(KEY_W)) { envD += 2; redraw = 1; }
+    if (cguiGetKeyDown(KEY_S)) { envD -= 2; if (envD < 1) envD = 1; redraw = 1; }
+    if (cguiGetKeyDown(KEY_E)) { envS += 2000; redraw = 1; }
+    if (cguiGetKeyDown(KEY_D)) { envS -= 2000; if (envS < 1) envS = 1; redraw = 1; }
+    if (cguiGetKeyDown(KEY_R)) { envR  += 5; redraw = 1; }
+    if (cguiGetKeyDown(KEY_F)) { envR  -= 5; if (envR < 1) envR = 1; redraw = 1; }
+
+    if (cguiGetKeyDown(KEY_1)) { currentWave = WAVE_SINE; redraw = 1; }
+    if (cguiGetKeyDown(KEY_2)) { currentWave = WAVE_SQUARE; redraw = 1; }
+    if (cguiGetKeyDown(KEY_3)) { currentWave = WAVE_SAW; redraw = 1; }
+    if (cguiGetKeyDown(KEY_4)) { currentWave = WAVE_TRIANGLE; redraw = 1; }
+    if (cguiGetKeyDown(KEY_5)) { currentWave = WAVE_NOISE; redraw = 1; }
+
+    if (cguiGetKeyDown(KEY_SPACE)) {
+
+      isPlaying = 1;
+      redraw = 1;
+      tmuseTriggerChord();
+
+    }
+
+    if (redraw) mixSetEnv(envA, envD, envS, envR);
+
+  }
+
+  /* PLAYBACK */
+
+  if (cguiGetKeyDown(KEY_SPACE)) { isPlaying = 1; redraw = 1; 
+    tmuseTriggerChord(); }
+
+  if (cguiGetKeyUp(KEY_SPACE))   { isPlaying = 0; redraw = 1; 
+    for (i = 0; i < MIX_CHANNELS; i++) mixKeyOff(i); }
+
+  if (currentWave != oldWave && isPlaying) 
+    tmuseTriggerChord();
+
+  return redraw;
+  
+}
+    

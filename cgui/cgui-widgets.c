@@ -486,7 +486,7 @@ void drawWidget(Widget *w, int winX, int winY) {
 
         int fillW, range;
 
-        range = w->max, w->min;
+        range = w->max - w->min;
         pct = (range != 0) ? (float)(w->val - w->min) / (float)range : 0.0f;
 
         if (pct < 0.0f)
@@ -496,6 +496,8 @@ void drawWidget(Widget *w, int winX, int winY) {
             pct = 1.0f;
 
         drawBorder(absX, absY, w->w, w->h, 0, 154);
+
+        drawRect(absX + 1, absY + 1, w->w - 2, w->h - 2, 248);
 
         fillW = (int)(pct * (w->w - 2));
 
