@@ -354,7 +354,7 @@ void drawWidget(Widget *w, int winX, int winY) {
         drawRect(absX, trackY + 1, w->w, 1, 248);
 
         drawRect(thumbX, absY, thumbW, w->h, 154);
-        drawRect(thumbX, absY, thumbW, 1, 148);
+        drawRect(thumbX, absY, thumbW, 1, 248);
         drawRect(thumbX, absY, 1, w->h, 248);
         drawRect(thumbX, absY + w->h - 1, thumbW, 1, 0);
         drawRect(thumbX + thumbW - 1, absY, 1, w->h, 0);
