@@ -505,6 +505,27 @@ void drawWidget(Widget *w, int winX, int winY) {
 
             drawRect(absX + 1, absY + 1, fillW, w->h - 2, 1);
 
+        } else if (w->type == WIDGET_RADIO) {
+
+            drawRect(absX + 3, absY, 4, 10, 248);
+            drawRect(absX + 1, absY + 1, 8, 8, 248);
+            drawRect(absX, absY + 3, 10, 4, 248);
+
+            drawLine(absX + 3, absY, absX + 6, absY, 154);
+            drawLine(absX + 1, absY + 1, absX + 2, absY + 1, 154);
+            drawLine(absX, absY + 3, absX, absY + 6, 154);
+            drawLine(absX + 3, absY + 9, absX + 6, absY + 9, 0);
+            drawLine(absX + 7, absY + 8, absX + 8, absY + 8, 0);
+            drawLine(absX + 9, absY + 3, absX + 9, absY + 6, 0);
+
+            if (w->isChecked) {
+
+                drawRect(absX + 3, absY + 3, 4, 4, 0);
+
+        }
+
+        drawString(absX + 14, absY + 1, w->text, 0);
+
         }
 
     }
