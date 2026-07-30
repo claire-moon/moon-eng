@@ -1,0 +1,29 @@
+# Build output
+/build/
+/dist/
+*.o
+*.d
+*.map
+*.sym
+*.err
+*.plist
+/.cache/
+Debug/
+
+# DOS executable output is published as a release artifact.
+*.exe
+*.EXE
+!/CWSDPMI.EXE
+
+# Logs and redirected process output
+/logs/
+build.log
+build_log.txt
+stdout.txt
+stderr.txt
+
+# Editor and backup files
+*~
+\#*\#
+.#*
+*.000
