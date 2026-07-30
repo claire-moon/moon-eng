@@ -173,6 +173,10 @@ high-atmosphere flight.
 An `.MDP` is a deterministic compiled runtime artifact. It is never the
 canonical editable project.
 
+The implemented byte-level v1 rules are frozen in
+[`MDP_V1.md`](MDP_V1.md); this section defines the surrounding compiler and
+runtime architecture.
+
 - A project directory contains an 8.3-safe `.MPR` manifest and separate source
   assets.
 - The shared compiler/validator core is portable C99 and is used by DOS MDPed
