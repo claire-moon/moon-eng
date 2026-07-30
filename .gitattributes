@@ -1,0 +1,18 @@
+* text=auto
+
+*.c text eol=lf
+*.h text eol=lf
+*.md text eol=lf
+*.sh text eol=lf
+*.bat text eol=crlf
+*.txt text eol=lf
+
+*.BMP binary
+*.EXE binary
+*.MDP binary
+*.bmp binary
+*.png binary
+*.xcf binary
+
+# Historical notes are preserved byte-for-byte, including old whitespace.
+docs/archive/** -whitespace

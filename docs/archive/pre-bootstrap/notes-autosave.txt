@@ -1,0 +1,6 @@
+[x] make console
+
+[x] refactor player movement into distinct player.c file and have input.c only
+send input/output signals
+
+make four skyboxes ( one for each episode )
