@@ -35,8 +35,8 @@ void applyPhysics(Player *p) {
 
   }
 
-  p->vx *= 0.85;
-  p->vy *= 0.85;
+  p->vx *= p->friction;
+  p->vy *= p->friction;
   p->va *= 0.70;
 
 }

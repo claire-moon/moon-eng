@@ -18,15 +18,16 @@ echo "** [LINBUILD] BUILDING CONFIG=${config} **"
 "$project_dir/build.sh" "$config" all
 
 dosbox_bin="${DOSBOX:-dosbox}"
-program="${MOON_PROGRAM:-moon.exe}"
+program="${MOON_PROGRAM:-zeus.exe}"
+runtime_dir="$project_dir/build/dos/$config"
 dosbox_args=()
 if [[ -n "${DOSBOX_ARGS:-}" ]]; then
     read -r -a dosbox_args <<< "$DOSBOX_ARGS"
 fi
 
 echo "** [LINBUILD] STARTING VANILLA DOSBOX: ${program} **"
-cd "$project_dir"
+cd "$runtime_dir"
 exec "$dosbox_bin" "${dosbox_args[@]}" \
-    -c "mount c build/dos/${config}" \
+    -c "mount c ." \
     -c "c:" \
     -c "$program"

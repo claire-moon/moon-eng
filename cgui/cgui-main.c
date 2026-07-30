@@ -1229,6 +1229,7 @@ void packWindow(int winIdx) {
 
     int i, right, bottom;
     int maxW = 0, maxH = 0;
+    int titleW;
 
     Window *w = &windows[winIdx];
 
@@ -1252,9 +1253,11 @@ void packWindow(int winIdx) {
     w->w = maxW + 10;
     w->h = maxH + 10;
 
-    if (w->w < (strlen(w->title) * 4) + 24) {
+    titleW = (int)strlen(w->title) * 4 + 24;
 
-        w->w = (strlen(w->title) * 4) + 24;
+    if (w->w < titleW) {
+
+        w->w = titleW;
 
     }
 

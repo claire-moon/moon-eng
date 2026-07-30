@@ -2,13 +2,14 @@
 # Portable DJGPP build for ZEUS, MDPed, Tmuse, CGUI and MOON.
 
 CONFIG ?= release
+DOS_SHELL ?= 0
 VALID_CONFIGS := debug release
 
 ifeq ($(filter $(CONFIG),$(VALID_CONFIGS)),)
 $(error Unsupported CONFIG '$(CONFIG)'; choose debug or release)
 endif
 
-ifdef COMSPEC
+ifeq ($(DOS_SHELL),1)
 ifeq ($(origin CC),default)
 CC := C:/djgpp/bin/gcc.exe
 endif
@@ -81,7 +82,7 @@ BUILD_DIRS := \
 	$(BUILD_ROOT)/dep $(DEP_DIR) $(addprefix $(DEP_DIR)/,$(SOURCE_DIRS)) \
 	$(BUILD_ROOT)/dos $(DOS_DIR)
 
-.PHONY: all zeus mdped tmuse tmusegui moon runtime debug release dist dist-game dist-tools test clean help
+.PHONY: all zeus mdped tmuse tmusegui moon runtime debug release dist dist-game dist-tools test dosbox-smoke clean help
 
 all: zeus mdped tmuse tmusegui moon runtime
 
@@ -94,9 +95,7 @@ moon: $(MOON_BIN)
 RUNTIME_FILES := \
 	$(DOS_DIR)/CWSDPMI.EXE \
 	$(DOS_DIR)/GAME.MDP \
-	$(DOS_DIR)/PALETTE.BMP \
-	$(DOS_DIR)/MOON.BAT \
-	$(DOS_DIR)/RUNTMUSE.BAT
+	$(DOS_DIR)/PALETTE.BMP
 
 runtime: $(RUNTIME_FILES)
 
@@ -124,7 +123,7 @@ $(MOON_BIN): $(MOON_OBJ) | $(DOS_DIR)
 $(OBJ_DIR)/%.o: %.c | $(BUILD_DIRS)
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(DEPFLAGS) -c $< -o $@
 
-ifdef COMSPEC
+ifeq ($(DOS_SHELL),1)
 define make_directory
 	@if not exist $(subst /,\,$@)\NUL mkdir $(subst /,\,$@)
 endef
@@ -161,7 +160,7 @@ $(addprefix $(OBJ_DIR)/,$(SOURCE_DIRS)): | $(OBJ_DIR)
 $(addprefix $(DEP_DIR)/,$(SOURCE_DIRS)): | $(DEP_DIR)
 	$(make_directory)
 
-ifdef COMSPEC
+ifeq ($(DOS_SHELL),1)
 $(GAME_DIST_ROOT) $(TOOLS_DIST_ROOT):
 	@if not exist $(subst /,\,$(DIST_ROOT))\NUL mkdir $(subst /,\,$(DIST_ROOT))
 	$(make_directory)
@@ -182,11 +181,6 @@ $(DOS_DIR)/GAME.MDP: GAME.MDP | $(DOS_DIR)
 	$(copy_file)
 $(DOS_DIR)/PALETTE.BMP: palette.bmp | $(DOS_DIR)
 	$(copy_file)
-$(DOS_DIR)/MOON.BAT: moon.bat | $(DOS_DIR)
-	$(copy_file)
-$(DOS_DIR)/RUNTMUSE.BAT: runtmuse.bat | $(DOS_DIR)
-	$(copy_file)
-
 GAME_DIST_FILES := \
 	$(GAME_DIST_DIR)/ZEUS.EXE \
 	$(GAME_DIST_DIR)/CWSDPMI.EXE \
@@ -198,9 +192,7 @@ TOOLS_DIST_FILES := \
 	$(TOOLS_DIST_DIR)/TMUSEGUI.EXE \
 	$(TOOLS_DIST_DIR)/MOON.EXE \
 	$(TOOLS_DIST_DIR)/CWSDPMI.EXE \
-	$(TOOLS_DIST_DIR)/PALETTE.BMP \
-	$(TOOLS_DIST_DIR)/MOON.BAT \
-	$(TOOLS_DIST_DIR)/RUNTMUSE.BAT
+	$(TOOLS_DIST_DIR)/PALETTE.BMP
 
 dist: dist-game dist-tools
 
@@ -229,16 +221,14 @@ $(TOOLS_DIST_DIR)/CWSDPMI.EXE: $(DOS_DIR)/CWSDPMI.EXE | $(TOOLS_DIST_DIR)
 	$(copy_file)
 $(TOOLS_DIST_DIR)/PALETTE.BMP: $(DOS_DIR)/PALETTE.BMP | $(TOOLS_DIST_DIR)
 	$(copy_file)
-$(TOOLS_DIST_DIR)/MOON.BAT: $(DOS_DIR)/MOON.BAT | $(TOOLS_DIST_DIR)
-	$(copy_file)
-$(TOOLS_DIST_DIR)/RUNTMUSE.BAT: $(DOS_DIR)/RUNTMUSE.BAT | $(TOOLS_DIST_DIR)
-	$(copy_file)
-
 test: all
 	@echo Compile/link smoke test passed for CONFIG=$(CONFIG).
 	@echo Run linbuild.sh or winbuild.sh for the vanilla DOSBox runtime gate.
 
-ifdef COMSPEC
+dosbox-smoke: dist-game
+	./scripts/dosbox-smoke.sh $(CONFIG)
+
+ifeq ($(DOS_SHELL),1)
 ifeq ($(OS),Windows_NT)
 clean:
 	@if exist $(subst /,\,$(BUILD_ROOT))\NUL rmdir /S /Q $(subst /,\,$(BUILD_ROOT))
@@ -256,7 +246,7 @@ endif
 help:
 	@echo "MOON ENG build targets:"
 	@echo "  all zeus mdped tmuse tmusegui moon runtime"
-	@echo "  test dist dist-game dist-tools clean debug release"
+	@echo "  test dosbox-smoke dist dist-game dist-tools clean debug release"
 	@echo "Select a configuration with CONFIG=debug or CONFIG=release."
 
 -include $(ALL_DEP)

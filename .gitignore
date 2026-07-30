@@ -21,6 +21,8 @@ build.log
 build_log.txt
 stdout.txt
 stderr.txt
+SMOKE.OUT
+SMOKE.LOG
 
 # Editor and backup files
 *~

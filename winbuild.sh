@@ -20,15 +20,16 @@ echo "** [WINBUILD] BUILDING CONFIG=${config} **"
 # Override DOSBOX when DOSBox is installed somewhere other than PATH, for
 # example: DOSBOX='/mnt/c/Program Files (x86)/DOSBox-0.74-3/DOSBox.exe'.
 dosbox_bin="${DOSBOX:-dosbox}"
-program="${MOON_PROGRAM:-moon.exe}"
+program="${MOON_PROGRAM:-zeus.exe}"
+runtime_dir="$project_dir/build/dos/$config"
 dosbox_args=()
 if [[ -n "${DOSBOX_ARGS:-}" ]]; then
     read -r -a dosbox_args <<< "$DOSBOX_ARGS"
 fi
 
 echo "** [WINBUILD] STARTING VANILLA DOSBOX: ${program} **"
-cd "$project_dir"
+cd "$runtime_dir"
 exec "$dosbox_bin" "${dosbox_args[@]}" \
-    -c "mount c build/dos/${config}" \
+    -c "mount c ." \
     -c "c:" \
     -c "$program"

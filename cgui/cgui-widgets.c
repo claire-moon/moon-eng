@@ -247,16 +247,21 @@ void drawWidget(Widget *w, int winX, int winY) {
             {
 
                 maxChars = (w->w - 18) / 4;
+                if (maxChars < 1) maxChars = 1;
+                if (maxChars > (int)sizeof(shortName) - 1) {
+                    maxChars = (int)sizeof(shortName) - 1;
+                }
                 orig = w->listItems[itemIdx];
                 ext = strchr(orig, '.');
 
-                if (strlen(orig) <= maxChars) {
+                if ((int)strlen(orig) <= maxChars) {
 
                     strcpy(shortName, orig);
 
-                } else if (ext != NULL && maxChars > strlen(ext) + 1) {
+                } else if (ext != NULL &&
+                           maxChars > (int)strlen(ext) + 1) {
 
-                    extLen = strlen(ext);
+                    extLen = (int)strlen(ext);
                     keepBase = maxChars - extLen - 2;
                     dotCount = 2;
 
@@ -290,11 +295,11 @@ void drawWidget(Widget *w, int winX, int winY) {
             if (itemIdx == w->listSelected) {
 
                 drawRect(absX + 2, itemY - 1, w->w - 4, 10, 1);
-                drawString(absX + 4, itemY, w->listItems[itemIdx], 248);
+                drawString(absX + 4, itemY, shortName, 248);
 
             } else {
 
-                drawString(absX + 4, itemY, w->listItems[itemIdx], 0);
+                drawString(absX + 4, itemY, shortName, 0);
 
             }
 

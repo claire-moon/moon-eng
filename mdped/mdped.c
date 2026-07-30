@@ -188,6 +188,7 @@ void test_showProgress() {
     int s_idx = addWidget(win, WIDGET_SLIDER, 10, 20, 100, 10, "");
     int p_idx = addWidget(win, WIDGET_PROGRESS, 10, 40, 100, 10, "");
 
+    (void)p_idx;
     windows[win].widgets[s_idx].onClick = test_onSliderMove;
 
     packWindow(win);
@@ -278,8 +279,12 @@ int main() {
 
     while (!done && listWid->listCount < 32) {
 
-      strncpy(listWid->listItems[listWid->listCount], ffblk.ff_name, 63);
-      listWid->listItems[listWid->listCount][63] = '\0';
+      size_t nameLen = strlen(ffblk.ff_name);
+
+      if (nameLen > 63u) nameLen = 63u;
+
+      memcpy(listWid->listItems[listWid->listCount], ffblk.ff_name, nameLen);
+      listWid->listItems[listWid->listCount][nameLen] = '\0';
       listWid->listCount++;
       done = findnext(&ffblk);
 

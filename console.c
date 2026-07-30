@@ -74,7 +74,7 @@ void runConsole(Player *p) {
       cprintf("map_info           ---     show map info\r\n");
       cprintf("show_fps           ---     DEBUG: show FPS on HUD\r\n");
       cprintf("show_pos           ---     DEBUG: show player position on HUD\r\n");
-      cprintf("show_tic           ---     DEBUG: show tics and frame count on HUD\r\n");
+      cprintf("show_tics          ---     DEBUG: show tics and frame count on HUD\r\n");
       cprintf(" \r\n");
 
     }

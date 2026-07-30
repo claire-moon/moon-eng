@@ -45,6 +45,7 @@ int main() {
 
       system("cls");
       printf("SEE YOU, SPACE COWBOY...\n");
+      break;
 
     }
 

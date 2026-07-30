@@ -16,7 +16,7 @@ extern void initKeyboard();
 extern void cleanupKeyboard();
 
 void cleanupVideo() { }
-void runConsole(Player *p) { }
+void runConsole(Player *p) { (void)p; }
 
 /* INIT TMUSE API */
 

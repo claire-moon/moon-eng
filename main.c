@@ -1,10 +1,13 @@
+#include <ctype.h>
 #include <time.h>
+#include <stdio.h>
 #include <string.h>
 
 #include "defs.h"
 
 #define TICKS_PER_SECOND 35
 #define TICK_INTERVAL (UCLOCKS_PER_SEC / TICKS_PER_SECOND)
+#define SMOKE_TICKS 1
 
 int showFPS = 0;
 int showPos = 0;
@@ -15,16 +18,92 @@ unsigned long frameCount = 0;
 unsigned long ticCount = 0;
 
 char mdpFilename[32] = "game.mdp";
+int moonSmokeMode = 0;
 
-int main(int argc, char *argv[]) {
+static void smokeTrace(const char *phase) {
 
-  if (argc > 1) {
+  FILE *trace;
 
-    strcpy(mdpFilename, argv[1]);
+  if (!moonSmokeMode) return;
+
+  trace = fopen("SMOKE.LOG", "ab");
+  if (!trace) return;
+
+  fprintf(trace, "%s\r\n", phase);
+  fclose(trace);
+
+}
+
+static int optionEquals(const char *left, const char *right) {
+
+  while (*left != '\0' && *right != '\0') {
+
+    if (toupper((unsigned char)*left) != toupper((unsigned char)*right)) {
+
+      return 0;
+
+    }
+
+    left++;
+    right++;
 
   }
 
+  return *left == '\0' && *right == '\0';
+
+}
+
+static int writeSmokeResult(unsigned long ticks) {
+
+  FILE *result = fopen("SMOKE.OUT", "wb");
+
+  if (!result) return 0;
+
+  fprintf(result, "PASS\tZEUS.STARTUP\tTICKS\t%lu\r\n", ticks);
+
+  return fclose(result) == 0;
+
+}
+
+int main(int argc, char *argv[]) {
+
   Player player;
+  int argIndex;
+  int mdpArgumentSeen = 0;
+  unsigned long smokeTicks = 0;
+
+  for (argIndex = 1; argIndex < argc; argIndex++) {
+
+    if (optionEquals(argv[argIndex], "/SMOKE") ||
+        optionEquals(argv[argIndex], "-SMOKE") ||
+        optionEquals(argv[argIndex], "--SMOKE")) {
+
+      moonSmokeMode = 1;
+      continue;
+
+    }
+
+    if (mdpArgumentSeen) {
+
+      fprintf(stderr, "Usage: ZEUS.EXE [PACKAGE.MDP] [/SMOKE]\n");
+      return 2;
+
+    }
+
+    if (snprintf(mdpFilename, sizeof(mdpFilename), "%s", argv[argIndex]) >=
+        (int)sizeof(mdpFilename)) {
+
+      fprintf(stderr, "MDP path is too long (maximum %u characters).\n",
+              (unsigned int)(sizeof(mdpFilename) - 1));
+      return 1;
+
+    }
+
+    mdpArgumentSeen = 1;
+
+  }
+
+  smokeTrace("ARGS");
 
   /* TIME VARS */
 
@@ -34,17 +113,36 @@ int main(int argc, char *argv[]) {
   int needsRender = 0;
 
   initMapSystem();
+  smokeTrace("MAP.INIT");
   loadMap(1);
+  smokeTrace("MAP.LOAD");
 
   initPlayer(&player);
+  smokeTrace("PLAYER.INIT");
   initVideo();
+  smokeTrace("VIDEO.INIT");
   initKeyboard();
+  smokeTrace("INPUT.INIT");
 
   startTime = uclock();
   lastTime = startTime;
   nextTick = startTime;
 
-  while(1) {
+  if (moonSmokeMode) {
+
+    for (smokeTicks = 0; smokeTicks < SMOKE_TICKS; smokeTicks++) {
+
+      processInput(&player);
+      updatePlayer(&player);
+      ticCount++;
+      renderScene(&player);
+      frameCount++;
+
+      smokeTrace("FRAME.RENDERED");
+
+    }
+
+  } else while(1) {
 
       /* TIME/FPS/TICS CALC */
 
@@ -89,6 +187,18 @@ int main(int argc, char *argv[]) {
         frameCount++;
 
     }
+
+  }
+
+  cleanupKeyboard();
+  smokeTrace("INPUT.DONE");
+  cleanupVideo();
+  smokeTrace("VIDEO.DONE");
+
+  if (moonSmokeMode && !writeSmokeResult(smokeTicks)) {
+
+    fprintf(stderr, "Unable to write SMOKE.OUT.\n");
+    return 1;
 
   }
 

@@ -34,6 +34,11 @@ the DOS runtime directory.
 On a DOS/Windows DJGPP installation, run `BUILD.BAT`. On a modern system, the
 generated distribution can be mounted and started with vanilla DOSBox.
 
+Run `make dosbox-smoke` to cross-build the game-only distribution and exercise
+`ZEUS.EXE /SMOKE` through vanilla DOSBox with an empty configuration. The
+optional `dosbox-dev.conf` is for interactive development convenience and is
+not used by the default-configuration compatibility gate.
+
 ## Components
 
 - `ZEUS.EXE`: the game and current MOON ENG runtime prototype

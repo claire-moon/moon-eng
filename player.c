@@ -19,7 +19,7 @@ void initPlayer(Player *p) {
   /* PLAYER DEFAULT CONFIG */
 
   p->speed       = 1.00;
-  p->friction    = 0.50;
+  p->friction    = 0.85;
   p->turnSpeed   = 0.03;
   p->dashTimer   = 0;
   p->zOffset     = 0;
@@ -38,42 +38,38 @@ void updatePlayer(Player *p) {
   if (p->dashTimer > 0) {
 
     p->dashTimer -= 1;
+    p->targetFov = 85.0;
 
-  if (p->dashTimer > 30) {
+    if (p->dashTimer > 30) {
 
-	p->zOffset = (35.0 - p->dashTimer) * 4.8;
+      p->zOffset = (35.0 - p->dashTimer) * 4.8;
 
-	} else {
+    } else {
 
-	p->zOffset = (p->dashTimer / 30.0) * 24.0;
+      p->zOffset = (p->dashTimer / 30.0) * 24.0;
 
-	}
+    }
 
-	} else {
+  } else {
 
-	p->zOffset = 0;
+    p->zOffset = 0;
 
-	if (p->dashTimer > 0) {
+    if (keys[bindForward] || keys[bindBackwards] ||
+        keys[bindStrafeLeft] || keys[bindStrafeRight]) {
 
-		p->targetFov = 85.0;
+      p->targetFov = 78.0;
 
-	}
+    }
 
-	else if (keys[bindForward] || keys[bindBackwards] || keys[bindStrafeLeft] || keys[bindStrafeRight]) {
+    else {
 
-		p->targetFov = 78.0;
+      p->targetFov = 70.0;
 
-	}
-
-	else {
-
-		p->targetFov = 70.0;
-
-	}
-
-	p->fov += (p->targetFov - p->fov) * 0.15;
+    }
 
   }
+
+  p->fov += (p->targetFov - p->fov) * 0.15;
 
   if (keys[bindLookDown]) p->pitch -= 4.0;
   if (keys[bindLookUp]) p->pitch += 4.0;

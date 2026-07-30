@@ -37,7 +37,7 @@ char tmuseModeStr[64] = "MODE: INIT";
 extern int envA, envD, envS, envR;
 extern void mixSetEnv(int a, int d, int s, int r);
 
-void runConsole(Player *p) {}
+void runConsole(Player *p) { (void)p; }
 
 void initVideo() {
 

@@ -140,28 +140,20 @@ void renderScene(Player *p) {
     float  ra, dx, dy, dist;
     int    mapX, mapY, stepX, stepY, side;
     float  rayX, rayY, sideDistX, sideDistY, deltaDistX, deltaDistY;
-    int    sectorLight, finalShade, shade;
+    int    shade;
     int    baseH, wallBottom, drawStart, drawEnd, wallColor;
     int    currentLowestTop, visibleEnd;
     int    cameraShift;
 
     float	 fovRad, halfFovRad, angleStep, projDist;
-    float  idlePitch, idleYaw, yawAmp;
+    float  idlePitch, idleYaw;
 
     int	 horizonOffset, centerRow;
 
-    int    y, p_row, color;
+    int    y, p_row;
     float  rowDist;
 
     /* HEADBOB LOGIC */
-
-    yawAmp    = 0.015;
-
-    if (fabs(p->vx) > 0.1 || fabs(p->vy) > 0.1) {
-
-        yawAmp = 0.030;
-
-    }
 
     idleYaw	= sin(p->idleTimer) * p->bobAmp;
     idlePitch	= sin(p->idleTimer * 2.0) * 2.0;
@@ -368,7 +360,7 @@ void renderScene(Player *p) {
 
     drawHUD(p);
 
-    waitVsync();
+    if (!moonSmokeMode) waitVsync();
 
     memcpy((void *)VGA, VIR_SCR, SCR_SIZE);
 

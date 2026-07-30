@@ -30,8 +30,9 @@
 #define KEY_5        0x06
 #define KEY_6        0x07
 #define KEY_7        0x08
-#define KEY_8        0x0A
-#define KEY_9        0x0B
+#define KEY_8        0x09
+#define KEY_9        0x0A
+#define KEY_0        0x0B
 
 #define KEY_Q        0x10
 #define KEY_W        0x11
@@ -79,11 +80,12 @@
 #define KEY_PGUP     0x49
 #define KEY_PGDN     0x51
 #define KEY_HOME     0x47
+#define KEY_F1       0x3B
 
 /* MATH */
 
 #ifndef PI
-#define PI           3.145926535
+#define PI           3.14159265358979323846
 #endif
 
 /* PLAYER VARS */
@@ -109,7 +111,7 @@ typedef struct {
   float idleTimer;
   float bobAmp;
 
-  } Player;
+} Player;
 
 /* MAP VARS */
 
@@ -153,11 +155,12 @@ typedef struct {
 
 } Sprite;
 
-void initMapSystem();
+void initMapSystem(void);
 void loadMap(int mapNum);
 void drawSprite(int x, int y, Sprite *s);
 
-Sprite* loadSprite(char* name);
+Sprite *loadSprite(const char *name);
+void freeSprite(Sprite *sprite);
 
 /* I/O VARS */
 
@@ -178,14 +181,15 @@ extern int bindCenterView;
 
 extern float engineFog;
 extern int useSkybox;
+extern int moonSmokeMode;
 extern char mdpFilename[32];
 
-void initVideo();
-void initKeyboard();
-void initPlayer();
-void updatePlayer();
-void cleanupVideo();
-void cleanupKeyboard();
+void initVideo(void);
+void initKeyboard(void);
+void initPlayer(Player *p);
+void updatePlayer(Player *p);
+void cleanupVideo(void);
+void cleanupKeyboard(void);
 void renderScene(Player *p);
 void processInput(Player *p);
 void applyPhysics(Player *p);
