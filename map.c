@@ -3,15 +3,200 @@
 #include <string.h>
 
 #include "defs.h"
+#include "mdp/mdp-format.h"
 
+#define TEST_W 64;
+#define TEST_H 64;
+#define TEST_COUNT (TEST_W * TEST_H);
 
 /* GLOBAL VARS */
 
-int *currentMap = NULL;
-int *currentLight = NULL;
+MapCell *currentCells = NULL;
+
 int mapWidth = 0;
 int mapHeight = 0;
+int mapCellSize = MAP_DEFAULT_CELL_SIZE;
 int activeSkybox = 1;
+
+static void clearMapCells(MapCell *cells, int count) {
+
+  int i, r;
+
+  for (i = 0; i < count; i++) {
+
+    cells[i].flags = MAP_CELL_SKY;
+
+    cells[i].wallHeight = 0;
+    cells[i].floorHeight = 0;
+    cells[i].ceilingHeight = 0;
+
+    cells[i].wallTex = 0;
+    cells[i].floorTex = 0;
+    cells[i].ceilingTex = 0;
+
+    cells[i].light = 30;
+    cells[i].tag = 0;
+
+    for (r = 0; r < 6; r++) {
+
+      cells[i].reserved[r] = 0;
+      
+    }
+    
+  }
+  
+}
+
+static void setCellRect(MapCell *cells, int w, int h, int x, int y, int rw,
+                        int rh, unsigned short flags, unsigned short wallHeight,
+                        unsigned short floorHeight, unsigned char ceilingHeight,
+                        unsigned char wallTex, unsigned char floorTex,
+                        unsigned char ceilingTex, unsigned char light,
+                        unsigned char tag) {
+
+  int ix;
+  int iy;
+  int idx;
+
+  for (iy = y; iy < y + rh; iy++) {
+
+    for (ix = x; ix < x + rw; ix++) {
+
+      if (ix >= 0 && ix < w && iy >= 0 && iy < h) {
+
+        idx = (iy * w) + ix;
+
+        cells[idx].flags = flags;
+        cells[idx].wallHeight = wallHeight;
+        cells[idx].floorHeight = floorHeight;
+        cells[idx].ceilingHeight = ceilingHeight;
+        cells[idx].wallTex = wallTex;
+        cells[idx].floorTex = floorTex;
+        cells[idx].ceilingTex = ceilingTex;
+        cells[idx].light = light;
+	cells[idx].tag = tag;
+	
+      }
+      
+    }
+    
+  }
+  
+}
+
+MapCell *mapCellAt(int x, int y) {
+
+  if (x < 0 || x >= mapWidth || y < 0 || y >= mapHeight) {
+
+    return NULL;
+    
+  }
+
+  return &currentCells[(y * mapWidth) + x];
+  
+}
+
+int mapCellBlocksPlayer(int x, int y) {
+
+  MapCell *cell;
+
+  cell = mapCellAt(x, y);
+
+  if (!cell) {
+
+    return 1;
+    
+  }
+
+  if (cell->flags & MAP_CELL_COLLIDE) {
+
+    return 1;
+    
+  }
+
+  return 0;
+  
+}
+
+int mapCellIsSolid(int x, int y) {
+
+  MapCell *cell;
+
+  cell = mapCellAt(x, y);
+
+  if (!cell) {
+
+    return 0;
+    
+  }
+
+  return (cell->flags & MAP_CELL_SOLID) != 0;
+  
+}
+
+int mapCellHasSky(int x, int y) {
+
+  MapCell *cell;
+
+  cell = mapCellAt(x, y);
+
+  if (!cell) {
+
+    return 1;
+    
+  }
+
+  return (cell->flags & MAP_CELL_SKY) != 0;
+  
+}
+
+int mapCellWallHeight(int x, int y) {
+
+  MapCell *cell;
+
+  cell = mapCellAt(x, y);
+
+  if (!cell) {
+
+    return 0;
+    
+  }
+
+  return cell->wallHeight;
+  
+}
+
+int mapCellCeilingHeight(int x, int y) {
+
+  MapCell *cell;
+
+  cell = mapCellAt(x, y);
+
+  if (!cell) {
+
+    return 0;
+    
+  }
+
+  return cell->ceilingHeight;
+  
+}
+
+int mapCellLight(int x, int y) {
+
+  MapCell *cell;
+
+  cell = mapCellAt(x, y);
+
+  if (!cell) {
+
+    return 30;
+    
+  }
+
+  return cell->light;
+  
+}
 
 /* BOOTSTRAPPER */
 
@@ -29,54 +214,23 @@ void initMapSystem() {
 
 	/* IF FILE MISSING ... */
 
-	int tempMap[100] = {
+        MapCell *tempCells;
+        FILE *f;
+        MoonHeader head;
+        MoonEntry dir[1];
+        LevelHeader lvlHead;
+	int cellDataSize;
 
-	  2,2,2,2,2,2,2,2,2,2,
-	  2,0,0,0,0,0,0,0,0,2,
-	  2,0,0,0,0,1,0,0,0,2,
-	  2,0,0,0,0,0,0,0,0,2,
-	  2,0,3,0,0,0,0,0,0,2,
-	  2,0,1,0,0,0,0,0,0,2,
-	  2,0,0,0,0,0,0,0,0,2,
-	  2,0,0,0,0,0,0,0,0,2,
-	  2,0,0,0,0,0,0,0,0,2,
-	  2,2,2,2,2,2,2,2,2,2,
+        tempCells = malloc(sizeof(MapCell) * TEST_COUNT);
+
+        if (!tempCells) {
+
+	  return;
 	  
-	};
+	}
 
-	int tempLight[100];
-	int i;
+	clearMapCells(tempCells, TEST_COUNT);
 	
-	for(i = 0; i<100; i++) tempLight[i] = 30;
-
-	/* 10x10 MAP -- SKYBOX #1 */
-	
-	LevelHeader lvlHead = {10, 10, 1};
-	
-	FILE *f         = fopen(mdpFilename, "wb");
-	MoonHeader head = {{'M', 'O', 'O', 'N'}, 2, 0};
-	MoonEntry         dir[2];
-
-	int archHeadSize   = sizeof(MoonHeader);
-	int lvlHeadSize    = sizeof(LevelHeader);
-	int dataSize       = sizeof(tempMap);
-
-	head.dirOffset = archHeadSize + (lvlHeadSize + dataSize) + dataSize;
-
-	dir[0].offset = archHeadSize;
-	dir[0].size   = lvlHeadSize + dataSize;
-	strcpy(dir[0].name, "MAP01");
-
-	dir[1].offset = archHeadSize + lvlHeadSize + dataSize;
-	dir[1].size   = dataSize;
-	strcpy(dir[1].name, "MAP01LIT");
-
-	fwrite(&head, sizeof(MoonHeader), 1, f);
-	fwrite(&lvlHead, sizeof(LevelHeader), 1, f);
-	fwrite(tempMap, dataSize, 1, f);
-	fwrite(tempLight, dataSize, 1, f);
-	fwrite(dir, sizeof(MoonEntry), 2, f);
-
 	fclose(f);
 
 }

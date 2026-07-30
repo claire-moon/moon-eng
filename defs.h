@@ -8,6 +8,8 @@
 
 #include <math.h>
 
+#include "mdp/mdp-format.h"
+
 /* CONSTANTS */
 
 /* VID */
@@ -15,7 +17,6 @@
 #define SCR_W        320
 #define SCR_H        200
 #define SCR_SIZE     64000
-#define TIL_SIZE     64
 
 /* I/0 */
 
@@ -113,37 +114,14 @@ typedef struct {
 
 /* MAP VARS */
 
-extern int *currentMap;
-extern int *currentLight;
+extern MapCell *currentCells;
+
 extern int mapWidth;
 extern int mapHeight;
+extern int mapCellSize;
 extern int activeSkybox;
 
 /* ARCHIVE STRUCTS */
-
-typedef struct {
-
-	char magic[4];
-	int numLumps;
-	int dirOffset;
-
-} MoonHeader;
-
-typedef struct {
-
-	int offset;
-	int size;
-	char name[16];
-
-} MoonEntry;
-
-typedef struct {
-
-  int width;
-  int height;
-  int skyboxID;
-  
-} LevelHeader;
 
 typedef struct {
 
@@ -157,6 +135,15 @@ void initMapSystem();
 void loadMap(int mapNum);
 void drawSprite(int x, int y, Sprite *s);
 
+MapCell *mapCellAt(int x, int y);
+
+int mapCellBlocksPlayer(int x, int y);
+int mapCellIsSolid(int x, int y);
+int mapCellHasSky(int x, int y);
+int mapCellWallHeight(int x, int y);
+int mapCellCeilingHeight(int x, int y);
+int mapCellLight(int x, int y);
+ 
 Sprite* loadSprite(char* name);
 
 /* I/O VARS */
