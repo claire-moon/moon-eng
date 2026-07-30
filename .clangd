@@ -1,0 +1,23 @@
+CompileFlags:
+  Add:
+
+    - "--target=i386-pc-dos-coff"
+    - "-m32"
+
+    - "-I./cgui"
+    - "-I./tmuse"
+    - "-I./mdped"
+    - "-I."
+
+    - "-I/opt/djgpp/i586-pc-msdosdjgpp/sys-include"
+    - "-I/opt/djgpp/i586-pc-msdosdjgpp/include"
+    - "-I/opt/djgpp/lib/gcc/i586-pc-msdosdjgpp/12.2.0/include"
+
+    - "-D__DJGPP__"
+
+  Remove: ["-nostdinc"]
+
+Diagnostics:
+  Suppress:
+    - "pp_file_not_found"
+    - "decl_negative_array_size"
