@@ -75,29 +75,39 @@ MDP_MAP_OBJ := $(OBJ_DIR)/mdp-map.o
 MDPC_OBJ := $(OBJ_DIR)/mdpc.o
 MDPTEST_DOS_OBJ := $(OBJ_DIR)/mdptest.o
 MDPMAPTEST_DOS_OBJ := $(OBJ_DIR)/maptest.o
+HITL_CORE_OBJ := $(OBJ_DIR)/hitl-core.o
+HITLTEST_DOS_OBJ := $(OBJ_DIR)/hitltest.o
 
 MDP_CORE_DEP := $(DEP_DIR)/mdp-core.d
 MDP_MAP_DEP := $(DEP_DIR)/mdp-map.d
 MDPC_DEP := $(DEP_DIR)/mdpc.d
 MDPTEST_DOS_DEP := $(DEP_DIR)/mdptest.d
 MDPMAPTEST_DOS_DEP := $(DEP_DIR)/maptest.d
+HITL_CORE_DEP := $(DEP_DIR)/hitl-core.d
+HITLTEST_DOS_DEP := $(DEP_DIR)/hitltest.d
 
 HOST_MDP_CORE_OBJ := $(HOST_OBJ_DIR)/mdp-core.o
 HOST_MDP_MAP_OBJ := $(HOST_OBJ_DIR)/mdp-map.o
 HOST_MDPC_OBJ := $(HOST_OBJ_DIR)/mdpc.o
 HOST_MDP_TEST_OBJ := $(HOST_OBJ_DIR)/mdptest.o
 HOST_MDP_MAP_TEST_OBJ := $(HOST_OBJ_DIR)/maptest.o
+HOST_HITL_CORE_OBJ := $(HOST_OBJ_DIR)/hitl-core.o
+HOST_HITL_TEST_OBJ := $(HOST_OBJ_DIR)/hitltest.o
 HOST_MDP_CORE_DEP := $(HOST_DEP_DIR)/mdp-core.d
 HOST_MDP_MAP_DEP := $(HOST_DEP_DIR)/mdp-map.d
 HOST_MDPC_DEP := $(HOST_DEP_DIR)/mdpc.d
 HOST_MDP_TEST_DEP := $(HOST_DEP_DIR)/mdptest.d
 HOST_MDP_MAP_TEST_DEP := $(HOST_DEP_DIR)/maptest.d
+HOST_HITL_CORE_DEP := $(HOST_DEP_DIR)/hitl-core.d
+HOST_HITL_TEST_DEP := $(HOST_DEP_DIR)/hitltest.d
 HOST_DEP := $(HOST_MDP_CORE_DEP) $(HOST_MDP_MAP_DEP) $(HOST_MDPC_DEP) \
-	$(HOST_MDP_TEST_DEP) $(HOST_MDP_MAP_TEST_DEP)
+	$(HOST_MDP_TEST_DEP) $(HOST_MDP_MAP_TEST_DEP) $(HOST_HITL_CORE_DEP) \
+	$(HOST_HITL_TEST_DEP)
 
 ALL_OBJ := $(sort $(ZEUS_OBJ) $(MDPED_OBJ) $(TMUSE_OBJ) $(TMUSEGUI_OBJ) \
 	$(MOON_OBJ) $(MDP_CORE_OBJ) $(MDP_MAP_OBJ) $(MDPC_OBJ) \
-	$(MDPTEST_DOS_OBJ) $(MDPMAPTEST_DOS_OBJ))
+	$(MDPTEST_DOS_OBJ) $(MDPMAPTEST_DOS_OBJ) $(HITL_CORE_OBJ) \
+	$(HITLTEST_DOS_OBJ))
 ALL_DEP := $(sort \
 	$(call source_deps,$(ZEUS_SRC)) \
 	$(call source_deps,$(MDPED_SRC)) \
@@ -105,7 +115,7 @@ ALL_DEP := $(sort \
 	$(call source_deps,$(TMUSEGUI_SRC)) \
 	$(call source_deps,$(MOON_SRC)) \
 	$(MDP_CORE_DEP) $(MDP_MAP_DEP) $(MDPC_DEP) $(MDPTEST_DOS_DEP) \
-	$(MDPMAPTEST_DOS_DEP))
+	$(MDPMAPTEST_DOS_DEP) $(HITL_CORE_DEP) $(HITLTEST_DOS_DEP))
 
 ZEUS_BIN := $(DOS_DIR)/zeus.exe
 MDPED_BIN := $(DOS_DIR)/mdped.exe
@@ -115,9 +125,11 @@ MOON_BIN := $(DOS_DIR)/moon.exe
 MDPC_BIN := $(DOS_DIR)/mdpc.exe
 MDPTEST_DOS_BIN := $(DOS_DIR)/mdptest.exe
 MDPMAPTEST_DOS_BIN := $(DOS_DIR)/maptest.exe
+HITLTEST_DOS_BIN := $(DOS_DIR)/hitltest.exe
 HOST_MDPC_BIN := $(HOST_BIN_DIR)/mdpc
 HOST_MDP_TEST_BIN := $(HOST_BIN_DIR)/mdptest
 HOST_MDP_MAP_TEST_BIN := $(HOST_BIN_DIR)/maptest
+HOST_HITL_TEST_BIN := $(HOST_BIN_DIR)/hitltest
 ALL_BIN := $(ZEUS_BIN) $(MDPED_BIN) $(TMUSE_BIN) $(TMUSEGUI_BIN) \
 	$(MOON_BIN) $(MDPC_BIN)
 
@@ -129,7 +141,7 @@ BUILD_DIRS := \
 	$(BUILD_ROOT)/dos $(DOS_DIR)
 
 .PHONY: all zeus mdped tmuse tmusegui moon mdpc mdp-test-dos \
-	mdp-map-test-dos test runtime \
+	mdp-map-test-dos hitl-test-dos test runtime \
 	debug release dist dist-game dist-tools dosbox-smoke clean help
 
 all: zeus mdped tmuse tmusegui moon mdpc runtime
@@ -142,6 +154,7 @@ moon: $(MOON_BIN)
 mdpc: $(MDPC_BIN)
 mdp-test-dos: $(MDPTEST_DOS_BIN)
 mdp-map-test-dos: $(MDPMAPTEST_DOS_BIN)
+hitl-test-dos: $(HITLTEST_DOS_BIN)
 
 RUNTIME_FILES := \
 	$(DOS_DIR)/CWSDPMI.EXE \
@@ -182,6 +195,9 @@ $(MDPMAPTEST_DOS_BIN): $(MDPMAPTEST_DOS_OBJ) $(MDP_MAP_OBJ) \
 	$(CC) $(LDFLAGS) -o $@ $(MDPMAPTEST_DOS_OBJ) $(MDP_MAP_OBJ) \
 		$(MDP_CORE_OBJ)
 
+$(HITLTEST_DOS_BIN): $(HITLTEST_DOS_OBJ) $(HITL_CORE_OBJ) | $(DOS_DIR)
+	$(CC) $(LDFLAGS) -o $@ $(HITLTEST_DOS_OBJ) $(HITL_CORE_OBJ)
+
 $(MDP_CORE_OBJ): src/mdp/mdp.c include/moon/mdp.h | $(BUILD_DIRS)
 	$(CC) $(MDP_CPPFLAGS) $(CFLAGS) -MMD -MP -MF $(MDP_CORE_DEP) -MT $@ -c $< -o $@
 
@@ -199,6 +215,12 @@ $(MDPTEST_DOS_OBJ): tests/mdp/test_mdp.c include/moon/mdp.h | $(BUILD_DIRS)
 $(MDPMAPTEST_DOS_OBJ): tests/mdp/test_mdp_map.c include/moon/mdp_map.h \
 		include/moon/mdp.h | $(BUILD_DIRS)
 	$(CC) $(MDP_CPPFLAGS) $(CFLAGS) -MMD -MP -MF $(MDPMAPTEST_DOS_DEP) -MT $@ -c $< -o $@
+
+$(HITL_CORE_OBJ): src/hitl/hitl.c include/moon/hitl.h | $(BUILD_DIRS)
+	$(CC) $(MDP_CPPFLAGS) $(CFLAGS) -MMD -MP -MF $(HITL_CORE_DEP) -MT $@ -c $< -o $@
+
+$(HITLTEST_DOS_OBJ): tests/hitl/test_hitl.c include/moon/hitl.h | $(BUILD_DIRS)
+	$(CC) $(MDP_CPPFLAGS) $(CFLAGS) -MMD -MP -MF $(HITLTEST_DOS_DEP) -MT $@ -c $< -o $@
 
 $(OBJ_DIR)/%.o: %.c | $(BUILD_DIRS)
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(DEPFLAGS) -c $< -o $@
@@ -242,7 +264,7 @@ $(addprefix $(DEP_DIR)/,$(SOURCE_DIRS)): | $(DEP_DIR)
 
 ifneq ($(DOS_SHELL),1)
 .PHONY: mdpc-host mdpc-smoke mdp-test-host mdp-map-test-host \
-	mdp-test-dosbox test-full
+	hitl-test-host mdp-test-dosbox hitl-test-dosbox test-full
 
 $(HOST_ROOT): | $(BUILD_ROOT)
 	$(make_directory)
@@ -277,6 +299,12 @@ $(HOST_MDP_MAP_TEST_OBJ): tests/mdp/test_mdp_map.c \
 		include/moon/mdp_map.h include/moon/mdp.h | $(HOST_OBJ_DIR) $(HOST_DEP_DIR)
 	$(HOST_CC) $(HOST_CPPFLAGS) -Iinclude $(HOST_CFLAGS) -MMD -MP -MF $(HOST_MDP_MAP_TEST_DEP) -MT $@ -c $< -o $@
 
+$(HOST_HITL_CORE_OBJ): src/hitl/hitl.c include/moon/hitl.h | $(HOST_OBJ_DIR) $(HOST_DEP_DIR)
+	$(HOST_CC) $(HOST_CPPFLAGS) -Iinclude $(HOST_CFLAGS) -MMD -MP -MF $(HOST_HITL_CORE_DEP) -MT $@ -c $< -o $@
+
+$(HOST_HITL_TEST_OBJ): tests/hitl/test_hitl.c include/moon/hitl.h | $(HOST_OBJ_DIR) $(HOST_DEP_DIR)
+	$(HOST_CC) $(HOST_CPPFLAGS) -Iinclude $(HOST_CFLAGS) -MMD -MP -MF $(HOST_HITL_TEST_DEP) -MT $@ -c $< -o $@
+
 $(HOST_MDPC_BIN): $(HOST_MDPC_OBJ) $(HOST_MDP_CORE_OBJ) \
 		$(HOST_MDP_MAP_OBJ) | $(HOST_BIN_DIR)
 	$(HOST_CC) $(HOST_LDFLAGS) -o $@ $(HOST_MDPC_OBJ) $(HOST_MDP_CORE_OBJ) \
@@ -290,6 +318,9 @@ $(HOST_MDP_MAP_TEST_BIN): $(HOST_MDP_MAP_TEST_OBJ) $(HOST_MDP_MAP_OBJ) \
 	$(HOST_CC) $(HOST_LDFLAGS) -o $@ $(HOST_MDP_MAP_TEST_OBJ) \
 		$(HOST_MDP_MAP_OBJ) $(HOST_MDP_CORE_OBJ)
 
+$(HOST_HITL_TEST_BIN): $(HOST_HITL_TEST_OBJ) $(HOST_HITL_CORE_OBJ) | $(HOST_BIN_DIR)
+	$(HOST_CC) $(HOST_LDFLAGS) -o $@ $(HOST_HITL_TEST_OBJ) $(HOST_HITL_CORE_OBJ)
+
 mdpc-host: $(HOST_MDPC_BIN)
 
 mdpc-smoke: mdpc-host
@@ -300,6 +331,9 @@ mdp-test-host: $(HOST_MDP_TEST_BIN)
 
 mdp-map-test-host: $(HOST_MDP_MAP_TEST_BIN)
 	"$(HOST_MDP_MAP_TEST_BIN)"
+
+hitl-test-host: $(HOST_HITL_TEST_BIN)
+	"$(HOST_HITL_TEST_BIN)"
 endif
 
 ifeq ($(DOS_SHELL),1)
@@ -367,21 +401,25 @@ $(TOOLS_DIST_DIR)/CWSDPMI.EXE: $(DOS_DIR)/CWSDPMI.EXE | $(TOOLS_DIST_DIR)
 $(TOOLS_DIST_DIR)/PALETTE.BMP: $(DOS_DIR)/PALETTE.BMP | $(TOOLS_DIST_DIR)
 	$(copy_file)
 ifeq ($(DOS_SHELL),1)
-test: all mdp-test-dos mdp-map-test-dos
+test: all mdp-test-dos mdp-map-test-dos hitl-test-dos
 	@$(subst /,\,$(MDPTEST_DOS_BIN))
 	@$(subst /,\,$(MDPMAPTEST_DOS_BIN))
-	@echo Compile/link and MDP tests passed for CONFIG=$(CONFIG).
+	@$(subst /,\,$(HITLTEST_DOS_BIN))
+	@echo Compile/link, MDP, and HITL tests passed for CONFIG=$(CONFIG).
 else
 test: all mdp-test-host mdp-map-test-host mdpc-smoke mdp-test-dos \
-		mdp-map-test-dos
-	@echo Host MDP tests passed and DOS MDP tests compiled for CONFIG=$(CONFIG).
+		mdp-map-test-dos hitl-test-host hitl-test-dos
+	@echo Host MDP/HITL tests passed and DOS tests compiled for CONFIG=$(CONFIG).
 	@echo Run make test-full for the vanilla DOSBox compatibility gates.
 
 mdp-test-dosbox: mdp-test-dos mdp-map-test-dos mdpc \
 		$(DOS_DIR)/CWSDPMI.EXE
 	./scripts/mdp-dosbox-test.sh $(CONFIG) "$(BUILD_ROOT)"
 
-test-full: test dosbox-smoke mdp-test-dosbox
+hitl-test-dosbox: hitl-test-dos $(DOS_DIR)/CWSDPMI.EXE
+	./scripts/hitl-dosbox-test.sh $(CONFIG) "$(BUILD_ROOT)"
+
+test-full: test dosbox-smoke mdp-test-dosbox hitl-test-dosbox
 	@echo All host and vanilla DOSBox gates passed for CONFIG=$(CONFIG).
 endif
 
@@ -406,12 +444,14 @@ endif
 help:
 	@echo "MOON ENG build targets:"
 	@echo "  all zeus mdped tmuse tmusegui moon mdpc runtime"
-	@echo "  test mdp-test-dos mdp-map-test-dos dosbox-smoke"
+	@echo "  test mdp-test-dos mdp-map-test-dos hitl-test-dos"
+	@echo "  dosbox-smoke"
 	@echo "  dist dist-game dist-tools clean"
 	@echo "  debug release"
 ifneq ($(DOS_SHELL),1)
 	@echo "  test-full mdpc-host mdpc-smoke mdp-test-host"
-	@echo "  mdp-map-test-host mdp-test-dosbox"
+	@echo "  mdp-map-test-host hitl-test-host mdp-test-dosbox"
+	@echo "  hitl-test-dosbox"
 endif
 	@echo "Select a configuration with CONFIG=debug or CONFIG=release."
 

@@ -1,5 +1,10 @@
 # MOON TEST COCKPIT Evidence Format
 
+Status: the portable `HITL.IN` / `AUTO.OUT` parser and combined-result
+evaluator are implemented and tested on host, DJGPP, and vanilla DOSBox. The
+CGUI cockpit, live-user journal writer, transactional summary writer, and host
+collector remain subsequent Milestone 1 work.
+
 `MOON.EXE /HITL HITL.IN` opens the keyboard-only **TEST COCKPIT** used for
 guided DOS acceptance. This format keeps the user, Codex, CI, DOSBox, and 86Box
 in one review loop without allowing automation to impersonate human approval.
@@ -17,7 +22,17 @@ uppercase `PASS`, `FAIL`, `BLOCKED`, and `UNRUN`.
 - `FAIL` means the observed result conflicts with the acceptance statement.
 - `BLOCKED` means the case could not be judged because a prerequisite or test
   environment failed.
-- `UNRUN` is the initial state and is restored whenever evidence is stale.
+- `UNRUN` is the initial effective lane state. Raw statuses from a completely
+  parsed but stale `AUTO.OUT` may be retained for diagnosis, but cannot be
+  applied to a case; its effective combined result is always
+`BLOCKED / STALE_EVIDENCE`.
+
+The portable evaluator binds each in-memory case state to the complete run,
+build, plan, and profile identity plus its case ID. Combined evaluation checks
+that binding against the live plan and `AUTO.OUT` every time. Applying AUTO
+evidence for a different identity or case resets MANUAL to `UNRUN`; a manual
+result is eligible only after the trusted cockpit binds it to the current
+state.
 
 The cockpit always displays AUTO and MANUAL status in separate columns and
 shows build, plan, and profile identity on the same screen. It must require a

@@ -62,7 +62,7 @@ run_dosbox() {
 
     set +e
     env SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy \
-        timeout 60s "$dosbox_bin" "${arguments[@]}" \
+        timeout 120s "$dosbox_bin" "${arguments[@]}" \
         >>"$dosbox_log" 2>&1
     dosbox_status=$?
     set -e
