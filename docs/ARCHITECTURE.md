@@ -219,11 +219,19 @@ game-specific information OBJ cannot represent.
 
 ## CGUI
 
-`CguiContext` receives a caller-provided surface, event stream, font, and
-semantic palette roles. Embedded CGUI never changes video mode and never owns
-MOON ENG global state.
+`CguiContext` receives a caller-provided surface, normalized action frames,
+font, and semantic palette roles, and it emits application events. Embedded
+CGUI never changes video mode and never owns MOON ENG global state.
 
-The shared library is responsible for:
+The first portable slice is implemented in `include/moon/cgui.h` and
+`src/cgui/`. It provides validated indexed surfaces, nested half-open clipping,
+deterministic fill/border/text rendering, a semantic palette, sparse-ID menus,
+F1 help, and default-No confirmation modals. Input is a caller-normalized
+action frame, modal input cannot leak to the backing menu, and applications
+receive events rather than callbacks. The exact live contract and validation
+boundary are recorded in [`CGUI_CORE.md`](CGUI_CORE.md).
+
+The broader shared library remains responsible for:
 
 - deterministic keyboard focus and tab order;
 - menu traversal, accelerators, and disabled-item handling;
@@ -234,7 +242,9 @@ The shared library is responsible for:
 - semantic palette remapping between editor, game, and scene palettes.
 
 CGUI powers the ZEUS front end and pause UI, MDPed, standalone Tmuse, and the
-MOON developer hub/TEST COCKPIT.
+MOON developer hub/TEST COCKPIT. Those consumers have not yet migrated to the
+new core; the original hardware-owning `cgui/` sources remain legacy code until
+their separately scoped migrations.
 
 ## Tmuse
 

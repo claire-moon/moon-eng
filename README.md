@@ -14,6 +14,9 @@ acceptance gate.
 The checked-in game is currently a pre-alpha engine prototype. It includes a
 320x200 indexed-color raycaster, movement, a developer console, procedural
 sky rendering, early CGUI tools, and an experimental Sound Blaster synthesizer.
+The newer foundation code now includes MDP v1 codecs, HITL evidence parsing,
+the shared fixed-step/DOS runtime boundary, and a portable caller-owned CGUI
+menu/modal core; the legacy game and tool consumers have not all migrated yet.
 The active roadmap is in [docs/ROADMAP.md](docs/ROADMAP.md).
 
 Historical design notes are retained under `docs/archive/pre-bootstrap/` for
@@ -44,13 +47,14 @@ optional `dosbox-dev.conf` is for interactive development convenience and is
 not used by the default-configuration compatibility gate.
 
 `make test` runs the native MDP container, typed cell-map, deterministic
-host-CLI, HITL evidence, and portable runtime-core tests and cross-builds their
-DOS equivalents. `make test-full` additionally executes ZEUS, every
-MDP/HITL/runtime-core test, the DJGPP hardware adapter, and the MOON first
-consumer in fresh default-config vanilla DOSBox 0.74-3. Test executables and
-generated evidence are never placed in either distribution. The native package
-compiler is written to `build/host/bin/release/mdpc`; `MDPC.EXE` is staged only
-in the tools package.
+host-CLI, HITL evidence, portable runtime-core, and contextual CGUI tests and
+cross-builds their DOS equivalents. `make test-full` additionally executes
+ZEUS, every MDP/HITL/runtime/CGUI test, the DJGPP hardware adapter, the MOON
+first consumer, and a full VGA CGUI presentation/readback smoke in fresh
+default-config vanilla DOSBox 0.74-3. Test executables and generated evidence
+are never placed in either distribution. The native package compiler is
+written to `build/host/bin/release/mdpc`; `MDPC.EXE` is staged only in the tools
+package.
 
 ## Components
 
@@ -69,6 +73,11 @@ The deterministic 35 Hz simulation, 60/35 Hz presentation scheduler, action
 input, DJGPP `uclock()`/IRQ1/Mode 13h adapter, and first MOON consumer are
 specified in [docs/RUNTIME_CORE.md](docs/RUNTIME_CORE.md). ZEUS has not yet
 migrated to this shared runtime.
+
+The portable indexed-surface, clipping, semantic-palette, sparse-menu, help,
+and default-No confirmation contract is specified in
+[docs/CGUI_CORE.md](docs/CGUI_CORE.md). Legacy MDPed/TmuseGUI migration and the
+ZEUS front end remain downstream work.
 
 The canonical package layout is specified in
 [docs/MDP_V1.md](docs/MDP_V1.md). The implemented height-aware cell-map

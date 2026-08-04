@@ -100,6 +100,13 @@ Planned issue groups:
 - `M1-REPO-*`: deterministic builds, dependency generation, CI package
   validation, and vanilla DOSBox smoke automation.
 
+`M1-CGUI-01` is the implemented first CGUI slice: caller-owned indexed
+surfaces, deterministic clipping/raster primitives, sparse-ID keyboard menus,
+F1 help, and exclusive default-No confirmation modals. Its host, DJGPP, and
+vanilla DOSBox automation is present; the two-profile user acceptance gate is
+still open. Tab order, file/grid/canvas widgets, legacy tool migration, and
+TEST COCKPIT remain later issues rather than implicit scope in that slice.
+
 Exit gate:
 
 - ZEUS, MDPed, Tmuse, and MOON build reproducibly;

@@ -74,6 +74,30 @@ result:
 These cases validate the fallback and ownership boundary. They do not satisfy
 the later custom-video smooth-60 performance gate.
 
+### CGUI context foundation acceptance
+
+Build `CGUIPRES.EXE`, copy it with `CWSDPMI.EXE`, and run
+`CGUIPRES.EXE /INTERACTIVE` on both named profiles. The M1 CGUI foundation has
+four manual cases; only the user assigns their MANUAL result:
+
+- `CGUI.VISUAL`: the complete beveled menu, every text row, star field, focus
+  highlight, disabled row, help panel, and confirmation panel render without
+  missing right/bottom edges, corrupt glyphs, padding artifacts, or flicker;
+- `CGUI.INPUT`: physical E0 Up/Down wrap and skip the disabled item, key repeat
+  moves one row per repeat pulse, Enter and Space each activate once, number
+  accelerators target the matching sparse-ID item, and F1 opens/closes help;
+- `CGUI.MODAL`: confirmation initially focuses No, consumes background input,
+  requires one tick to move to Yes and a later tick to accept it, distinguishes
+  the `N` accelerator/explicit No from Escape cancellation, accepts `Y` only
+  as the explicit Yes accelerator, and does not let a close-producing key
+  activate the backing menu; and
+- `CGUI.RESTORE`: repeated help/confirm/exit cycles return to the original
+  video mode and a responsive DOS keyboard with no stuck key.
+
+The `/SMOKE` path and DOSBox readback prove deterministic raster output and
+ordered restoration, but synthetic input and a dummy video driver do not
+assign or substitute for these physical cases.
+
 ## Performance acceptance
 
 The strict gameplay gate is measured on the Pentium 90 profiles after scene and
