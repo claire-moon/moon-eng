@@ -29,7 +29,11 @@ make all
 
 Build products are written below `build/`; building never stages or commits
 files. Use `make clean` to remove generated output and `make dist` to assemble
-the DOS runtime directory.
+the floppy-targeted game package under `dist/game/` and a complete developer
+suite under `dist/tools/`. The developer suite includes ZEUS and `GAME.MDP` so
+every option in `MOON.EXE` works from that one directory. Each staging target
+resets its generated configuration directory before copying the manifest, so
+removed or test-only artifacts cannot survive from an older build.
 
 On a DOS/Windows DJGPP installation, run `BUILD.BAT`. On a modern system, the
 generated distribution can be mounted and started with vanilla DOSBox.
@@ -40,17 +44,19 @@ optional `dosbox-dev.conf` is for interactive development convenience and is
 not used by the default-configuration compatibility gate.
 
 `make test` runs the native MDP container, typed cell-map, deterministic
-host-CLI, and HITL evidence tests and cross-builds their DOS equivalents.
-`make test-full` additionally executes ZEUS and every MDP/HITL test in fresh
-default-config vanilla DOSBox. Test executables and generated evidence are
-never placed in either distribution. The native package compiler is written
-to `build/host/bin/release/mdpc`; `MDPC.EXE` is staged only in the tools
-package.
+host-CLI, HITL evidence, and portable runtime-core tests and cross-builds their
+DOS equivalents. `make test-full` additionally executes ZEUS, every
+MDP/HITL/runtime-core test, the DJGPP hardware adapter, and the MOON first
+consumer in fresh default-config vanilla DOSBox 0.74-3. Test executables and
+generated evidence are never placed in either distribution. The native package
+compiler is written to `build/host/bin/release/mdpc`; `MDPC.EXE` is staged only
+in the tools package.
 
 ## Components
 
 - `ZEUS.EXE`: the game and current MOON ENG runtime prototype
-- `MOON.EXE`: developer-suite launcher, ultimately the TEST COCKPIT host
+- `MOON.EXE`: runtime-backed developer-suite launcher and future TEST COCKPIT
+  host
 - `MDPED.EXE`: MDP content editor
 - `TMUSE.EXE` / `TMUSEGUI.EXE`: audio engine diagnostics and editor frontends
 - `MDPC.EXE`: shared MDP v1 package compiler and validator CLI
@@ -58,6 +64,11 @@ package.
 
 The user/automation authority boundary and DOS-safe evidence grammar are
 specified in [docs/HITL_FORMAT.md](docs/HITL_FORMAT.md).
+
+The deterministic 35 Hz simulation, 60/35 Hz presentation scheduler, action
+input, DJGPP `uclock()`/IRQ1/Mode 13h adapter, and first MOON consumer are
+specified in [docs/RUNTIME_CORE.md](docs/RUNTIME_CORE.md). ZEUS has not yet
+migrated to this shared runtime.
 
 The canonical package layout is specified in
 [docs/MDP_V1.md](docs/MDP_V1.md). The implemented height-aware cell-map
