@@ -55,6 +55,25 @@ Each profile records emulator version, machine configuration hash, BLASTER
 value, video path, audio path, executable/package hashes, and whether it is a
 cold or warmed run. A profile change requires new evidence.
 
+### MOON runtime foundation acceptance
+
+The M1 runtime adapter has four manual cases on both profiles. Automation may
+prepare the build and evidence plan, but only the user assigns their MANUAL
+result:
+
+- `MOON.RUNTIME`: the launcher animation remains responsive, reports no
+  catch-up/clamp fault, and exits cleanly through stock Mode 13h;
+- `MOON.INPUT`: using the physical keyboard, E0 arrow keys wrap focus, holding
+  an arrow visibly increments repeat events, release clears `H` and increments
+  `R`, Enter activates focus, number-row shortcuts work, Escape exits, and the
+  non-E0 keypad keys do not alias arrow navigation or leave stuck input;
+- `MOON.RESTORE`: repeated launch/return cycles restore the text/video mode and
+  a working BIOS keyboard before each child and at the final DOS prompt; and
+- `MOON.LEGACY35`: `/LEGACY35` remains functional with interpolation disabled.
+
+These cases validate the fallback and ownership boundary. They do not satisfy
+the later custom-video smooth-60 performance gate.
+
 ## Performance acceptance
 
 The strict gameplay gate is measured on the Pentium 90 profiles after scene and
@@ -107,6 +126,11 @@ become release constants and MDPed validation limits.
 
 ### Timing and game state
 
+- the portable runtime's host/DJGPP golden suite and fresh-config DOSBox gate;
+- the DOS adapter enters/restores Mode 13h and IRQ1 ownership, copies its full
+  framebuffer, rejects a second active owner, and returns control to DOS;
+- `MOON.EXE /RUNTIME-SMOKE` consumes nonzero fixed/presentation work and writes
+  automation-owned evidence after teardown;
 - recorded action input produces identical per-tick state hashes under 35 and
   60 FPS presentation;
 - interpolation never changes authoritative positions or collision;

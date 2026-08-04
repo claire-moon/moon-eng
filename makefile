@@ -79,6 +79,8 @@ HITL_CORE_OBJ := $(OBJ_DIR)/hitl-core.o
 HITLTEST_DOS_OBJ := $(OBJ_DIR)/hitltest.o
 RUNTIME_CORE_OBJ := $(OBJ_DIR)/runtime-core.o
 RUNTIME_CORE_TEST_DOS_OBJ := $(OBJ_DIR)/runtime-core-test.o
+DOS_RUNTIME_OBJ := $(OBJ_DIR)/dos-runtime.o
+DOS_RUNTIME_TEST_OBJ := $(OBJ_DIR)/dos-runtime-test.o
 
 MDP_CORE_DEP := $(DEP_DIR)/mdp-core.d
 MDP_MAP_DEP := $(DEP_DIR)/mdp-map.d
@@ -89,6 +91,8 @@ HITL_CORE_DEP := $(DEP_DIR)/hitl-core.d
 HITLTEST_DOS_DEP := $(DEP_DIR)/hitltest.d
 RUNTIME_CORE_DEP := $(DEP_DIR)/runtime-core.d
 RUNTIME_CORE_TEST_DOS_DEP := $(DEP_DIR)/runtime-core-test.d
+DOS_RUNTIME_DEP := $(DEP_DIR)/dos-runtime.d
+DOS_RUNTIME_TEST_DEP := $(DEP_DIR)/dos-runtime-test.d
 
 HOST_MDP_CORE_OBJ := $(HOST_OBJ_DIR)/mdp-core.o
 HOST_MDP_MAP_OBJ := $(HOST_OBJ_DIR)/mdp-map.o
@@ -117,7 +121,8 @@ ALL_OBJ := $(sort $(ZEUS_OBJ) $(MDPED_OBJ) $(TMUSE_OBJ) $(TMUSEGUI_OBJ) \
 	$(MOON_OBJ) $(MDP_CORE_OBJ) $(MDP_MAP_OBJ) $(MDPC_OBJ) \
 	$(MDPTEST_DOS_OBJ) $(MDPMAPTEST_DOS_OBJ) $(HITL_CORE_OBJ) \
 	$(HITLTEST_DOS_OBJ) $(RUNTIME_CORE_OBJ) \
-	$(RUNTIME_CORE_TEST_DOS_OBJ))
+	$(RUNTIME_CORE_TEST_DOS_OBJ) $(DOS_RUNTIME_OBJ) \
+	$(DOS_RUNTIME_TEST_OBJ))
 ALL_DEP := $(sort \
 	$(call source_deps,$(ZEUS_SRC)) \
 	$(call source_deps,$(MDPED_SRC)) \
@@ -126,7 +131,8 @@ ALL_DEP := $(sort \
 	$(call source_deps,$(MOON_SRC)) \
 	$(MDP_CORE_DEP) $(MDP_MAP_DEP) $(MDPC_DEP) $(MDPTEST_DOS_DEP) \
 	$(MDPMAPTEST_DOS_DEP) $(HITL_CORE_DEP) $(HITLTEST_DOS_DEP) \
-	$(RUNTIME_CORE_DEP) $(RUNTIME_CORE_TEST_DOS_DEP))
+	$(RUNTIME_CORE_DEP) $(RUNTIME_CORE_TEST_DOS_DEP) \
+	$(DOS_RUNTIME_DEP) $(DOS_RUNTIME_TEST_DEP))
 
 ZEUS_BIN := $(DOS_DIR)/zeus.exe
 MDPED_BIN := $(DOS_DIR)/mdped.exe
@@ -138,6 +144,7 @@ MDPTEST_DOS_BIN := $(DOS_DIR)/mdptest.exe
 MDPMAPTEST_DOS_BIN := $(DOS_DIR)/maptest.exe
 HITLTEST_DOS_BIN := $(DOS_DIR)/hitltest.exe
 RUNTIME_CORE_TEST_DOS_BIN := $(DOS_DIR)/rtcore.exe
+DOS_RUNTIME_TEST_BIN := $(DOS_DIR)/rtdos.exe
 HOST_MDPC_BIN := $(HOST_BIN_DIR)/mdpc
 HOST_MDP_TEST_BIN := $(HOST_BIN_DIR)/mdptest
 HOST_MDP_MAP_TEST_BIN := $(HOST_BIN_DIR)/maptest
@@ -154,8 +161,10 @@ BUILD_DIRS := \
 	$(BUILD_ROOT)/dos $(DOS_DIR)
 
 .PHONY: all zeus mdped tmuse tmusegui moon mdpc mdp-test-dos \
-	mdp-map-test-dos hitl-test-dos runtime-core-test-dos test runtime \
-	debug release dist dist-game dist-tools dosbox-smoke clean help
+	mdp-map-test-dos hitl-test-dos runtime-core-test-dos \
+	runtime-dos-test-dos test runtime \
+	debug release dist dist-game dist-tools dist-game-prepare \
+	dist-tools-prepare dosbox-smoke clean help
 
 all: zeus mdped tmuse tmusegui moon mdpc runtime
 
@@ -169,6 +178,7 @@ mdp-test-dos: $(MDPTEST_DOS_BIN)
 mdp-map-test-dos: $(MDPMAPTEST_DOS_BIN)
 hitl-test-dos: $(HITLTEST_DOS_BIN)
 runtime-core-test-dos: $(RUNTIME_CORE_TEST_DOS_BIN)
+runtime-dos-test-dos: $(DOS_RUNTIME_TEST_BIN)
 
 RUNTIME_FILES := \
 	$(DOS_DIR)/CWSDPMI.EXE \
@@ -195,8 +205,8 @@ $(TMUSE_BIN): $(TMUSE_OBJ) | $(DOS_DIR)
 $(TMUSEGUI_BIN): $(TMUSEGUI_OBJ) | $(DOS_DIR)
 	$(CC) $(LDFLAGS) -o $@ $(TMUSEGUI_OBJ) $(LDLIBS)
 
-$(MOON_BIN): $(MOON_OBJ) | $(DOS_DIR)
-	$(CC) $(LDFLAGS) -o $@ $(MOON_OBJ) $(LDLIBS)
+$(MOON_BIN): $(MOON_OBJ) $(RUNTIME_CORE_OBJ) $(DOS_RUNTIME_OBJ) | $(DOS_DIR)
+	$(CC) $(LDFLAGS) -o $@ $(MOON_OBJ) $(RUNTIME_CORE_OBJ) $(DOS_RUNTIME_OBJ) $(LDLIBS)
 
 $(MDPC_BIN): $(MDPC_OBJ) $(MDP_CORE_OBJ) $(MDP_MAP_OBJ) | $(DOS_DIR)
 	$(CC) $(LDFLAGS) -o $@ $(MDPC_OBJ) $(MDP_CORE_OBJ) $(MDP_MAP_OBJ)
@@ -206,16 +216,18 @@ $(MDPTEST_DOS_BIN): $(MDPTEST_DOS_OBJ) $(MDP_CORE_OBJ) | $(DOS_DIR)
 
 $(MDPMAPTEST_DOS_BIN): $(MDPMAPTEST_DOS_OBJ) $(MDP_MAP_OBJ) \
 		$(MDP_CORE_OBJ) | $(DOS_DIR)
-	$(CC) $(LDFLAGS) -o $@ $(MDPMAPTEST_DOS_OBJ) $(MDP_MAP_OBJ) \
-		$(MDP_CORE_OBJ)
+	$(CC) $(LDFLAGS) -o $@ $(MDPMAPTEST_DOS_OBJ) $(MDP_MAP_OBJ) $(MDP_CORE_OBJ)
 
 $(HITLTEST_DOS_BIN): $(HITLTEST_DOS_OBJ) $(HITL_CORE_OBJ) | $(DOS_DIR)
 	$(CC) $(LDFLAGS) -o $@ $(HITLTEST_DOS_OBJ) $(HITL_CORE_OBJ)
 
 $(RUNTIME_CORE_TEST_DOS_BIN): $(RUNTIME_CORE_TEST_DOS_OBJ) \
 		$(RUNTIME_CORE_OBJ) | $(DOS_DIR)
-	$(CC) $(LDFLAGS) -o $@ $(RUNTIME_CORE_TEST_DOS_OBJ) \
-		$(RUNTIME_CORE_OBJ)
+	$(CC) $(LDFLAGS) -o $@ $(RUNTIME_CORE_TEST_DOS_OBJ) $(RUNTIME_CORE_OBJ)
+
+$(DOS_RUNTIME_TEST_BIN): $(DOS_RUNTIME_TEST_OBJ) $(RUNTIME_CORE_OBJ) \
+		$(DOS_RUNTIME_OBJ) | $(DOS_DIR)
+	$(CC) $(LDFLAGS) -o $@ $(DOS_RUNTIME_TEST_OBJ) $(RUNTIME_CORE_OBJ) $(DOS_RUNTIME_OBJ)
 
 $(MDP_CORE_OBJ): src/mdp/mdp.c include/moon/mdp.h | $(BUILD_DIRS)
 	$(CC) $(MDP_CPPFLAGS) $(CFLAGS) -MMD -MP -MF $(MDP_CORE_DEP) -MT $@ -c $< -o $@
@@ -247,6 +259,18 @@ $(RUNTIME_CORE_OBJ): src/runtime/runtime.c include/moon/runtime.h | $(BUILD_DIRS
 $(RUNTIME_CORE_TEST_DOS_OBJ): tests/runtime/test_runtime.c \
 		include/moon/runtime.h | $(BUILD_DIRS)
 	$(CC) $(MDP_CPPFLAGS) $(CFLAGS) -MMD -MP -MF $(RUNTIME_CORE_TEST_DOS_DEP) -MT $@ -c $< -o $@
+
+$(DOS_RUNTIME_OBJ): src/platform/dos_runtime.c \
+		include/moon/dos_runtime.h include/moon/runtime.h | $(BUILD_DIRS)
+	$(CC) $(MDP_CPPFLAGS) $(CFLAGS) -MMD -MP -MF $(DOS_RUNTIME_DEP) -MT $@ -c $< -o $@
+
+$(DOS_RUNTIME_TEST_OBJ): tests/runtime/test_dos_runtime.c \
+		include/moon/dos_runtime.h include/moon/runtime.h | $(BUILD_DIRS)
+	$(CC) $(MDP_CPPFLAGS) $(CFLAGS) -MMD -MP -MF $(DOS_RUNTIME_TEST_DEP) -MT $@ -c $< -o $@
+
+$(MOON_OBJ): moon.c include/moon/dos_runtime.h include/moon/runtime.h \
+		| $(BUILD_DIRS)
+	$(CC) $(MDP_CPPFLAGS) $(CFLAGS) -MMD -MP -MF $(DEP_DIR)/moon.d -MT $@ -c $< -o $@
 
 $(OBJ_DIR)/%.o: %.c | $(BUILD_DIRS)
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(DEPFLAGS) -c $< -o $@
@@ -291,7 +315,8 @@ $(addprefix $(DEP_DIR)/,$(SOURCE_DIRS)): | $(DEP_DIR)
 ifneq ($(DOS_SHELL),1)
 .PHONY: mdpc-host mdpc-smoke mdp-test-host mdp-map-test-host \
 	hitl-test-host runtime-core-test-host mdp-test-dosbox \
-	hitl-test-dosbox runtime-core-test-dosbox test-full
+	hitl-test-dosbox runtime-core-test-dosbox runtime-dos-test-dosbox \
+	test-full
 
 $(HOST_ROOT): | $(BUILD_ROOT)
 	$(make_directory)
@@ -393,6 +418,34 @@ $(GAME_DIST_ROOT) $(TOOLS_DIST_ROOT) $(GAME_DIST_DIR) $(TOOLS_DIST_DIR):
 	$(make_directory)
 endif
 
+ifeq ($(DOS_SHELL),1)
+ifeq ($(OS),Windows_NT)
+dist-game-prepare: | $(GAME_DIST_ROOT)
+	@if exist $(subst /,\,$(GAME_DIST_DIR))\NUL rmdir /S /Q $(subst /,\,$(GAME_DIST_DIR))
+	@mkdir $(subst /,\,$(GAME_DIST_DIR))
+
+dist-tools-prepare: | $(TOOLS_DIST_ROOT)
+	@if exist $(subst /,\,$(TOOLS_DIST_DIR))\NUL rmdir /S /Q $(subst /,\,$(TOOLS_DIST_DIR))
+	@mkdir $(subst /,\,$(TOOLS_DIST_DIR))
+else
+dist-game-prepare: | $(GAME_DIST_ROOT)
+	@if exist $(subst /,\,$(GAME_DIST_DIR))\NUL deltree /Y $(subst /,\,$(GAME_DIST_DIR)) >NUL
+	@mkdir $(subst /,\,$(GAME_DIST_DIR))
+
+dist-tools-prepare: | $(TOOLS_DIST_ROOT)
+	@if exist $(subst /,\,$(TOOLS_DIST_DIR))\NUL deltree /Y $(subst /,\,$(TOOLS_DIST_DIR)) >NUL
+	@mkdir $(subst /,\,$(TOOLS_DIST_DIR))
+endif
+else
+dist-game-prepare: | $(GAME_DIST_ROOT)
+	rm -rf -- "$(GAME_DIST_DIR)"
+	mkdir -p "$(GAME_DIST_DIR)"
+
+dist-tools-prepare: | $(TOOLS_DIST_ROOT)
+	rm -rf -- "$(TOOLS_DIST_DIR)"
+	mkdir -p "$(TOOLS_DIST_DIR)"
+endif
+
 $(DOS_DIR)/CWSDPMI.EXE: CWSDPMI.EXE | $(DOS_DIR)
 	$(copy_file)
 $(DOS_DIR)/GAME.MDP: GAME.MDP | $(DOS_DIR)
@@ -405,6 +458,8 @@ GAME_DIST_FILES := \
 	$(GAME_DIST_DIR)/GAME.MDP
 
 TOOLS_DIST_FILES := \
+	$(TOOLS_DIST_DIR)/ZEUS.EXE \
+	$(TOOLS_DIST_DIR)/GAME.MDP \
 	$(TOOLS_DIST_DIR)/MDPED.EXE \
 	$(TOOLS_DIST_DIR)/MDPC.EXE \
 	$(TOOLS_DIST_DIR)/TMUSE.EXE \
@@ -421,39 +476,44 @@ dist-game: $(GAME_DIST_FILES)
 dist-tools: $(TOOLS_DIST_FILES)
 	@echo Tool distribution staged in $(TOOLS_DIST_DIR)
 
-$(GAME_DIST_DIR)/ZEUS.EXE: $(ZEUS_BIN) | $(GAME_DIST_DIR)
+$(GAME_DIST_DIR)/ZEUS.EXE: $(ZEUS_BIN) dist-game-prepare
 	$(copy_file)
-$(GAME_DIST_DIR)/CWSDPMI.EXE: $(DOS_DIR)/CWSDPMI.EXE | $(GAME_DIST_DIR)
+$(GAME_DIST_DIR)/CWSDPMI.EXE: $(DOS_DIR)/CWSDPMI.EXE dist-game-prepare
 	$(copy_file)
-$(GAME_DIST_DIR)/GAME.MDP: $(DOS_DIR)/GAME.MDP | $(GAME_DIST_DIR)
+$(GAME_DIST_DIR)/GAME.MDP: $(DOS_DIR)/GAME.MDP dist-game-prepare
 	$(copy_file)
 
-$(TOOLS_DIST_DIR)/MDPED.EXE: $(MDPED_BIN) | $(TOOLS_DIST_DIR)
+$(TOOLS_DIST_DIR)/MDPED.EXE: $(MDPED_BIN) dist-tools-prepare
 	$(copy_file)
-$(TOOLS_DIST_DIR)/MDPC.EXE: $(MDPC_BIN) | $(TOOLS_DIST_DIR)
+$(TOOLS_DIST_DIR)/ZEUS.EXE: $(ZEUS_BIN) dist-tools-prepare
 	$(copy_file)
-$(TOOLS_DIST_DIR)/TMUSE.EXE: $(TMUSE_BIN) | $(TOOLS_DIST_DIR)
+$(TOOLS_DIST_DIR)/GAME.MDP: $(DOS_DIR)/GAME.MDP dist-tools-prepare
 	$(copy_file)
-$(TOOLS_DIST_DIR)/TMUSEGUI.EXE: $(TMUSEGUI_BIN) | $(TOOLS_DIST_DIR)
+$(TOOLS_DIST_DIR)/MDPC.EXE: $(MDPC_BIN) dist-tools-prepare
 	$(copy_file)
-$(TOOLS_DIST_DIR)/MOON.EXE: $(MOON_BIN) | $(TOOLS_DIST_DIR)
+$(TOOLS_DIST_DIR)/TMUSE.EXE: $(TMUSE_BIN) dist-tools-prepare
 	$(copy_file)
-$(TOOLS_DIST_DIR)/CWSDPMI.EXE: $(DOS_DIR)/CWSDPMI.EXE | $(TOOLS_DIST_DIR)
+$(TOOLS_DIST_DIR)/TMUSEGUI.EXE: $(TMUSEGUI_BIN) dist-tools-prepare
 	$(copy_file)
-$(TOOLS_DIST_DIR)/PALETTE.BMP: $(DOS_DIR)/PALETTE.BMP | $(TOOLS_DIST_DIR)
+$(TOOLS_DIST_DIR)/MOON.EXE: $(MOON_BIN) dist-tools-prepare
+	$(copy_file)
+$(TOOLS_DIST_DIR)/CWSDPMI.EXE: $(DOS_DIR)/CWSDPMI.EXE dist-tools-prepare
+	$(copy_file)
+$(TOOLS_DIST_DIR)/PALETTE.BMP: $(DOS_DIR)/PALETTE.BMP dist-tools-prepare
 	$(copy_file)
 ifeq ($(DOS_SHELL),1)
 test: all mdp-test-dos mdp-map-test-dos hitl-test-dos \
-		runtime-core-test-dos
+		runtime-core-test-dos runtime-dos-test-dos
 	@$(subst /,\,$(MDPTEST_DOS_BIN))
 	@$(subst /,\,$(MDPMAPTEST_DOS_BIN))
 	@$(subst /,\,$(HITLTEST_DOS_BIN))
 	@$(subst /,\,$(RUNTIME_CORE_TEST_DOS_BIN))
-	@echo Compile/link, MDP, HITL, and runtime core tests passed for CONFIG=$(CONFIG).
+	@$(subst /,\,$(DOS_RUNTIME_TEST_BIN))
+	@echo Compile/link, MDP, HITL, and runtime tests passed for CONFIG=$(CONFIG).
 else
 test: all mdp-test-host mdp-map-test-host mdpc-smoke mdp-test-dos \
 		mdp-map-test-dos hitl-test-host hitl-test-dos \
-		runtime-core-test-host runtime-core-test-dos
+		runtime-core-test-host runtime-core-test-dos runtime-dos-test-dos
 	@echo Host MDP/HITL/runtime core tests passed and DOS tests compiled for CONFIG=$(CONFIG).
 	@echo Run make test-full for the vanilla DOSBox compatibility gates.
 
@@ -467,8 +527,12 @@ hitl-test-dosbox: hitl-test-dos $(DOS_DIR)/CWSDPMI.EXE
 runtime-core-test-dosbox: runtime-core-test-dos $(DOS_DIR)/CWSDPMI.EXE
 	./scripts/runtime-dosbox-test.sh $(CONFIG) "$(BUILD_ROOT)"
 
+runtime-dos-test-dosbox: runtime-dos-test-dos moon \
+		$(DOS_DIR)/CWSDPMI.EXE
+	./scripts/dos-runtime-dosbox-test.sh $(CONFIG) "$(BUILD_ROOT)"
+
 test-full: test dosbox-smoke mdp-test-dosbox hitl-test-dosbox \
-		runtime-core-test-dosbox
+		runtime-core-test-dosbox runtime-dos-test-dosbox
 	@echo All host and vanilla DOSBox gates passed for CONFIG=$(CONFIG).
 endif
 
@@ -494,7 +558,7 @@ help:
 	@echo "MOON ENG build targets:"
 	@echo "  all zeus mdped tmuse tmusegui moon mdpc runtime"
 	@echo "  test mdp-test-dos mdp-map-test-dos hitl-test-dos"
-	@echo "  runtime-core-test-dos"
+	@echo "  runtime-core-test-dos runtime-dos-test-dos"
 	@echo "  dosbox-smoke"
 	@echo "  dist dist-game dist-tools clean"
 	@echo "  debug release"
@@ -502,6 +566,7 @@ ifneq ($(DOS_SHELL),1)
 	@echo "  test-full mdpc-host mdpc-smoke mdp-test-host"
 	@echo "  mdp-map-test-host hitl-test-host runtime-core-test-host"
 	@echo "  mdp-test-dosbox hitl-test-dosbox runtime-core-test-dosbox"
+	@echo "  runtime-dos-test-dosbox"
 endif
 	@echo "Select a configuration with CONFIG=debug or CONFIG=release."
 

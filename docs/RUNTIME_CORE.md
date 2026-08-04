@@ -1,8 +1,8 @@
-# MOON Portable Runtime Core
+# MOON Runtime Core and DOS Adapter
 
-Status: implemented portable C99 timing and action-input core. The DOS hardware
-adapter, ZEUS game-loop migration, and physical smooth-60 acceptance are not
-implemented by this component.
+Status: implemented portable C99 timing/action-input core, DJGPP hardware
+adapter, and MOON first consumer. ZEUS game-loop migration, custom 60 Hz VGA,
+and physical smooth-60 acceptance are not implemented by this component.
 
 ## Scope
 
@@ -68,8 +68,37 @@ synchronization. The intended DOS adapter queues bytes in its keyboard ISR and
 drains and decodes them in the foreground. On queue overflow or a controller
 parity/timeout error, it must flush the queue and call `moon_input_resync()`
 before decoding more bytes; this drops unreliable pending history and releases
-only actions already published as held. The portable core does not install a
-keyboard ISR, read a hardware timer, or select a video mode.
+only actions already published as held. The portable core itself does not
+install a keyboard ISR, read a hardware timer, or select a video mode.
+
+## DJGPP adapter and MOON consumer
+
+`include/moon/dos_runtime.h` and `src/platform/dos_runtime.c` implement the DOS
+hardware boundary. The adapter is caller-owned but process-singleton while
+active because it owns one physical keyboard interrupt vector. It:
+
+- samples DJGPP `uclock()` at `UCLOCKS_PER_SEC` without changing IRQ0;
+- derives IRQ1 from DJGPP's active master-PIC base rather than hard-coding
+  vector 9;
+- keeps the interrupt handler limited to controller status/data reads, a locked
+  128-byte scan-code ring, the port 61h acknowledgement pulse, and master-PIC
+  EOI;
+- balances every adapter-owned DPMI page lock during partial initialization,
+  normal shutdown, and repeated child-launch sessions;
+- copies queued bytes under a saved virtual-interrupt state and performs all
+  decoding in the foreground;
+- hard-resynchronizes input after queue overflow or controller parity/timeout;
+- saves the active BIOS video mode, verifies stock 320x200x8 Mode 13h, presents
+  exactly 64,000 caller-owned bytes, and restores the saved mode; and
+- unwinds acquired resources in reverse order without calling `exit()`.
+
+`MOON.EXE` owns the `MoonContext`, DOS adapter, and framebuffer. Its launcher
+uses action bindings and fixed input boundaries, renders only on presentation
+requests, and consumes `alpha_q16` for its visual animation. It completely
+restores DOS video and BIOS keyboard ownership before spawning another program,
+then constructs a fresh session if that program returns. `/LEGACY35` selects
+whole-program legacy presentation. `/RUNTIME-SMOKE` is a bounded noninteractive
+adapter/core/presentation path used only for automated evidence.
 
 ## Validation
 
@@ -79,13 +108,20 @@ The same deterministic suite is built for the native host and DJGPP:
 make CONFIG=release runtime-core-test-host
 make CONFIG=release runtime-core-test-dos
 make CONFIG=release runtime-core-test-dosbox
+make CONFIG=release runtime-dos-test-dos
+make CONFIG=release runtime-dos-test-dosbox
 ```
 
 Use `CONFIG=debug` for the debug variant. The DOSBox target copies the prebuilt
 `RTCORE.EXE` and `CWSDPMI.EXE` into a temporary directory, mounts it with an
 empty configuration under vanilla DOSBox 0.74-3, and accepts only a passing
-`RUNTIME.OUT`. `RTCORE.EXE` is a test artifact and is absent from both game and
-tools distributions.
+`RUNTIME.OUT`. The DOS adapter target also runs `RTDOS.EXE` and
+`MOON.EXE /RUNTIME-SMOKE`, requires evidence from both, and proves the DOS shell
+regained control after ordered teardown. Its adapter test performs two complete
+init/shutdown cycles, but injects deterministic scan bytes into the IRQ ring;
+physical keyboard IRQ1 delivery remains a manual acceptance case. `RTCORE.EXE`
+and `RTDOS.EXE` are test artifacts and are absent from both game and tools
+distributions.
 
 The tests cover rational 35/60 cadence over a simulated hour, legacy cadence,
 clock wrap, elapsed and catch-up clamps, fractional retention, interpolation
@@ -98,9 +134,12 @@ refresh, frame-time variance, emulator pacing, renderer cost, or Pentium 90
 performance, and therefore do not by themselves establish the project goal of
 stutter-free physical 60 Hz presentation.
 
-## Deferred integration
+## Deferred integration and acceptance
 
-The next runtime layer must provide the DJGPP/DOS clock source, interrupt-safe
-keyboard capture, and presentation adapter, then migrate ZEUS to consume
-`MoonFramePlan` and interpolated snapshots. Physical 60 Hz acceptance remains a
-separate manual gate on the supported DOSBox and 86Box hardware profiles.
+ZEUS must still migrate from its prototype globals to `MoonContext`,
+`MoonFramePlan`, action input, and interpolated snapshots. The primary video
+backend must add a tested custom 320x200x8 60 Hz mode while retaining this stock
+Mode 13h fallback. The automated adapter smoke cannot validate physical keyboard
+IRQ behavior, display pacing, frame-time variance, or restoration across every
+target DOS host; those remain explicit user-controlled gates on the supported
+86Box profiles.

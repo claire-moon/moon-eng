@@ -66,12 +66,16 @@ and audio libraries. No executable maintains a private fork of those systems.
 MOON ENG is the reusable DOS runtime and owns hardware-facing services.
 
 The hardware-independent fixed-step and action-input slice is implemented in
-`include/moon/runtime.h` and `src/runtime/runtime.c`, with its current contract
-recorded in [`RUNTIME_CORE.md`](RUNTIME_CORE.md). It supplies deterministic
-cadence requests, interpolation weights, bounded catch-up, input edges, and
-telemetry using caller-owned state. The DOS clock/keyboard/video adapter and
-ZEUS migration remain target work, so the portable core does not yet establish
-smooth physical 60 Hz presentation on supported machines.
+`include/moon/runtime.h` and `src/runtime/runtime.c`. The DJGPP boundary in
+`include/moon/dos_runtime.h` and `src/platform/dos_runtime.c` owns the wrapping
+`uclock()` source, a foreground-drained IRQ1 scan-code ring, stock Mode 13h
+presentation, and ordered restoration. `MOON.EXE` is the first consumer. The
+current contract is recorded in [`RUNTIME_CORE.md`](RUNTIME_CORE.md).
+
+This establishes shared scheduling and fallback presentation plumbing, not the
+smooth-60 target: stock Mode 13h normally refreshes near 70 Hz and the adapter
+does not wait indefinitely for retrace. Custom 60 Hz VGA programming and ZEUS
+migration remain target work and require separate physical acceptance.
 
 ### Runtime context
 
