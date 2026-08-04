@@ -6,12 +6,17 @@ config="${1:-release}"
 case "$config" in
     debug|release) ;;
     *)
-        echo "usage: $0 [debug|release]" >&2
+        echo "usage: $0 [debug|release] [dist-root]" >&2
         exit 2
         ;;
 esac
 
 project_dir="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
+dist_root="${2:-dist}"
+case "$dist_root" in
+    /*) dist_dir="$dist_root" ;;
+    *) dist_dir="$project_dir/$dist_root" ;;
+esac
 dosbox_bin="${DOSBOX:-dosbox}"
 smoke_dir="$(mktemp -d /tmp/moon-dosbox.XXXXXX)"
 smoke_log="$smoke_dir/DOSBOX.LOG"
@@ -25,9 +30,9 @@ cleanup() {
 trap cleanup EXIT HUP INT TERM
 
 : > "$empty_conf"
-cp "$project_dir/dist/game/$config/ZEUS.EXE" "$smoke_dir/ZEUS.EXE"
-cp "$project_dir/dist/game/$config/CWSDPMI.EXE" "$smoke_dir/CWSDPMI.EXE"
-cp "$project_dir/dist/game/$config/GAME.MDP" "$smoke_dir/GAME.MDP"
+cp "$dist_dir/game/$config/ZEUS.EXE" "$smoke_dir/ZEUS.EXE"
+cp "$dist_dir/game/$config/CWSDPMI.EXE" "$smoke_dir/CWSDPMI.EXE"
+cp "$dist_dir/game/$config/GAME.MDP" "$smoke_dir/GAME.MDP"
 
 set +e
 env SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy \
