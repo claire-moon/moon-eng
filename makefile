@@ -81,6 +81,12 @@ RUNTIME_CORE_OBJ := $(OBJ_DIR)/runtime-core.o
 RUNTIME_CORE_TEST_DOS_OBJ := $(OBJ_DIR)/runtime-core-test.o
 DOS_RUNTIME_OBJ := $(OBJ_DIR)/dos-runtime.o
 DOS_RUNTIME_TEST_OBJ := $(OBJ_DIR)/dos-runtime-test.o
+CGUI_RENDER_OBJ := $(OBJ_DIR)/cgui-render.o
+CGUI_MENU_OBJ := $(OBJ_DIR)/cgui-menu.o
+CGUI_FONT_OBJ := $(OBJ_DIR)/cgui-font-3x5.o
+CGUI_CORE_OBJ := $(CGUI_RENDER_OBJ) $(CGUI_MENU_OBJ) $(CGUI_FONT_OBJ)
+CGUI_TEST_DOS_OBJ := $(OBJ_DIR)/cgui-test.o
+CGUI_PRESENT_DOS_OBJ := $(OBJ_DIR)/cgui-present.o
 
 MDP_CORE_DEP := $(DEP_DIR)/mdp-core.d
 MDP_MAP_DEP := $(DEP_DIR)/mdp-map.d
@@ -93,6 +99,11 @@ RUNTIME_CORE_DEP := $(DEP_DIR)/runtime-core.d
 RUNTIME_CORE_TEST_DOS_DEP := $(DEP_DIR)/runtime-core-test.d
 DOS_RUNTIME_DEP := $(DEP_DIR)/dos-runtime.d
 DOS_RUNTIME_TEST_DEP := $(DEP_DIR)/dos-runtime-test.d
+CGUI_RENDER_DEP := $(DEP_DIR)/cgui-render.d
+CGUI_MENU_DEP := $(DEP_DIR)/cgui-menu.d
+CGUI_FONT_DEP := $(DEP_DIR)/cgui-font-3x5.d
+CGUI_TEST_DOS_DEP := $(DEP_DIR)/cgui-test.d
+CGUI_PRESENT_DOS_DEP := $(DEP_DIR)/cgui-present.d
 
 HOST_MDP_CORE_OBJ := $(HOST_OBJ_DIR)/mdp-core.o
 HOST_MDP_MAP_OBJ := $(HOST_OBJ_DIR)/mdp-map.o
@@ -103,6 +114,12 @@ HOST_HITL_CORE_OBJ := $(HOST_OBJ_DIR)/hitl-core.o
 HOST_HITL_TEST_OBJ := $(HOST_OBJ_DIR)/hitltest.o
 HOST_RUNTIME_CORE_OBJ := $(HOST_OBJ_DIR)/runtime-core.o
 HOST_RUNTIME_CORE_TEST_OBJ := $(HOST_OBJ_DIR)/runtime-core-test.o
+HOST_CGUI_RENDER_OBJ := $(HOST_OBJ_DIR)/cgui-render.o
+HOST_CGUI_MENU_OBJ := $(HOST_OBJ_DIR)/cgui-menu.o
+HOST_CGUI_FONT_OBJ := $(HOST_OBJ_DIR)/cgui-font-3x5.o
+HOST_CGUI_CORE_OBJ := $(HOST_CGUI_RENDER_OBJ) $(HOST_CGUI_MENU_OBJ) \
+	$(HOST_CGUI_FONT_OBJ)
+HOST_CGUI_TEST_OBJ := $(HOST_OBJ_DIR)/cgui-test.o
 HOST_MDP_CORE_DEP := $(HOST_DEP_DIR)/mdp-core.d
 HOST_MDP_MAP_DEP := $(HOST_DEP_DIR)/mdp-map.d
 HOST_MDPC_DEP := $(HOST_DEP_DIR)/mdpc.d
@@ -112,17 +129,23 @@ HOST_HITL_CORE_DEP := $(HOST_DEP_DIR)/hitl-core.d
 HOST_HITL_TEST_DEP := $(HOST_DEP_DIR)/hitltest.d
 HOST_RUNTIME_CORE_DEP := $(HOST_DEP_DIR)/runtime-core.d
 HOST_RUNTIME_CORE_TEST_DEP := $(HOST_DEP_DIR)/runtime-core-test.d
+HOST_CGUI_RENDER_DEP := $(HOST_DEP_DIR)/cgui-render.d
+HOST_CGUI_MENU_DEP := $(HOST_DEP_DIR)/cgui-menu.d
+HOST_CGUI_FONT_DEP := $(HOST_DEP_DIR)/cgui-font-3x5.d
+HOST_CGUI_TEST_DEP := $(HOST_DEP_DIR)/cgui-test.d
 HOST_DEP := $(HOST_MDP_CORE_DEP) $(HOST_MDP_MAP_DEP) $(HOST_MDPC_DEP) \
 	$(HOST_MDP_TEST_DEP) $(HOST_MDP_MAP_TEST_DEP) $(HOST_HITL_CORE_DEP) \
 	$(HOST_HITL_TEST_DEP) $(HOST_RUNTIME_CORE_DEP) \
-	$(HOST_RUNTIME_CORE_TEST_DEP)
+	$(HOST_RUNTIME_CORE_TEST_DEP) $(HOST_CGUI_RENDER_DEP) \
+	$(HOST_CGUI_MENU_DEP) $(HOST_CGUI_FONT_DEP) $(HOST_CGUI_TEST_DEP)
 
 ALL_OBJ := $(sort $(ZEUS_OBJ) $(MDPED_OBJ) $(TMUSE_OBJ) $(TMUSEGUI_OBJ) \
 	$(MOON_OBJ) $(MDP_CORE_OBJ) $(MDP_MAP_OBJ) $(MDPC_OBJ) \
 	$(MDPTEST_DOS_OBJ) $(MDPMAPTEST_DOS_OBJ) $(HITL_CORE_OBJ) \
 	$(HITLTEST_DOS_OBJ) $(RUNTIME_CORE_OBJ) \
 	$(RUNTIME_CORE_TEST_DOS_OBJ) $(DOS_RUNTIME_OBJ) \
-	$(DOS_RUNTIME_TEST_OBJ))
+	$(DOS_RUNTIME_TEST_OBJ) $(CGUI_CORE_OBJ) $(CGUI_TEST_DOS_OBJ) \
+	$(CGUI_PRESENT_DOS_OBJ))
 ALL_DEP := $(sort \
 	$(call source_deps,$(ZEUS_SRC)) \
 	$(call source_deps,$(MDPED_SRC)) \
@@ -132,7 +155,9 @@ ALL_DEP := $(sort \
 	$(MDP_CORE_DEP) $(MDP_MAP_DEP) $(MDPC_DEP) $(MDPTEST_DOS_DEP) \
 	$(MDPMAPTEST_DOS_DEP) $(HITL_CORE_DEP) $(HITLTEST_DOS_DEP) \
 	$(RUNTIME_CORE_DEP) $(RUNTIME_CORE_TEST_DOS_DEP) \
-	$(DOS_RUNTIME_DEP) $(DOS_RUNTIME_TEST_DEP))
+	$(DOS_RUNTIME_DEP) $(DOS_RUNTIME_TEST_DEP) $(CGUI_RENDER_DEP) \
+	$(CGUI_MENU_DEP) $(CGUI_FONT_DEP) $(CGUI_TEST_DOS_DEP) \
+	$(CGUI_PRESENT_DOS_DEP))
 
 ZEUS_BIN := $(DOS_DIR)/zeus.exe
 MDPED_BIN := $(DOS_DIR)/mdped.exe
@@ -145,11 +170,14 @@ MDPMAPTEST_DOS_BIN := $(DOS_DIR)/maptest.exe
 HITLTEST_DOS_BIN := $(DOS_DIR)/hitltest.exe
 RUNTIME_CORE_TEST_DOS_BIN := $(DOS_DIR)/rtcore.exe
 DOS_RUNTIME_TEST_BIN := $(DOS_DIR)/rtdos.exe
+CGUI_TEST_DOS_BIN := $(DOS_DIR)/cguitest.exe
+CGUI_PRESENT_DOS_BIN := $(DOS_DIR)/cguipres.exe
 HOST_MDPC_BIN := $(HOST_BIN_DIR)/mdpc
 HOST_MDP_TEST_BIN := $(HOST_BIN_DIR)/mdptest
 HOST_MDP_MAP_TEST_BIN := $(HOST_BIN_DIR)/maptest
 HOST_HITL_TEST_BIN := $(HOST_BIN_DIR)/hitltest
 HOST_RUNTIME_CORE_TEST_BIN := $(HOST_BIN_DIR)/runtime-core-test
+HOST_CGUI_TEST_BIN := $(HOST_BIN_DIR)/cgui-test
 ALL_BIN := $(ZEUS_BIN) $(MDPED_BIN) $(TMUSE_BIN) $(TMUSEGUI_BIN) \
 	$(MOON_BIN) $(MDPC_BIN)
 
@@ -162,11 +190,11 @@ BUILD_DIRS := \
 
 .PHONY: all zeus mdped tmuse tmusegui moon mdpc mdp-test-dos \
 	mdp-map-test-dos hitl-test-dos runtime-core-test-dos \
-	runtime-dos-test-dos test runtime \
+	runtime-dos-test-dos cgui-core cgui-test-dos cgui-present-dos test runtime \
 	debug release dist dist-game dist-tools dist-game-prepare \
 	dist-tools-prepare dosbox-smoke clean help
 
-all: zeus mdped tmuse tmusegui moon mdpc runtime
+all: zeus mdped tmuse tmusegui moon mdpc cgui-core runtime
 
 zeus: $(ZEUS_BIN)
 mdped: $(MDPED_BIN)
@@ -179,6 +207,9 @@ mdp-map-test-dos: $(MDPMAPTEST_DOS_BIN)
 hitl-test-dos: $(HITLTEST_DOS_BIN)
 runtime-core-test-dos: $(RUNTIME_CORE_TEST_DOS_BIN)
 runtime-dos-test-dos: $(DOS_RUNTIME_TEST_BIN)
+cgui-core: $(CGUI_CORE_OBJ)
+cgui-test-dos: $(CGUI_TEST_DOS_BIN)
+cgui-present-dos: $(CGUI_PRESENT_DOS_BIN)
 
 RUNTIME_FILES := \
 	$(DOS_DIR)/CWSDPMI.EXE \
@@ -229,6 +260,13 @@ $(DOS_RUNTIME_TEST_BIN): $(DOS_RUNTIME_TEST_OBJ) $(RUNTIME_CORE_OBJ) \
 		$(DOS_RUNTIME_OBJ) | $(DOS_DIR)
 	$(CC) $(LDFLAGS) -o $@ $(DOS_RUNTIME_TEST_OBJ) $(RUNTIME_CORE_OBJ) $(DOS_RUNTIME_OBJ)
 
+$(CGUI_TEST_DOS_BIN): $(CGUI_TEST_DOS_OBJ) $(CGUI_CORE_OBJ) | $(DOS_DIR)
+	$(CC) $(LDFLAGS) -o $@ $(CGUI_TEST_DOS_OBJ) $(CGUI_CORE_OBJ)
+
+$(CGUI_PRESENT_DOS_BIN): $(CGUI_PRESENT_DOS_OBJ) $(CGUI_CORE_OBJ) \
+		$(RUNTIME_CORE_OBJ) $(DOS_RUNTIME_OBJ) | $(DOS_DIR)
+	$(CC) $(LDFLAGS) -o $@ $(CGUI_PRESENT_DOS_OBJ) $(CGUI_CORE_OBJ) $(RUNTIME_CORE_OBJ) $(DOS_RUNTIME_OBJ)
+
 $(MDP_CORE_OBJ): src/mdp/mdp.c include/moon/mdp.h | $(BUILD_DIRS)
 	$(CC) $(MDP_CPPFLAGS) $(CFLAGS) -MMD -MP -MF $(MDP_CORE_DEP) -MT $@ -c $< -o $@
 
@@ -267,6 +305,26 @@ $(DOS_RUNTIME_OBJ): src/platform/dos_runtime.c \
 $(DOS_RUNTIME_TEST_OBJ): tests/runtime/test_dos_runtime.c \
 		include/moon/dos_runtime.h include/moon/runtime.h | $(BUILD_DIRS)
 	$(CC) $(MDP_CPPFLAGS) $(CFLAGS) -MMD -MP -MF $(DOS_RUNTIME_TEST_DEP) -MT $@ -c $< -o $@
+
+$(CGUI_RENDER_OBJ): src/cgui/cgui_render.c src/cgui/cgui_internal.h \
+		include/moon/cgui.h | $(BUILD_DIRS)
+	$(CC) $(MDP_CPPFLAGS) $(CFLAGS) -MMD -MP -MF $(CGUI_RENDER_DEP) -MT $@ -c $< -o $@
+
+$(CGUI_MENU_OBJ): src/cgui/cgui_menu.c src/cgui/cgui_internal.h \
+		include/moon/cgui.h | $(BUILD_DIRS)
+	$(CC) $(MDP_CPPFLAGS) $(CFLAGS) -MMD -MP -MF $(CGUI_MENU_DEP) -MT $@ -c $< -o $@
+
+$(CGUI_FONT_OBJ): src/cgui/font_3x5.c include/moon/cgui.h | $(BUILD_DIRS)
+	$(CC) $(MDP_CPPFLAGS) $(CFLAGS) -MMD -MP -MF $(CGUI_FONT_DEP) -MT $@ -c $< -o $@
+
+$(CGUI_TEST_DOS_OBJ): tests/cgui/test_cgui.c include/moon/cgui.h \
+		| $(BUILD_DIRS)
+	$(CC) $(MDP_CPPFLAGS) $(CFLAGS) -MMD -MP -MF $(CGUI_TEST_DOS_DEP) -MT $@ -c $< -o $@
+
+$(CGUI_PRESENT_DOS_OBJ): tests/cgui/cgui_present_dos.c \
+		include/moon/cgui.h include/moon/dos_runtime.h \
+		include/moon/runtime.h | $(BUILD_DIRS)
+	$(CC) $(MDP_CPPFLAGS) $(CFLAGS) -MMD -MP -MF $(CGUI_PRESENT_DOS_DEP) -MT $@ -c $< -o $@
 
 $(MOON_OBJ): moon.c include/moon/dos_runtime.h include/moon/runtime.h \
 		| $(BUILD_DIRS)
@@ -314,9 +372,9 @@ $(addprefix $(DEP_DIR)/,$(SOURCE_DIRS)): | $(DEP_DIR)
 
 ifneq ($(DOS_SHELL),1)
 .PHONY: mdpc-host mdpc-smoke mdp-test-host mdp-map-test-host \
-	hitl-test-host runtime-core-test-host mdp-test-dosbox \
+	hitl-test-host runtime-core-test-host cgui-test-host mdp-test-dosbox \
 	hitl-test-dosbox runtime-core-test-dosbox runtime-dos-test-dosbox \
-	test-full
+	cgui-test-dosbox test-full
 
 $(HOST_ROOT): | $(BUILD_ROOT)
 	$(make_directory)
@@ -364,6 +422,22 @@ $(HOST_RUNTIME_CORE_TEST_OBJ): tests/runtime/test_runtime.c \
 		include/moon/runtime.h | $(HOST_OBJ_DIR) $(HOST_DEP_DIR)
 	$(HOST_CC) $(HOST_CPPFLAGS) -Iinclude $(HOST_CFLAGS) -MMD -MP -MF $(HOST_RUNTIME_CORE_TEST_DEP) -MT $@ -c $< -o $@
 
+$(HOST_CGUI_RENDER_OBJ): src/cgui/cgui_render.c src/cgui/cgui_internal.h \
+		include/moon/cgui.h | $(HOST_OBJ_DIR) $(HOST_DEP_DIR)
+	$(HOST_CC) $(HOST_CPPFLAGS) -Iinclude $(HOST_CFLAGS) -MMD -MP -MF $(HOST_CGUI_RENDER_DEP) -MT $@ -c $< -o $@
+
+$(HOST_CGUI_MENU_OBJ): src/cgui/cgui_menu.c src/cgui/cgui_internal.h \
+		include/moon/cgui.h | $(HOST_OBJ_DIR) $(HOST_DEP_DIR)
+	$(HOST_CC) $(HOST_CPPFLAGS) -Iinclude $(HOST_CFLAGS) -MMD -MP -MF $(HOST_CGUI_MENU_DEP) -MT $@ -c $< -o $@
+
+$(HOST_CGUI_FONT_OBJ): src/cgui/font_3x5.c include/moon/cgui.h \
+		| $(HOST_OBJ_DIR) $(HOST_DEP_DIR)
+	$(HOST_CC) $(HOST_CPPFLAGS) -Iinclude $(HOST_CFLAGS) -MMD -MP -MF $(HOST_CGUI_FONT_DEP) -MT $@ -c $< -o $@
+
+$(HOST_CGUI_TEST_OBJ): tests/cgui/test_cgui.c include/moon/cgui.h \
+		| $(HOST_OBJ_DIR) $(HOST_DEP_DIR)
+	$(HOST_CC) $(HOST_CPPFLAGS) -Iinclude $(HOST_CFLAGS) -MMD -MP -MF $(HOST_CGUI_TEST_DEP) -MT $@ -c $< -o $@
+
 $(HOST_MDPC_BIN): $(HOST_MDPC_OBJ) $(HOST_MDP_CORE_OBJ) \
 		$(HOST_MDP_MAP_OBJ) | $(HOST_BIN_DIR)
 	$(HOST_CC) $(HOST_LDFLAGS) -o $@ $(HOST_MDPC_OBJ) $(HOST_MDP_CORE_OBJ) \
@@ -385,6 +459,11 @@ $(HOST_RUNTIME_CORE_TEST_BIN): $(HOST_RUNTIME_CORE_TEST_OBJ) \
 	$(HOST_CC) $(HOST_LDFLAGS) -o $@ $(HOST_RUNTIME_CORE_TEST_OBJ) \
 		$(HOST_RUNTIME_CORE_OBJ)
 
+$(HOST_CGUI_TEST_BIN): $(HOST_CGUI_TEST_OBJ) $(HOST_CGUI_CORE_OBJ) \
+		| $(HOST_BIN_DIR)
+	$(HOST_CC) $(HOST_LDFLAGS) -o $@ $(HOST_CGUI_TEST_OBJ) \
+		$(HOST_CGUI_CORE_OBJ)
+
 mdpc-host: $(HOST_MDPC_BIN)
 
 mdpc-smoke: mdpc-host
@@ -401,6 +480,9 @@ hitl-test-host: $(HOST_HITL_TEST_BIN)
 
 runtime-core-test-host: $(HOST_RUNTIME_CORE_TEST_BIN)
 	"$(HOST_RUNTIME_CORE_TEST_BIN)"
+
+cgui-test-host: $(HOST_CGUI_TEST_BIN)
+	"$(HOST_CGUI_TEST_BIN)"
 endif
 
 ifeq ($(DOS_SHELL),1)
@@ -503,18 +585,21 @@ $(TOOLS_DIST_DIR)/PALETTE.BMP: $(DOS_DIR)/PALETTE.BMP dist-tools-prepare
 	$(copy_file)
 ifeq ($(DOS_SHELL),1)
 test: all mdp-test-dos mdp-map-test-dos hitl-test-dos \
-		runtime-core-test-dos runtime-dos-test-dos
+		runtime-core-test-dos runtime-dos-test-dos cgui-test-dos \
+		cgui-present-dos
 	@$(subst /,\,$(MDPTEST_DOS_BIN))
 	@$(subst /,\,$(MDPMAPTEST_DOS_BIN))
 	@$(subst /,\,$(HITLTEST_DOS_BIN))
 	@$(subst /,\,$(RUNTIME_CORE_TEST_DOS_BIN))
 	@$(subst /,\,$(DOS_RUNTIME_TEST_BIN))
-	@echo Compile/link, MDP, HITL, and runtime tests passed for CONFIG=$(CONFIG).
+	@$(subst /,\,$(CGUI_TEST_DOS_BIN))
+	@echo Compile/link, MDP, HITL, runtime, and CGUI tests passed for CONFIG=$(CONFIG).
 else
 test: all mdp-test-host mdp-map-test-host mdpc-smoke mdp-test-dos \
 		mdp-map-test-dos hitl-test-host hitl-test-dos \
-		runtime-core-test-host runtime-core-test-dos runtime-dos-test-dos
-	@echo Host MDP/HITL/runtime core tests passed and DOS tests compiled for CONFIG=$(CONFIG).
+		runtime-core-test-host runtime-core-test-dos runtime-dos-test-dos \
+		cgui-test-host cgui-test-dos cgui-present-dos
+	@echo Host MDP/HITL/runtime/CGUI core tests passed and DOS tests compiled for CONFIG=$(CONFIG).
 	@echo Run make test-full for the vanilla DOSBox compatibility gates.
 
 mdp-test-dosbox: mdp-test-dos mdp-map-test-dos mdpc \
@@ -531,8 +616,12 @@ runtime-dos-test-dosbox: runtime-dos-test-dos moon \
 		$(DOS_DIR)/CWSDPMI.EXE
 	./scripts/dos-runtime-dosbox-test.sh $(CONFIG) "$(BUILD_ROOT)"
 
+cgui-test-dosbox: cgui-test-dos cgui-present-dos \
+		$(DOS_DIR)/CWSDPMI.EXE
+	./scripts/cgui-dosbox-test.sh $(CONFIG) "$(BUILD_ROOT)"
+
 test-full: test dosbox-smoke mdp-test-dosbox hitl-test-dosbox \
-		runtime-core-test-dosbox runtime-dos-test-dosbox
+		runtime-core-test-dosbox runtime-dos-test-dosbox cgui-test-dosbox
 	@echo All host and vanilla DOSBox gates passed for CONFIG=$(CONFIG).
 endif
 
@@ -556,9 +645,10 @@ endif
 
 help:
 	@echo "MOON ENG build targets:"
-	@echo "  all zeus mdped tmuse tmusegui moon mdpc runtime"
+	@echo "  all zeus mdped tmuse tmusegui moon mdpc cgui-core runtime"
 	@echo "  test mdp-test-dos mdp-map-test-dos hitl-test-dos"
 	@echo "  runtime-core-test-dos runtime-dos-test-dos"
+	@echo "  cgui-test-dos cgui-present-dos"
 	@echo "  dosbox-smoke"
 	@echo "  dist dist-game dist-tools clean"
 	@echo "  debug release"
@@ -566,7 +656,7 @@ ifneq ($(DOS_SHELL),1)
 	@echo "  test-full mdpc-host mdpc-smoke mdp-test-host"
 	@echo "  mdp-map-test-host hitl-test-host runtime-core-test-host"
 	@echo "  mdp-test-dosbox hitl-test-dosbox runtime-core-test-dosbox"
-	@echo "  runtime-dos-test-dosbox"
+	@echo "  runtime-dos-test-dosbox cgui-test-host cgui-test-dosbox"
 endif
 	@echo "Select a configuration with CONFIG=debug or CONFIG=release."
 
