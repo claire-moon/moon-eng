@@ -40,12 +40,12 @@ optional `dosbox-dev.conf` is for interactive development convenience and is
 not used by the default-configuration compatibility gate.
 
 `make test` runs the native MDP container, typed cell-map, deterministic
-host-CLI, and HITL evidence tests and cross-builds their DOS equivalents.
-`make test-full` additionally executes ZEUS and every MDP/HITL test in fresh
-default-config vanilla DOSBox. Test executables and generated evidence are
-never placed in either distribution. The native package compiler is written
-to `build/host/bin/release/mdpc`; `MDPC.EXE` is staged only in the tools
-package.
+host-CLI, HITL evidence, and portable runtime-core tests and cross-builds their
+DOS equivalents. `make test-full` additionally executes ZEUS and every
+MDP/HITL/runtime-core test in fresh default-config vanilla DOSBox 0.74-3. Test
+executables and generated evidence are never placed in either distribution.
+The native package compiler is written to `build/host/bin/release/mdpc`;
+`MDPC.EXE` is staged only in the tools package.
 
 ## Components
 
@@ -58,6 +58,11 @@ package.
 
 The user/automation authority boundary and DOS-safe evidence grammar are
 specified in [docs/HITL_FORMAT.md](docs/HITL_FORMAT.md).
+
+The implemented hardware-independent 35 Hz simulation, 60/35 Hz presentation
+scheduler, and action-input core is specified in
+[docs/RUNTIME_CORE.md](docs/RUNTIME_CORE.md). It is not yet the DOS hardware
+adapter or the ZEUS game loop.
 
 The canonical package layout is specified in
 [docs/MDP_V1.md](docs/MDP_V1.md). The implemented height-aware cell-map

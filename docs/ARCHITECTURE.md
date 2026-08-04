@@ -65,6 +65,14 @@ and audio libraries. No executable maintains a private fork of those systems.
 
 MOON ENG is the reusable DOS runtime and owns hardware-facing services.
 
+The hardware-independent fixed-step and action-input slice is implemented in
+`include/moon/runtime.h` and `src/runtime/runtime.c`, with its current contract
+recorded in [`RUNTIME_CORE.md`](RUNTIME_CORE.md). It supplies deterministic
+cadence requests, interpolation weights, bounded catch-up, input edges, and
+telemetry using caller-owned state. The DOS clock/keyboard/video adapter and
+ZEUS migration remain target work, so the portable core does not yet establish
+smooth physical 60 Hz presentation on supported machines.
+
 ### Runtime context
 
 `MoonContext` is created by the executable and passed explicitly to subsystems.
