@@ -177,6 +177,11 @@ The implemented byte-level v1 rules are frozen in
 [`MDP_V1.md`](MDP_V1.md); this section defines the surrounding compiler and
 runtime architecture.
 
+The first implemented typed payload is the allocation-free `MAP ` cell-map
+schema frozen in [`MDP_MAP_V1.md`](MDP_MAP_V1.md). It preserves the useful
+height, material, light, tag, and behavior-flag intent of the archived WIP
+without copying its invalid native structures.
+
 - A project directory contains an 8.3-safe `.MPR` manifest and separate source
   assets.
 - The shared compiler/validator core is portable C99 and is used by DOS MDPed

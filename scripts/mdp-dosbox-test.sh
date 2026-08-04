@@ -36,9 +36,13 @@ trap cleanup EXIT HUP INT TERM
 
 : > "$empty_conf"
 cp "$build_dir/dos/$config/mdptest.exe" "$test_dir/MDPTEST.EXE"
+cp "$build_dir/dos/$config/maptest.exe" "$test_dir/MAPTEST.EXE"
 cp "$build_dir/dos/$config/mdpc.exe" "$test_dir/MDPC.EXE"
 cp "$build_dir/dos/$config/CWSDPMI.EXE" "$test_dir/CWSDPMI.EXE"
 printf '\001\002\003\004\005' > "$test_dir/MAP.BIN"
+printf '\115\101\120\061\001\000\000\000\001\000\000\000\001\000\000\000\100\000\000\000\007\000\000\000\360\377\170\000\100\000\001\002\003\310\064\022\005\000\000\000' > "$test_dir/MAP1.BIN"
+cp "$test_dir/MAP1.BIN" "$test_dir/BADMAP.BIN"
+printf '\000' >> "$test_dir/BADMAP.BIN"
 : > "$dosbox_log"
 
 run_dosbox() {
@@ -58,7 +62,7 @@ run_dosbox() {
 
     set +e
     env SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy \
-        timeout 15s "$dosbox_bin" "${arguments[@]}" \
+        timeout 60s "$dosbox_bin" "${arguments[@]}" \
         >>"$dosbox_log" 2>&1
     dosbox_status=$?
     set -e
@@ -70,9 +74,17 @@ run_dosbox() {
 }
 
 run_dosbox codec "mdptest.exe > MDPTEST.OUT"
+run_dosbox map-codec "maptest.exe > MAPTEST.OUT"
 run_dosbox pack \
     "mdpc.exe pack GOOD.MDP TEST 4294967295 1 MAP.BIN > GOOD.OUT"
 run_dosbox validate "mdpc.exe validate GOOD.MDP >> GOOD.OUT"
+run_dosbox typed-pack \
+    "mdpc.exe pack MAPGOOD.MDP \"MAP \" 7 1 MAP1.BIN > MAPGOOD.OUT"
+run_dosbox typed-validate \
+    "mdpc.exe validate MAPGOOD.MDP >> MAPGOOD.OUT"
+run_dosbox typed-reject \
+    "mdpc.exe pack BADMAP.MDP \"MAP \" 7 1 BADMAP.BIN" \
+    "if errorlevel 1 echo PASS > BADMAP.OUT"
 run_dosbox signed-id \
     "mdpc.exe pack BAD1.MDP TEST -1 1 MAP.BIN" \
     "if errorlevel 1 echo PASS > NEG1.OUT"
@@ -94,6 +106,14 @@ if [[ ! -f "$test_dir/MDPTEST.OUT" ]] ||
     exit 1
 fi
 
+if [[ ! -f "$test_dir/MAPTEST.OUT" ]] ||
+   ! grep -q 'PASS: MDP MAP v1 codec tests' "$test_dir/MAPTEST.OUT"; then
+    echo "DOS typed MAP test did not produce passing evidence" >&2
+    cat "$dosbox_log" >&2
+    [[ ! -f "$test_dir/MAPTEST.OUT" ]] || cat "$test_dir/MAPTEST.OUT" >&2
+    exit 1
+fi
+
 if [[ ! -f "$test_dir/GOOD.MDP" ]] ||
    [[ ! -f "$test_dir/GOOD.OUT" ]] ||
    ! grep -q 'valid MDP 1.0' "$test_dir/GOOD.OUT"; then
@@ -101,6 +121,17 @@ if [[ ! -f "$test_dir/GOOD.MDP" ]] ||
     cat "$dosbox_log" >&2
     [[ ! -f "$test_dir/GOOD.OUT" ]] || cat "$test_dir/GOOD.OUT" >&2
     find "$test_dir" -maxdepth 1 -type f -printf '%f\n' >&2
+    exit 1
+fi
+
+if [[ ! -f "$test_dir/MAPGOOD.MDP" ]] ||
+   [[ ! -f "$test_dir/MAPGOOD.OUT" ]] ||
+   ! grep -q 'valid MDP 1.0' "$test_dir/MAPGOOD.OUT" ||
+   [[ ! -f "$test_dir/BADMAP.OUT" ]] ||
+   ! grep -q 'PASS' "$test_dir/BADMAP.OUT"; then
+    echo "DOS MDPC typed MAP validation cases failed" >&2
+    cat "$dosbox_log" >&2
+    [[ ! -f "$test_dir/MAPGOOD.OUT" ]] || cat "$test_dir/MAPGOOD.OUT" >&2
     exit 1
 fi
 

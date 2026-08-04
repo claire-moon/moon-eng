@@ -97,6 +97,12 @@ second transaction. Game/editor asset registries publish nothing until every
 required typed chunk in that transaction validates. Structural success alone
 does not make an unknown schema usable.
 
+`MDPC` currently recognizes `MAP ` schema 1 and applies its allocation-free
+typed validator during both `pack` and `validate`. Its payload contract is
+frozen separately in [`MDP_MAP_V1.md`](MDP_MAP_V1.md). Unknown generic FourCCs
+remain structurally inspectable; a known typed FourCC with an unsupported
+schema is not accepted as a usable package.
+
 The archive borrows its input byte buffer. Callers keep that buffer alive and
 unchanged until `mdp_archive_close`, and close an archive before reopening it.
 `mdp_archive_stored_chunk` accepts only an entry owned by that archive and

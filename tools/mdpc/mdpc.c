@@ -1,4 +1,5 @@
 #include "moon/mdp.h"
+#include "moon/mdp_map.h"
 
 #include <errno.h>
 #include <limits.h>
@@ -231,6 +232,37 @@ static void print_fourcc(uint32_t type)
     }
 }
 
+static int validate_typed_chunk(const char *package_path,
+                                uint32_t type,
+                                uint32_t asset_id,
+                                uint16_t schema_version,
+                                const void *data,
+                                size_t size)
+{
+    MdpResult result;
+
+    if (type != MDP_MAP_TYPE) {
+        return 1;
+    }
+    if (schema_version != MDP_MAP_SCHEMA_VERSION) {
+        fprintf(stderr,
+                "mdpc: %s: MAP asset %lu uses unsupported schema %u\n",
+                package_path,
+                (unsigned long)asset_id,
+                (unsigned int)schema_version);
+        return 0;
+    }
+    result = mdp_map_validate(data, size);
+    if (result != MDP_OK) {
+        fprintf(stderr, "mdpc: %s: MAP asset %lu: %s\n",
+                package_path,
+                (unsigned long)asset_id,
+                mdp_result_string(result));
+        return 0;
+    }
+    return 1;
+}
+
 static int open_package(const char *path,
                         InputFile *file,
                         MdpArchive *archive)
@@ -253,9 +285,31 @@ static int command_validate(const char *path)
 {
     InputFile file;
     MdpArchive archive;
+    uint32_t i;
 
     if (!open_package(path, &file, &archive)) {
         return 1;
+    }
+    for (i = 0u; i < archive.entry_count; ++i) {
+        const MdpDirectoryEntry *entry = mdp_archive_entry(&archive, i);
+        const void *data = NULL;
+        size_t size = 0u;
+        MdpResult result = mdp_archive_stored_chunk(&archive, entry,
+                                                    &data, &size);
+
+        if (result != MDP_OK ||
+            !validate_typed_chunk(path, entry->type, entry->asset_id,
+                                  entry->schema_version, data, size)) {
+            if (result != MDP_OK) {
+                fprintf(stderr, "mdpc: %s: asset %lu: %s\n",
+                        path,
+                        (unsigned long)entry->asset_id,
+                        mdp_result_string(result));
+            }
+            mdp_archive_close(&archive);
+            free(file.bytes);
+            return 1;
+        }
     }
     printf("%s: valid MDP %u.%u, %lu chunks, %lu bytes\n",
            path,
@@ -325,6 +379,12 @@ static int command_pack(int argc, char **argv)
             goto cleanup;
         }
         if (!read_file(argv[base + 3], &files[i])) {
+            goto cleanup;
+        }
+        if (!validate_typed_chunk(argv[2], chunks[i].type,
+                                  chunks[i].asset_id,
+                                  chunks[i].schema_version,
+                                  files[i].bytes, files[i].size)) {
             goto cleanup;
         }
         chunks[i].flags = MDP_CHUNK_COMPRESSION_RAW;
