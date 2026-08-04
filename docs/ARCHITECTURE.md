@@ -243,6 +243,19 @@ The same editing core powers MDPed `AUDIOedit` and standalone Tmuse. The old
 text display may remain a diagnostic tool but is not placed on the game disk.
 SSGE speech is post-episode scope.
 
+## HITL evidence
+
+The implemented portable HITL core parses bounded DOS-safe `HITL.IN` plans and
+`AUTO.OUT` results, rejects stale/missing/duplicate/malformed evidence, and
+evaluates AUTO and MANUAL lanes independently. Zero-initialized status is
+`UNRUN`, never `PASS`, and the portable API deliberately exposes no operation
+that assigns a manual result.
+
+The byte grammar and authority rules are frozen in
+[`HITL_FORMAT.md`](HITL_FORMAT.md). The CGUI TEST COCKPIT, physical-input gate,
+append-only journal, transactional `HITL.OUT` writer, captures, and host
+collector are target work and must not be inferred from parser availability.
+
 ## ZEUS
 
 ZEUS owns game rules and content orchestration, not platform hardware.

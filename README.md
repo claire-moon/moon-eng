@@ -39,11 +39,13 @@ Run `make dosbox-smoke` to cross-build the game-only distribution and exercise
 optional `dosbox-dev.conf` is for interactive development convenience and is
 not used by the default-configuration compatibility gate.
 
-`make test` runs the native MDP container, typed cell-map, and deterministic
-host-CLI tests and cross-builds their DOS equivalents. `make test-full` also
-executes ZEUS and the complete MDP suite inside vanilla DOSBox. The native
-package compiler is written to `build/host/bin/release/mdpc`; `MDPC.EXE` is
-staged only in the tools package.
+`make test` runs the native MDP container, typed cell-map, deterministic
+host-CLI, and HITL evidence tests and cross-builds their DOS equivalents.
+`make test-full` additionally executes ZEUS and every MDP/HITL test in fresh
+default-config vanilla DOSBox. Test executables and generated evidence are
+never placed in either distribution. The native package compiler is written
+to `build/host/bin/release/mdpc`; `MDPC.EXE` is staged only in the tools
+package.
 
 ## Components
 
@@ -53,6 +55,9 @@ staged only in the tools package.
 - `TMUSE.EXE` / `TMUSEGUI.EXE`: audio engine diagnostics and editor frontends
 - `MDPC.EXE`: shared MDP v1 package compiler and validator CLI
 - `GAME.MDP`: legacy v0 prototype data package retained for migration tests
+
+The user/automation authority boundary and DOS-safe evidence grammar are
+specified in [docs/HITL_FORMAT.md](docs/HITL_FORMAT.md).
 
 The canonical package layout is specified in
 [docs/MDP_V1.md](docs/MDP_V1.md). The implemented height-aware cell-map
