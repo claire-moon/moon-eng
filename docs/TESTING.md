@@ -26,6 +26,11 @@ they cannot affect a shipped DOS artifact.
 The evidence exchange and file grammar are defined in
 [`HITL_FORMAT.md`](HITL_FORMAT.md).
 
+The canonical `tests/hitl/fixtures/HITL.IN` and `AUTO.OUT` files are stored
+byte-for-byte with CRLF records. Repository attributes disable text
+normalization for these fixtures so host, DJGPP, and DOSBox tests consume the
+same canonical input bytes.
+
 ## Compatibility matrix
 
 ### Automated baseline

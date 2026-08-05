@@ -14,5 +14,7 @@
 *.png binary
 *.xcf binary
 
-# Historical notes are preserved byte-for-byte, including old whitespace.
 docs/archive/** -whitespace
+
+tests/hitl/fixtures/HITL.IN -text
+tests/hitl/fixtures/AUTO.OUT -text
