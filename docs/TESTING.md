@@ -129,6 +129,19 @@ the framebuffer/readback hash, commits only UNRUN manual fields, restores the
 DOS boundary, and returns to the shell. It can never assign one of the cases
 above.
 
+##### Reconstructed controller coverage
+
+`tests/hitl/test_hitl_cockpit.c` covers synthetic authority denial,
+two-distinct-edge MANUAL publication, pending-token consumption after a failed
+confirmation, stale-AUTO PASS denial, diagnostic FAIL/BLOCKED eligibility,
+journal CRC verification, and the rule that imported journal history never
+restores current-process MANUAL authority.
+
+The controller test passes in debug and release host configurations and
+compiles and links for debug and release DJGPP configurations. The separate
+CGUI cockpit test remains to be reconstructed before the combined TEST COCKPIT
+targets are considered complete.
+
 ## Performance acceptance
 
 The strict gameplay gate is measured on the Pentium 90 profiles after scene and
