@@ -98,6 +98,32 @@ The `/SMOKE` path and DOSBox readback prove deterministic raster output and
 ordered restoration, but synthetic input and a dummy video driver do not
 assign or substitute for these physical cases.
 
+### TEST COCKPIT acceptance
+
+Prepare matching `HITL.IN` and `AUTO.OUT` files for each named profile, copy
+them beside the tools build, and run `MOON.EXE /HITL HITL.IN`. The cockpit gate
+has four manual cases on both W98P90 and NT4P90; only the user assigns them:
+
+- `HITL.VISUAL`: the identity header, LIVE DOS banner, ordered 12-row pages,
+  AUTO/MANUAL/combined columns, full detail pane, stale warning, help, and both
+  default-No confirmations remain legible and deterministic;
+- `HITL.AUTH`: one fresh physical action opens a PASS/FAIL/BLOCKED confirmation
+  but changes no result, No/Escape/repeat/held input changes no result, and only
+  a later distinct physical Yes/Enter/Space action completes the decision;
+- `HITL.JOURNAL`: a deliberately completed decision appears once in
+  `HITL.JRN`, the committed `HITL.OUT` has the matching lane/result/count/CRC,
+  a stale identity cannot be marked PASS, and reopening does not silently
+  restore a prior process's MANUAL authority; and
+- `HITL.RESTORE`: cancel/commit/error paths return to the original video mode
+  and responsive DOS keyboard, leave no `HITL.NEW`, and retain `HITL.OLD` only
+  when it is needed to recover a failed replacement.
+
+`MOON.EXE /HITL HITL.IN /SMOKE` is automation-only. It intentionally navigates,
+renders, and attempts a synthetic decision, then proves `MANUAL=0`, verifies
+the framebuffer/readback hash, commits only UNRUN manual fields, restores the
+DOS boundary, and returns to the shell. It can never assign one of the cases
+above.
+
 ## Performance acceptance
 
 The strict gameplay gate is measured on the Pentium 90 profiles after scene and

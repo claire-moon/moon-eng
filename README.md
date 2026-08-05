@@ -14,9 +14,10 @@ acceptance gate.
 The checked-in game is currently a pre-alpha engine prototype. It includes a
 320x200 indexed-color raycaster, movement, a developer console, procedural
 sky rendering, early CGUI tools, and an experimental Sound Blaster synthesizer.
-The newer foundation code now includes MDP v1 codecs, HITL evidence parsing,
-the shared fixed-step/DOS runtime boundary, and a portable caller-owned CGUI
-menu/modal core; the legacy game and tool consumers have not all migrated yet.
+The newer foundation code now includes MDP v1 codecs, HITL evidence parsing
+and TEST COCKPIT journaling, the shared fixed-step/DOS runtime boundary, and a
+portable caller-owned CGUI menu/modal core; the legacy game and tool consumers
+have not all migrated yet.
 The active roadmap is in [docs/ROADMAP.md](docs/ROADMAP.md).
 
 Historical design notes are retained under `docs/archive/pre-bootstrap/` for
@@ -47,19 +48,19 @@ optional `dosbox-dev.conf` is for interactive development convenience and is
 not used by the default-configuration compatibility gate.
 
 `make test` runs the native MDP container, typed cell-map, deterministic
-host-CLI, HITL evidence, portable runtime-core, and contextual CGUI tests and
-cross-builds their DOS equivalents. `make test-full` additionally executes
-ZEUS, every MDP/HITL/runtime/CGUI test, the DJGPP hardware adapter, the MOON
-first consumer, and a full VGA CGUI presentation/readback smoke in fresh
-default-config vanilla DOSBox 0.74-3. Test executables and generated evidence
-are never placed in either distribution. The native package compiler is
-written to `build/host/bin/release/mdpc`; `MDPC.EXE` is staged only in the tools
-package.
+host-CLI, HITL evidence/TEST COCKPIT, portable runtime-core, and contextual
+CGUI tests and cross-builds their DOS equivalents. `make test-full`
+additionally executes ZEUS, every MDP/HITL/runtime/CGUI test, the DJGPP
+hardware adapter, the MOON first consumer, the synthetic read-only cockpit,
+and full VGA presentation/readback smokes in fresh default-config vanilla
+DOSBox 0.74-3. Test executables and generated evidence are never placed in
+either distribution. The native package compiler is written to
+`build/host/bin/release/mdpc`; `MDPC.EXE` is staged only in the tools package.
 
 ## Components
 
 - `ZEUS.EXE`: the game and current MOON ENG runtime prototype
-- `MOON.EXE`: runtime-backed developer-suite launcher and future TEST COCKPIT
+- `MOON.EXE`: runtime-backed developer-suite launcher and CGUI TEST COCKPIT
   host
 - `MDPED.EXE`: MDP content editor
 - `TMUSE.EXE` / `TMUSEGUI.EXE`: audio engine diagnostics and editor frontends
@@ -78,6 +79,11 @@ The portable indexed-surface, clipping, semantic-palette, sparse-menu, help,
 and default-No confirmation contract is specified in
 [docs/CGUI_CORE.md](docs/CGUI_CORE.md). Legacy MDPed/TmuseGUI migration and the
 ZEUS front end remain downstream work.
+
+The two-edge physical-authority controller, append-only journal, transactional
+summary, paged CGUI review surface, and synthetic read-only smoke are specified
+in [docs/HITL_COCKPIT.md](docs/HITL_COCKPIT.md). Their W98P90/NT4P90 acceptance
+remains a user-only gate.
 
 The canonical package layout is specified in
 [docs/MDP_V1.md](docs/MDP_V1.md). The implemented height-aware cell-map

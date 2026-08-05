@@ -107,6 +107,13 @@ vanilla DOSBox automation is present; the two-profile user acceptance gate is
 still open. Tab order, file/grid/canvas widgets, legacy tool migration, and
 TEST COCKPIT remain later issues rather than implicit scope in that slice.
 
+`M1-HITL-02` is the implemented cockpit/writer slice: `MOON.EXE /HITL
+HITL.IN`, a paged keyboard-only CGUI review surface, provenance-aware two-edge
+MANUAL confirmation, append-only CRC-bound journaling, verified transactional
+summaries, host fault tests, and a permanently synthetic DOSBox smoke. Its
+W98P90/NT4P90 user acceptance remains open. Captures, free-form note editing,
+and GitHub/CI artifact collection remain separate work.
+
 Exit gate:
 
 - ZEUS, MDPed, Tmuse, and MOON build reproducibly;

@@ -5,6 +5,7 @@
 
 #include "moon/dos_runtime.h"
 #include "moon/runtime.h"
+#include "src/moon/moon_hitl.h"
 
 enum {
     MOON_ACTION_ZEUS = 0,
@@ -140,6 +141,43 @@ static int moon_ascii_equal(const char *left, const char *right)
     }
 
     return *left == '\0' && *right == '\0';
+}
+
+static int moon_parse_hitl_arguments(int argc,
+                                     char **argv,
+                                     const char **plan_path,
+                                     int *synthetic_smoke)
+{
+    int argument;
+
+    if (argv == NULL || plan_path == NULL || synthetic_smoke == NULL) {
+        return 0;
+    }
+    *plan_path = NULL;
+    *synthetic_smoke = 0;
+
+    if (argc < 2 || !moon_ascii_equal(argv[1], "/HITL")) {
+        for (argument = 2; argument < argc; ++argument) {
+            if (moon_ascii_equal(argv[argument], "/HITL")) {
+                return 0;
+            }
+        }
+        return 1;
+    }
+    if (argc != 3 && argc != 4) {
+        return 0;
+    }
+    if (argv[2] == NULL || argv[2][0] == '\0') {
+        return 0;
+    }
+    if (argc == 4) {
+        if (!moon_ascii_equal(argv[3], "/SMOKE")) {
+            return 0;
+        }
+        *synthetic_smoke = 1;
+    }
+    *plan_path = argv[2];
+    return 1;
 }
 
 static int moon_parse_arguments(int argc,
@@ -803,11 +841,35 @@ int main(int argc, char **argv)
     MoonLaunch launch;
     MoonAppResult app_result;
     const char *child_command;
+    const char *hitl_plan_path;
     int child_result;
+    int hitl_smoke;
     int runtime_smoke;
+    MoonHitlResult hitl_result;
+
+    if (!moon_parse_hitl_arguments(argc, argv, &hitl_plan_path,
+                                   &hitl_smoke)) {
+        fprintf(stderr,
+                "usage: MOON.EXE [/LEGACY35] [/RUNTIME-SMOKE]\n"
+                "       MOON.EXE /HITL HITL.IN [/SMOKE]\n");
+        return 2;
+    }
+    if (hitl_plan_path != NULL) {
+        hitl_result = hitl_smoke != 0
+            ? moon_hitl_run_synthetic_smoke(hitl_plan_path)
+            : moon_hitl_run_live_dos(hitl_plan_path);
+        if (hitl_result != MOON_HITL_OK) {
+            fprintf(stderr, "MOON TEST COCKPIT: %s\n",
+                    moon_hitl_result_name(hitl_result));
+            return 1;
+        }
+        return 0;
+    }
 
     if (!moon_parse_arguments(argc, argv, &present_mode, &runtime_smoke)) {
-        fprintf(stderr, "usage: MOON.EXE [/LEGACY35] [/RUNTIME-SMOKE]\n");
+        fprintf(stderr,
+                "usage: MOON.EXE [/LEGACY35] [/RUNTIME-SMOKE]\n"
+                "       MOON.EXE /HITL HITL.IN [/SMOKE]\n");
         return 2;
     }
 

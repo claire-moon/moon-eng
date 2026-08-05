@@ -1,9 +1,11 @@
 # MOON TEST COCKPIT Evidence Format
 
-Status: the portable `HITL.IN` / `AUTO.OUT` parser and combined-result
-evaluator are implemented and tested on host, DJGPP, and vanilla DOSBox. The
-CGUI cockpit, live-user journal writer, transactional summary writer, and host
-collector remain subsequent Milestone 1 work.
+Status: the portable `HITL.IN` / `AUTO.OUT` parser, combined-result evaluator,
+CGUI cockpit, live-user journal, and transactional summary writer are
+implemented and tested on host, DJGPP, and vanilla DOSBox. Physical authority
+remains user-controlled, and the host artifact collector remains subsequent
+Milestone 1 work. The controller contract is detailed in
+[`HITL_COCKPIT.md`](HITL_COCKPIT.md).
 
 `MOON.EXE /HITL HITL.IN` opens the keyboard-only **TEST COCKPIT** used for
 guided DOS acceptance. This format keeps the user, Codex, CI, DOSBox, and 86Box
@@ -190,6 +192,17 @@ Only a physical user action in the active cockpit may append a `MANUAL` event.
 Imported journals never grant status authority. For repeated MANUAL events, the
 last valid user event for the same build/plan/profile identity is authoritative
 and the full history remains visible.
+
+Imported journal events remain history only and do not restore MANUAL authority
+inside a newly started cockpit process. An interrupted decision must be
+repeated by the physical user. This deliberately chooses a strict authority
+boundary over crash-resuming a prior in-memory approval.
+
+The `JOURNAL` checksum is CRC-32/ISO-HDLC using reflected polynomial
+`0xEDB88320`, initial state `0xFFFFFFFF`, and final XOR `0xFFFFFFFF`. It covers
+the complete raw canonical `HITL.JRN` byte stream, including the header,
+identity preamble, every EVENT record, and every CRLF. Its record count is the
+number of EVENT records only.
 
 ## `HITL.OUT`
 

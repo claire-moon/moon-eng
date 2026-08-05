@@ -1,0 +1,8 @@
+HITL	1	0
+RUN	R260804A
+BUILD_HASH	aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+PLAN_HASH	180992bc3b03424747cedf88c25d2976b41959f80870a14b2156805e7c734bae
+PROFILE_HASH	cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+AUTO	COCKPIT.NAV	PASS	OK	1	portable controller precheck passed
+AUTO	COCKPIT.AUTH	UNRUN	MANUAL_ONLY	0	requires a physical user
+

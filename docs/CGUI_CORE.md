@@ -134,8 +134,9 @@ DOS shell. Automation does not assign its MANUAL result.
 
 ## Deferred work
 
-This foundation intentionally does not migrate legacy MDPed/TmuseGUI widgets,
-implement file/grid/canvas controls, add mouse routing, embed TEST COCKPIT,
-replace the MOON launcher, or build the ZEUS front end and HELP ME! artwork.
-Those are downstream issues using this contract, not hidden claims of this
-slice.
+TEST COCKPIT is the first integrated CGUI consumer and keeps physical evidence
+authority in its own controller. This foundation still does not migrate legacy
+MDPed/TmuseGUI widgets, implement file/grid/canvas controls, add mouse routing,
+replace the ordinary MOON launcher, or build the ZEUS front end and HELP ME!
+artwork. Those are downstream issues using this contract, not hidden claims of
+the original CGUI slice.

@@ -242,9 +242,10 @@ The broader shared library remains responsible for:
 - semantic palette remapping between editor, game, and scene palettes.
 
 CGUI powers the ZEUS front end and pause UI, MDPed, standalone Tmuse, and the
-MOON developer hub/TEST COCKPIT. Those consumers have not yet migrated to the
-new core; the original hardware-owning `cgui/` sources remain legacy code until
-their separately scoped migrations.
+MOON developer hub/TEST COCKPIT. TEST COCKPIT is the first integrated consumer
+of the contextual core. The other consumers have not yet migrated; the
+original hardware-owning `cgui/` sources remain legacy code until their
+separately scoped migrations.
 
 ## Tmuse
 
@@ -267,16 +268,20 @@ SSGE speech is post-episode scope.
 
 ## HITL evidence
 
-The implemented portable HITL core parses bounded DOS-safe `HITL.IN` plans and
-`AUTO.OUT` results, rejects stale/missing/duplicate/malformed evidence, and
-evaluates AUTO and MANUAL lanes independently. Zero-initialized status is
-`UNRUN`, never `PASS`, and the portable API deliberately exposes no operation
-that assigns a manual result.
+The portable HITL core parses bounded DOS-safe `HITL.IN` plans and `AUTO.OUT`
+results, rejects stale/missing/duplicate/malformed evidence, and evaluates AUTO
+and MANUAL lanes independently. Zero-initialized status is `UNRUN`, never
+`PASS`. The trusted cockpit layer adds a deliberately narrow two-edge MANUAL
+transition rather than exposing a general case-state setter.
 
 The byte grammar and authority rules are frozen in
-[`HITL_FORMAT.md`](HITL_FORMAT.md). The CGUI TEST COCKPIT, physical-input gate,
-append-only journal, transactional `HITL.OUT` writer, captures, and host
-collector are target work and must not be inferred from parser availability.
+[`HITL_FORMAT.md`](HITL_FORMAT.md). The implemented controller and
+[`HITL_COCKPIT.md`](HITL_COCKPIT.md) keep input provenance outside CGUI,
+require two distinct fresh live-DOS edges, append and flush `HITL.JRN` before
+publishing MANUAL state, and verify `HITL.NEW` before recoverably replacing
+`HITL.OUT`. Synthetic smoke/replay sessions remain permanently read-only.
+Evidence captures, note editing, and the host artifact collector remain target
+work and must not be inferred from journal/summary availability.
 
 ## ZEUS
 

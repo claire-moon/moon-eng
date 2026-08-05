@@ -1,0 +1,9 @@
+HITL	1	0
+RUN	R260804A
+BUILD_HASH	aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+PLAN_HASH	180992bc3b03424747cedf88c25d2976b41959f80870a14b2156805e7c734bae
+PROFILE_HASH	cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+PROFILE	DOSBOX	DOSBox 0.74-3	cycles auto	16 MB	NONE
+CASE	COCKPIT.NAV	1	1	Synthetic smoke navigates the ordered case list
+CASE	COCKPIT.AUTH	0	1	Only live DOS input may assign a manual result
+

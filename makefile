@@ -77,6 +77,12 @@ MDPTEST_DOS_OBJ := $(OBJ_DIR)/mdptest.o
 MDPMAPTEST_DOS_OBJ := $(OBJ_DIR)/maptest.o
 HITL_CORE_OBJ := $(OBJ_DIR)/hitl-core.o
 HITLTEST_DOS_OBJ := $(OBJ_DIR)/hitltest.o
+HITL_COCKPIT_OBJ := $(OBJ_DIR)/hitl-cockpit.o
+HITL_WRITER_OBJ := $(OBJ_DIR)/hitl-writer.o
+HITL_COCKPIT_UI_OBJ := $(OBJ_DIR)/hitl-cockpit-ui.o
+HITL_COCKPIT_TEST_DOS_OBJ := $(OBJ_DIR)/hitl-cockpit-test.o
+HITL_COCKPIT_UI_TEST_DOS_OBJ := $(OBJ_DIR)/hitl-cockpit-ui-test.o
+MOON_HITL_OBJ := $(OBJ_DIR)/moon-hitl.o
 RUNTIME_CORE_OBJ := $(OBJ_DIR)/runtime-core.o
 RUNTIME_CORE_TEST_DOS_OBJ := $(OBJ_DIR)/runtime-core-test.o
 DOS_RUNTIME_OBJ := $(OBJ_DIR)/dos-runtime.o
@@ -95,6 +101,12 @@ MDPTEST_DOS_DEP := $(DEP_DIR)/mdptest.d
 MDPMAPTEST_DOS_DEP := $(DEP_DIR)/maptest.d
 HITL_CORE_DEP := $(DEP_DIR)/hitl-core.d
 HITLTEST_DOS_DEP := $(DEP_DIR)/hitltest.d
+HITL_COCKPIT_DEP := $(DEP_DIR)/hitl-cockpit.d
+HITL_WRITER_DEP := $(DEP_DIR)/hitl-writer.d
+HITL_COCKPIT_UI_DEP := $(DEP_DIR)/hitl-cockpit-ui.d
+HITL_COCKPIT_TEST_DOS_DEP := $(DEP_DIR)/hitl-cockpit-test.d
+HITL_COCKPIT_UI_TEST_DOS_DEP := $(DEP_DIR)/hitl-cockpit-ui-test.d
+MOON_HITL_DEP := $(DEP_DIR)/moon-hitl.d
 RUNTIME_CORE_DEP := $(DEP_DIR)/runtime-core.d
 RUNTIME_CORE_TEST_DOS_DEP := $(DEP_DIR)/runtime-core-test.d
 DOS_RUNTIME_DEP := $(DEP_DIR)/dos-runtime.d
@@ -112,6 +124,11 @@ HOST_MDP_TEST_OBJ := $(HOST_OBJ_DIR)/mdptest.o
 HOST_MDP_MAP_TEST_OBJ := $(HOST_OBJ_DIR)/maptest.o
 HOST_HITL_CORE_OBJ := $(HOST_OBJ_DIR)/hitl-core.o
 HOST_HITL_TEST_OBJ := $(HOST_OBJ_DIR)/hitltest.o
+HOST_HITL_COCKPIT_OBJ := $(HOST_OBJ_DIR)/hitl-cockpit.o
+HOST_HITL_WRITER_OBJ := $(HOST_OBJ_DIR)/hitl-writer.o
+HOST_HITL_COCKPIT_UI_OBJ := $(HOST_OBJ_DIR)/hitl-cockpit-ui.o
+HOST_HITL_COCKPIT_TEST_OBJ := $(HOST_OBJ_DIR)/hitl-cockpit-test.o
+HOST_HITL_COCKPIT_UI_TEST_OBJ := $(HOST_OBJ_DIR)/hitl-cockpit-ui-test.o
 HOST_RUNTIME_CORE_OBJ := $(HOST_OBJ_DIR)/runtime-core.o
 HOST_RUNTIME_CORE_TEST_OBJ := $(HOST_OBJ_DIR)/runtime-core-test.o
 HOST_CGUI_RENDER_OBJ := $(HOST_OBJ_DIR)/cgui-render.o
@@ -127,6 +144,11 @@ HOST_MDP_TEST_DEP := $(HOST_DEP_DIR)/mdptest.d
 HOST_MDP_MAP_TEST_DEP := $(HOST_DEP_DIR)/maptest.d
 HOST_HITL_CORE_DEP := $(HOST_DEP_DIR)/hitl-core.d
 HOST_HITL_TEST_DEP := $(HOST_DEP_DIR)/hitltest.d
+HOST_HITL_COCKPIT_DEP := $(HOST_DEP_DIR)/hitl-cockpit.d
+HOST_HITL_WRITER_DEP := $(HOST_DEP_DIR)/hitl-writer.d
+HOST_HITL_COCKPIT_UI_DEP := $(HOST_DEP_DIR)/hitl-cockpit-ui.d
+HOST_HITL_COCKPIT_TEST_DEP := $(HOST_DEP_DIR)/hitl-cockpit-test.d
+HOST_HITL_COCKPIT_UI_TEST_DEP := $(HOST_DEP_DIR)/hitl-cockpit-ui-test.d
 HOST_RUNTIME_CORE_DEP := $(HOST_DEP_DIR)/runtime-core.d
 HOST_RUNTIME_CORE_TEST_DEP := $(HOST_DEP_DIR)/runtime-core-test.d
 HOST_CGUI_RENDER_DEP := $(HOST_DEP_DIR)/cgui-render.d
@@ -135,14 +157,20 @@ HOST_CGUI_FONT_DEP := $(HOST_DEP_DIR)/cgui-font-3x5.d
 HOST_CGUI_TEST_DEP := $(HOST_DEP_DIR)/cgui-test.d
 HOST_DEP := $(HOST_MDP_CORE_DEP) $(HOST_MDP_MAP_DEP) $(HOST_MDPC_DEP) \
 	$(HOST_MDP_TEST_DEP) $(HOST_MDP_MAP_TEST_DEP) $(HOST_HITL_CORE_DEP) \
-	$(HOST_HITL_TEST_DEP) $(HOST_RUNTIME_CORE_DEP) \
+	$(HOST_HITL_TEST_DEP) $(HOST_HITL_COCKPIT_DEP) \
+	$(HOST_HITL_WRITER_DEP) $(HOST_HITL_COCKPIT_UI_DEP) \
+	$(HOST_HITL_COCKPIT_TEST_DEP) $(HOST_HITL_COCKPIT_UI_TEST_DEP) \
+	$(HOST_RUNTIME_CORE_DEP) \
 	$(HOST_RUNTIME_CORE_TEST_DEP) $(HOST_CGUI_RENDER_DEP) \
 	$(HOST_CGUI_MENU_DEP) $(HOST_CGUI_FONT_DEP) $(HOST_CGUI_TEST_DEP)
 
 ALL_OBJ := $(sort $(ZEUS_OBJ) $(MDPED_OBJ) $(TMUSE_OBJ) $(TMUSEGUI_OBJ) \
 	$(MOON_OBJ) $(MDP_CORE_OBJ) $(MDP_MAP_OBJ) $(MDPC_OBJ) \
 	$(MDPTEST_DOS_OBJ) $(MDPMAPTEST_DOS_OBJ) $(HITL_CORE_OBJ) \
-	$(HITLTEST_DOS_OBJ) $(RUNTIME_CORE_OBJ) \
+	$(HITLTEST_DOS_OBJ) $(HITL_COCKPIT_OBJ) $(HITL_WRITER_OBJ) \
+	$(HITL_COCKPIT_UI_OBJ) $(HITL_COCKPIT_TEST_DOS_OBJ) \
+	$(HITL_COCKPIT_UI_TEST_DOS_OBJ) $(MOON_HITL_OBJ) \
+	$(RUNTIME_CORE_OBJ) \
 	$(RUNTIME_CORE_TEST_DOS_OBJ) $(DOS_RUNTIME_OBJ) \
 	$(DOS_RUNTIME_TEST_OBJ) $(CGUI_CORE_OBJ) $(CGUI_TEST_DOS_OBJ) \
 	$(CGUI_PRESENT_DOS_OBJ))
@@ -154,6 +182,9 @@ ALL_DEP := $(sort \
 	$(call source_deps,$(MOON_SRC)) \
 	$(MDP_CORE_DEP) $(MDP_MAP_DEP) $(MDPC_DEP) $(MDPTEST_DOS_DEP) \
 	$(MDPMAPTEST_DOS_DEP) $(HITL_CORE_DEP) $(HITLTEST_DOS_DEP) \
+	$(HITL_COCKPIT_DEP) $(HITL_WRITER_DEP) $(HITL_COCKPIT_UI_DEP) \
+	$(HITL_COCKPIT_TEST_DOS_DEP) $(HITL_COCKPIT_UI_TEST_DOS_DEP) \
+	$(MOON_HITL_DEP) \
 	$(RUNTIME_CORE_DEP) $(RUNTIME_CORE_TEST_DOS_DEP) \
 	$(DOS_RUNTIME_DEP) $(DOS_RUNTIME_TEST_DEP) $(CGUI_RENDER_DEP) \
 	$(CGUI_MENU_DEP) $(CGUI_FONT_DEP) $(CGUI_TEST_DOS_DEP) \
@@ -168,6 +199,8 @@ MDPC_BIN := $(DOS_DIR)/mdpc.exe
 MDPTEST_DOS_BIN := $(DOS_DIR)/mdptest.exe
 MDPMAPTEST_DOS_BIN := $(DOS_DIR)/maptest.exe
 HITLTEST_DOS_BIN := $(DOS_DIR)/hitltest.exe
+HITL_COCKPIT_TEST_DOS_BIN := $(DOS_DIR)/hitlcp.exe
+HITL_COCKPIT_UI_TEST_DOS_BIN := $(DOS_DIR)/hitlui.exe
 RUNTIME_CORE_TEST_DOS_BIN := $(DOS_DIR)/rtcore.exe
 DOS_RUNTIME_TEST_BIN := $(DOS_DIR)/rtdos.exe
 CGUI_TEST_DOS_BIN := $(DOS_DIR)/cguitest.exe
@@ -176,6 +209,8 @@ HOST_MDPC_BIN := $(HOST_BIN_DIR)/mdpc
 HOST_MDP_TEST_BIN := $(HOST_BIN_DIR)/mdptest
 HOST_MDP_MAP_TEST_BIN := $(HOST_BIN_DIR)/maptest
 HOST_HITL_TEST_BIN := $(HOST_BIN_DIR)/hitltest
+HOST_HITL_COCKPIT_TEST_BIN := $(HOST_BIN_DIR)/hitl-cockpit-test
+HOST_HITL_COCKPIT_UI_TEST_BIN := $(HOST_BIN_DIR)/hitl-cockpit-ui-test
 HOST_RUNTIME_CORE_TEST_BIN := $(HOST_BIN_DIR)/runtime-core-test
 HOST_CGUI_TEST_BIN := $(HOST_BIN_DIR)/cgui-test
 ALL_BIN := $(ZEUS_BIN) $(MDPED_BIN) $(TMUSE_BIN) $(TMUSEGUI_BIN) \
@@ -189,7 +224,8 @@ BUILD_DIRS := \
 	$(BUILD_ROOT)/dos $(DOS_DIR)
 
 .PHONY: all zeus mdped tmuse tmusegui moon mdpc mdp-test-dos \
-	mdp-map-test-dos hitl-test-dos runtime-core-test-dos \
+	mdp-map-test-dos hitl-test-dos hitl-cockpit-test-dos \
+	hitl-cockpit-ui-test-dos runtime-core-test-dos \
 	runtime-dos-test-dos cgui-core cgui-test-dos cgui-present-dos test runtime \
 	debug release dist dist-game dist-tools dist-game-prepare \
 	dist-tools-prepare dosbox-smoke clean help
@@ -205,6 +241,8 @@ mdpc: $(MDPC_BIN)
 mdp-test-dos: $(MDPTEST_DOS_BIN)
 mdp-map-test-dos: $(MDPMAPTEST_DOS_BIN)
 hitl-test-dos: $(HITLTEST_DOS_BIN)
+hitl-cockpit-test-dos: $(HITL_COCKPIT_TEST_DOS_BIN)
+hitl-cockpit-ui-test-dos: $(HITL_COCKPIT_UI_TEST_DOS_BIN)
 runtime-core-test-dos: $(RUNTIME_CORE_TEST_DOS_BIN)
 runtime-dos-test-dos: $(DOS_RUNTIME_TEST_BIN)
 cgui-core: $(CGUI_CORE_OBJ)
@@ -236,8 +274,13 @@ $(TMUSE_BIN): $(TMUSE_OBJ) | $(DOS_DIR)
 $(TMUSEGUI_BIN): $(TMUSEGUI_OBJ) | $(DOS_DIR)
 	$(CC) $(LDFLAGS) -o $@ $(TMUSEGUI_OBJ) $(LDLIBS)
 
-$(MOON_BIN): $(MOON_OBJ) $(RUNTIME_CORE_OBJ) $(DOS_RUNTIME_OBJ) | $(DOS_DIR)
-	$(CC) $(LDFLAGS) -o $@ $(MOON_OBJ) $(RUNTIME_CORE_OBJ) $(DOS_RUNTIME_OBJ) $(LDLIBS)
+$(MOON_BIN): $(MOON_OBJ) $(MOON_HITL_OBJ) $(HITL_CORE_OBJ) \
+		$(HITL_COCKPIT_OBJ) $(HITL_WRITER_OBJ) $(HITL_COCKPIT_UI_OBJ) \
+		$(CGUI_CORE_OBJ) $(RUNTIME_CORE_OBJ) $(DOS_RUNTIME_OBJ) | $(DOS_DIR)
+	$(CC) $(LDFLAGS) -o $@ $(MOON_OBJ) $(MOON_HITL_OBJ) \
+		$(HITL_CORE_OBJ) $(HITL_COCKPIT_OBJ) $(HITL_WRITER_OBJ) \
+		$(HITL_COCKPIT_UI_OBJ) $(CGUI_CORE_OBJ) $(RUNTIME_CORE_OBJ) \
+		$(DOS_RUNTIME_OBJ) $(LDLIBS)
 
 $(MDPC_BIN): $(MDPC_OBJ) $(MDP_CORE_OBJ) $(MDP_MAP_OBJ) | $(DOS_DIR)
 	$(CC) $(LDFLAGS) -o $@ $(MDPC_OBJ) $(MDP_CORE_OBJ) $(MDP_MAP_OBJ)
@@ -251,6 +294,18 @@ $(MDPMAPTEST_DOS_BIN): $(MDPMAPTEST_DOS_OBJ) $(MDP_MAP_OBJ) \
 
 $(HITLTEST_DOS_BIN): $(HITLTEST_DOS_OBJ) $(HITL_CORE_OBJ) | $(DOS_DIR)
 	$(CC) $(LDFLAGS) -o $@ $(HITLTEST_DOS_OBJ) $(HITL_CORE_OBJ)
+
+$(HITL_COCKPIT_TEST_DOS_BIN): $(HITL_COCKPIT_TEST_DOS_OBJ) \
+		$(HITL_COCKPIT_OBJ) $(HITL_WRITER_OBJ) $(HITL_CORE_OBJ) | $(DOS_DIR)
+	$(CC) $(LDFLAGS) -o $@ $(HITL_COCKPIT_TEST_DOS_OBJ) \
+		$(HITL_COCKPIT_OBJ) $(HITL_WRITER_OBJ) $(HITL_CORE_OBJ)
+
+$(HITL_COCKPIT_UI_TEST_DOS_BIN): $(HITL_COCKPIT_UI_TEST_DOS_OBJ) \
+		$(HITL_COCKPIT_UI_OBJ) $(HITL_COCKPIT_OBJ) $(HITL_WRITER_OBJ) \
+		$(HITL_CORE_OBJ) $(CGUI_CORE_OBJ) | $(DOS_DIR)
+	$(CC) $(LDFLAGS) -o $@ $(HITL_COCKPIT_UI_TEST_DOS_OBJ) \
+		$(HITL_COCKPIT_UI_OBJ) $(HITL_COCKPIT_OBJ) $(HITL_WRITER_OBJ) \
+		$(HITL_CORE_OBJ) $(CGUI_CORE_OBJ)
 
 $(RUNTIME_CORE_TEST_DOS_BIN): $(RUNTIME_CORE_TEST_DOS_OBJ) \
 		$(RUNTIME_CORE_OBJ) | $(DOS_DIR)
@@ -291,6 +346,28 @@ $(HITL_CORE_OBJ): src/hitl/hitl.c include/moon/hitl.h | $(BUILD_DIRS)
 $(HITLTEST_DOS_OBJ): tests/hitl/test_hitl.c include/moon/hitl.h | $(BUILD_DIRS)
 	$(CC) $(MDP_CPPFLAGS) $(CFLAGS) -MMD -MP -MF $(HITLTEST_DOS_DEP) -MT $@ -c $< -o $@
 
+$(HITL_COCKPIT_OBJ): src/hitl/hitl_cockpit.c \
+		include/moon/hitl_cockpit.h include/moon/hitl.h | $(BUILD_DIRS)
+	$(CC) $(MDP_CPPFLAGS) $(CFLAGS) -MMD -MP -MF $(HITL_COCKPIT_DEP) -MT $@ -c $< -o $@
+
+$(HITL_WRITER_OBJ): src/hitl/hitl_writer.c \
+		include/moon/hitl_cockpit.h include/moon/hitl.h | $(BUILD_DIRS)
+	$(CC) $(MDP_CPPFLAGS) $(CFLAGS) -MMD -MP -MF $(HITL_WRITER_DEP) -MT $@ -c $< -o $@
+
+$(HITL_COCKPIT_UI_OBJ): src/hitl/hitl_cockpit_ui.c \
+		include/moon/hitl_cockpit_ui.h include/moon/hitl_cockpit.h \
+		include/moon/hitl.h include/moon/cgui.h | $(BUILD_DIRS)
+	$(CC) $(MDP_CPPFLAGS) $(CFLAGS) -MMD -MP -MF $(HITL_COCKPIT_UI_DEP) -MT $@ -c $< -o $@
+
+$(HITL_COCKPIT_TEST_DOS_OBJ): tests/hitl/test_hitl_cockpit.c \
+		include/moon/hitl_cockpit.h include/moon/hitl.h | $(BUILD_DIRS)
+	$(CC) $(MDP_CPPFLAGS) $(CFLAGS) -MMD -MP -MF $(HITL_COCKPIT_TEST_DOS_DEP) -MT $@ -c $< -o $@
+
+$(HITL_COCKPIT_UI_TEST_DOS_OBJ): tests/hitl/test_hitl_cockpit_ui.c \
+		include/moon/hitl_cockpit_ui.h include/moon/hitl_cockpit.h \
+		include/moon/hitl.h include/moon/cgui.h | $(BUILD_DIRS)
+	$(CC) $(MDP_CPPFLAGS) $(CFLAGS) -MMD -MP -MF $(HITL_COCKPIT_UI_TEST_DOS_DEP) -MT $@ -c $< -o $@
+
 $(RUNTIME_CORE_OBJ): src/runtime/runtime.c include/moon/runtime.h | $(BUILD_DIRS)
 	$(CC) $(MDP_CPPFLAGS) $(CFLAGS) -MMD -MP -MF $(RUNTIME_CORE_DEP) -MT $@ -c $< -o $@
 
@@ -326,9 +403,16 @@ $(CGUI_PRESENT_DOS_OBJ): tests/cgui/cgui_present_dos.c \
 		include/moon/runtime.h | $(BUILD_DIRS)
 	$(CC) $(MDP_CPPFLAGS) $(CFLAGS) -MMD -MP -MF $(CGUI_PRESENT_DOS_DEP) -MT $@ -c $< -o $@
 
-$(MOON_OBJ): moon.c include/moon/dos_runtime.h include/moon/runtime.h \
+$(MOON_OBJ): moon.c src/moon/moon_hitl.h include/moon/dos_runtime.h \
+		include/moon/runtime.h \
 		| $(BUILD_DIRS)
 	$(CC) $(MDP_CPPFLAGS) $(CFLAGS) -MMD -MP -MF $(DEP_DIR)/moon.d -MT $@ -c $< -o $@
+
+$(MOON_HITL_OBJ): src/moon/moon_hitl.c src/moon/moon_hitl.h \
+		include/moon/hitl_cockpit_ui.h include/moon/hitl_cockpit.h \
+		include/moon/hitl.h include/moon/cgui.h include/moon/dos_runtime.h \
+		include/moon/runtime.h | $(BUILD_DIRS)
+	$(CC) $(MDP_CPPFLAGS) $(CFLAGS) -MMD -MP -MF $(MOON_HITL_DEP) -MT $@ -c $< -o $@
 
 $(OBJ_DIR)/%.o: %.c | $(BUILD_DIRS)
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(DEPFLAGS) -c $< -o $@
@@ -372,9 +456,10 @@ $(addprefix $(DEP_DIR)/,$(SOURCE_DIRS)): | $(DEP_DIR)
 
 ifneq ($(DOS_SHELL),1)
 .PHONY: mdpc-host mdpc-smoke mdp-test-host mdp-map-test-host \
-	hitl-test-host runtime-core-test-host cgui-test-host mdp-test-dosbox \
-	hitl-test-dosbox runtime-core-test-dosbox runtime-dos-test-dosbox \
-	cgui-test-dosbox test-full
+	hitl-test-host hitl-cockpit-test-host hitl-cockpit-ui-test-host \
+	runtime-core-test-host cgui-test-host mdp-test-dosbox \
+	hitl-test-dosbox hitl-cockpit-test-dosbox runtime-core-test-dosbox \
+	runtime-dos-test-dosbox cgui-test-dosbox test-full
 
 $(HOST_ROOT): | $(BUILD_ROOT)
 	$(make_directory)
@@ -415,6 +500,33 @@ $(HOST_HITL_CORE_OBJ): src/hitl/hitl.c include/moon/hitl.h | $(HOST_OBJ_DIR) $(H
 $(HOST_HITL_TEST_OBJ): tests/hitl/test_hitl.c include/moon/hitl.h | $(HOST_OBJ_DIR) $(HOST_DEP_DIR)
 	$(HOST_CC) $(HOST_CPPFLAGS) -Iinclude $(HOST_CFLAGS) -MMD -MP -MF $(HOST_HITL_TEST_DEP) -MT $@ -c $< -o $@
 
+$(HOST_HITL_COCKPIT_OBJ): src/hitl/hitl_cockpit.c \
+		include/moon/hitl_cockpit.h include/moon/hitl.h \
+		| $(HOST_OBJ_DIR) $(HOST_DEP_DIR)
+	$(HOST_CC) $(HOST_CPPFLAGS) -Iinclude $(HOST_CFLAGS) -MMD -MP -MF $(HOST_HITL_COCKPIT_DEP) -MT $@ -c $< -o $@
+
+$(HOST_HITL_WRITER_OBJ): src/hitl/hitl_writer.c \
+		include/moon/hitl_cockpit.h include/moon/hitl.h \
+		| $(HOST_OBJ_DIR) $(HOST_DEP_DIR)
+	$(HOST_CC) $(HOST_CPPFLAGS) -Iinclude $(HOST_CFLAGS) -MMD -MP -MF $(HOST_HITL_WRITER_DEP) -MT $@ -c $< -o $@
+
+$(HOST_HITL_COCKPIT_UI_OBJ): src/hitl/hitl_cockpit_ui.c \
+		include/moon/hitl_cockpit_ui.h include/moon/hitl_cockpit.h \
+		include/moon/hitl.h include/moon/cgui.h \
+		| $(HOST_OBJ_DIR) $(HOST_DEP_DIR)
+	$(HOST_CC) $(HOST_CPPFLAGS) -Iinclude $(HOST_CFLAGS) -MMD -MP -MF $(HOST_HITL_COCKPIT_UI_DEP) -MT $@ -c $< -o $@
+
+$(HOST_HITL_COCKPIT_TEST_OBJ): tests/hitl/test_hitl_cockpit.c \
+		include/moon/hitl_cockpit.h include/moon/hitl.h \
+		| $(HOST_OBJ_DIR) $(HOST_DEP_DIR)
+	$(HOST_CC) $(HOST_CPPFLAGS) -Iinclude $(HOST_CFLAGS) -MMD -MP -MF $(HOST_HITL_COCKPIT_TEST_DEP) -MT $@ -c $< -o $@
+
+$(HOST_HITL_COCKPIT_UI_TEST_OBJ): tests/hitl/test_hitl_cockpit_ui.c \
+		include/moon/hitl_cockpit_ui.h include/moon/hitl_cockpit.h \
+		include/moon/hitl.h include/moon/cgui.h \
+		| $(HOST_OBJ_DIR) $(HOST_DEP_DIR)
+	$(HOST_CC) $(HOST_CPPFLAGS) -Iinclude $(HOST_CFLAGS) -MMD -MP -MF $(HOST_HITL_COCKPIT_UI_TEST_DEP) -MT $@ -c $< -o $@
+
 $(HOST_RUNTIME_CORE_OBJ): src/runtime/runtime.c include/moon/runtime.h | $(HOST_OBJ_DIR) $(HOST_DEP_DIR)
 	$(HOST_CC) $(HOST_CPPFLAGS) -Iinclude $(HOST_CFLAGS) -MMD -MP -MF $(HOST_RUNTIME_CORE_DEP) -MT $@ -c $< -o $@
 
@@ -454,6 +566,22 @@ $(HOST_MDP_MAP_TEST_BIN): $(HOST_MDP_MAP_TEST_OBJ) $(HOST_MDP_MAP_OBJ) \
 $(HOST_HITL_TEST_BIN): $(HOST_HITL_TEST_OBJ) $(HOST_HITL_CORE_OBJ) | $(HOST_BIN_DIR)
 	$(HOST_CC) $(HOST_LDFLAGS) -o $@ $(HOST_HITL_TEST_OBJ) $(HOST_HITL_CORE_OBJ)
 
+$(HOST_HITL_COCKPIT_TEST_BIN): $(HOST_HITL_COCKPIT_TEST_OBJ) \
+		$(HOST_HITL_COCKPIT_OBJ) $(HOST_HITL_WRITER_OBJ) \
+		$(HOST_HITL_CORE_OBJ) | $(HOST_BIN_DIR)
+	$(HOST_CC) $(HOST_LDFLAGS) -o $@ $(HOST_HITL_COCKPIT_TEST_OBJ) \
+		$(HOST_HITL_COCKPIT_OBJ) $(HOST_HITL_WRITER_OBJ) \
+		$(HOST_HITL_CORE_OBJ)
+
+$(HOST_HITL_COCKPIT_UI_TEST_BIN): $(HOST_HITL_COCKPIT_UI_TEST_OBJ) \
+		$(HOST_HITL_COCKPIT_UI_OBJ) $(HOST_HITL_COCKPIT_OBJ) \
+		$(HOST_HITL_WRITER_OBJ) $(HOST_HITL_CORE_OBJ) \
+		$(HOST_CGUI_CORE_OBJ) | $(HOST_BIN_DIR)
+	$(HOST_CC) $(HOST_LDFLAGS) -o $@ $(HOST_HITL_COCKPIT_UI_TEST_OBJ) \
+		$(HOST_HITL_COCKPIT_UI_OBJ) $(HOST_HITL_COCKPIT_OBJ) \
+		$(HOST_HITL_WRITER_OBJ) $(HOST_HITL_CORE_OBJ) \
+		$(HOST_CGUI_CORE_OBJ)
+
 $(HOST_RUNTIME_CORE_TEST_BIN): $(HOST_RUNTIME_CORE_TEST_OBJ) \
 		$(HOST_RUNTIME_CORE_OBJ) | $(HOST_BIN_DIR)
 	$(HOST_CC) $(HOST_LDFLAGS) -o $@ $(HOST_RUNTIME_CORE_TEST_OBJ) \
@@ -477,6 +605,12 @@ mdp-map-test-host: $(HOST_MDP_MAP_TEST_BIN)
 
 hitl-test-host: $(HOST_HITL_TEST_BIN)
 	"$(HOST_HITL_TEST_BIN)"
+
+hitl-cockpit-test-host: $(HOST_HITL_COCKPIT_TEST_BIN)
+	"$(HOST_HITL_COCKPIT_TEST_BIN)"
+
+hitl-cockpit-ui-test-host: $(HOST_HITL_COCKPIT_UI_TEST_BIN)
+	"$(HOST_HITL_COCKPIT_UI_TEST_BIN)"
 
 runtime-core-test-host: $(HOST_RUNTIME_CORE_TEST_BIN)
 	"$(HOST_RUNTIME_CORE_TEST_BIN)"
@@ -585,11 +719,14 @@ $(TOOLS_DIST_DIR)/PALETTE.BMP: $(DOS_DIR)/PALETTE.BMP dist-tools-prepare
 	$(copy_file)
 ifeq ($(DOS_SHELL),1)
 test: all mdp-test-dos mdp-map-test-dos hitl-test-dos \
+		hitl-cockpit-test-dos hitl-cockpit-ui-test-dos \
 		runtime-core-test-dos runtime-dos-test-dos cgui-test-dos \
 		cgui-present-dos
 	@$(subst /,\,$(MDPTEST_DOS_BIN))
 	@$(subst /,\,$(MDPMAPTEST_DOS_BIN))
 	@$(subst /,\,$(HITLTEST_DOS_BIN))
+	@$(subst /,\,$(HITL_COCKPIT_TEST_DOS_BIN))
+	@$(subst /,\,$(HITL_COCKPIT_UI_TEST_DOS_BIN))
 	@$(subst /,\,$(RUNTIME_CORE_TEST_DOS_BIN))
 	@$(subst /,\,$(DOS_RUNTIME_TEST_BIN))
 	@$(subst /,\,$(CGUI_TEST_DOS_BIN))
@@ -597,6 +734,8 @@ test: all mdp-test-dos mdp-map-test-dos hitl-test-dos \
 else
 test: all mdp-test-host mdp-map-test-host mdpc-smoke mdp-test-dos \
 		mdp-map-test-dos hitl-test-host hitl-test-dos \
+		hitl-cockpit-test-host hitl-cockpit-test-dos \
+		hitl-cockpit-ui-test-host hitl-cockpit-ui-test-dos \
 		runtime-core-test-host runtime-core-test-dos runtime-dos-test-dos \
 		cgui-test-host cgui-test-dos cgui-present-dos
 	@echo Host MDP/HITL/runtime/CGUI core tests passed and DOS tests compiled for CONFIG=$(CONFIG).
@@ -608,6 +747,10 @@ mdp-test-dosbox: mdp-test-dos mdp-map-test-dos mdpc \
 
 hitl-test-dosbox: hitl-test-dos $(DOS_DIR)/CWSDPMI.EXE
 	./scripts/hitl-dosbox-test.sh $(CONFIG) "$(BUILD_ROOT)"
+
+hitl-cockpit-test-dosbox: hitl-cockpit-test-dos \
+		hitl-cockpit-ui-test-dos moon $(DOS_DIR)/CWSDPMI.EXE
+	./scripts/hitl-cockpit-dosbox-test.sh $(CONFIG) "$(BUILD_ROOT)"
 
 runtime-core-test-dosbox: runtime-core-test-dos $(DOS_DIR)/CWSDPMI.EXE
 	./scripts/runtime-dosbox-test.sh $(CONFIG) "$(BUILD_ROOT)"
@@ -621,6 +764,7 @@ cgui-test-dosbox: cgui-test-dos cgui-present-dos \
 	./scripts/cgui-dosbox-test.sh $(CONFIG) "$(BUILD_ROOT)"
 
 test-full: test dosbox-smoke mdp-test-dosbox hitl-test-dosbox \
+		hitl-cockpit-test-dosbox \
 		runtime-core-test-dosbox runtime-dos-test-dosbox cgui-test-dosbox
 	@echo All host and vanilla DOSBox gates passed for CONFIG=$(CONFIG).
 endif
@@ -647,6 +791,7 @@ help:
 	@echo "MOON ENG build targets:"
 	@echo "  all zeus mdped tmuse tmusegui moon mdpc cgui-core runtime"
 	@echo "  test mdp-test-dos mdp-map-test-dos hitl-test-dos"
+	@echo "  hitl-cockpit-test-dos hitl-cockpit-ui-test-dos"
 	@echo "  runtime-core-test-dos runtime-dos-test-dos"
 	@echo "  cgui-test-dos cgui-present-dos"
 	@echo "  dosbox-smoke"
@@ -655,7 +800,9 @@ help:
 ifneq ($(DOS_SHELL),1)
 	@echo "  test-full mdpc-host mdpc-smoke mdp-test-host"
 	@echo "  mdp-map-test-host hitl-test-host runtime-core-test-host"
+	@echo "  hitl-cockpit-test-host hitl-cockpit-ui-test-host"
 	@echo "  mdp-test-dosbox hitl-test-dosbox runtime-core-test-dosbox"
+	@echo "  hitl-cockpit-test-dosbox"
 	@echo "  runtime-dos-test-dosbox cgui-test-host cgui-test-dosbox"
 endif
 	@echo "Select a configuration with CONFIG=debug or CONFIG=release."
